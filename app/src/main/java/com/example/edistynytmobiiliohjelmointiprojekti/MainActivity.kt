@@ -98,6 +98,11 @@ class MainActivity : ComponentActivity() {
                                         scope.launch {
                                             drawerState.open()
                                         }
+                                    },
+                                    onClickEditCategory = {
+                                        scope.launch {
+                                            navController.navigate("categoryEditScreen/${it.categoryId}")
+                                        }
                                     }
                                 )
                             }
@@ -109,6 +114,9 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 )
+                            }
+                            composable(route="categoryEditScreen/{categoryId}" ) {
+                                EditCategoryScreen()
                             }
                         }
                     } // Navhost end

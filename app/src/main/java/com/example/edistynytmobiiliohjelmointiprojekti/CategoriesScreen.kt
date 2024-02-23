@@ -27,12 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriesScreen(onMenuClick: () -> Unit) {
+fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem) -> Unit) {
     val categoriesVm: CategoriesViewModel = viewModel()
 
     Scaffold(
@@ -89,7 +90,7 @@ fun CategoriesScreen(onMenuClick: () -> Unit) {
                                 }
                                 IconButton(
                                     onClick = {
-                                    /*TODO*/
+                                        onClickEditCategory(it)
                                     }
                                 ) {
                                     Icon(imageVector = Icons.Default.Edit,
