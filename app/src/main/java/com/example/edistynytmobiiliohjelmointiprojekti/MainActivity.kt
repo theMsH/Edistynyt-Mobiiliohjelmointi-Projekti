@@ -111,7 +111,13 @@ class MainActivity : ComponentActivity() {
                             startDestination = "categoriesScreen"
                         ) {
                             composable(route="categoriesScreen") {
-                                T
+                                CategoriesScreen(
+                                    onMenuClick = {
+                                        scope.launch {
+                                            drawerState.open()
+                                        }
+                                    }
+                                )
                             }
                         }
                     } // Navhost end
