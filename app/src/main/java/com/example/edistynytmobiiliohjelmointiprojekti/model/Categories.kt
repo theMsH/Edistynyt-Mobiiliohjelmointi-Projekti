@@ -9,7 +9,7 @@ data class CategoriesState(
 )
 
 
-/* GET 200 on muotoa:
+/* GET 200:
 {
     "categories": [
     {
@@ -29,4 +29,21 @@ data class CategoryItem(
 
 data class CategoriesRes(
     val categories: List<CategoryItem> = emptyList()
+)
+
+
+/* POST 200:
+{
+    "category_name" : "Kategoria 1"
+}
+*/
+
+data class CategoryState(
+    val categoryName: String = "",
+    val loading: Boolean = false
+)
+
+data class CategoryRes(
+    @SerializedName("category_name")
+    val categoryName: String
 )

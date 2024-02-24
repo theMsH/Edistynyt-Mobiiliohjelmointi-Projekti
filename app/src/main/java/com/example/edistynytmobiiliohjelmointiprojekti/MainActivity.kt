@@ -52,7 +52,9 @@ class MainActivity : ComponentActivity() {
                         drawerContent = {
                             ModalDrawerSheet(modifier = Modifier.fillMaxWidth(0.8f)) {
                                 Text(
-                                    modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally),
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .align(Alignment.CenterHorizontally),
                                     text = "Inventory management",
                                     style = MaterialTheme.typography.headlineSmall
                                 )
@@ -119,7 +121,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onClickEditCategory = {
                                         scope.launch {
-                                            navController.navigate("categoryEditScreen/${it.categoryId}")
+                                            navController.navigate("editCategoryScreen/${it.categoryId}")
                                         }
                                     }
                                 )
@@ -135,7 +137,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            composable(route="categoryEditScreen/{categoryId}") {
+                            composable(route="editCategoryScreen/{categoryId}") {
                                 EditCategoryScreen(
                                     onArrowClick = {
                                         scope.launch {
@@ -152,3 +154,4 @@ class MainActivity : ComponentActivity() {
     }
 
 }
+
