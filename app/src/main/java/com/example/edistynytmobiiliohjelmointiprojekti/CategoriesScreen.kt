@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
@@ -85,7 +86,8 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                                     }
                                 ) {
                                     Icon(imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete"
+                                        contentDescription = "Delete",
+                                        tint = Color(220,0,0)
                                     )
                                 }
                                 IconButton(
@@ -94,7 +96,8 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                                     }
                                 ) {
                                     Icon(imageVector = Icons.Default.Edit,
-                                        contentDescription = "Edit"
+                                        contentDescription = "Edit",
+                                        tint = Color(0,100,0)
                                     )
                                 }
                             }

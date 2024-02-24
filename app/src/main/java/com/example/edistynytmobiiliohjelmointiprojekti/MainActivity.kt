@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -29,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
 import kotlinx.coroutines.launch
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,12 +46,19 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                     val scope = rememberCoroutineScope()
-                    
+
                     ModalNavigationDrawer(
                         drawerState = drawerState,
                         drawerContent = {
                             ModalDrawerSheet(modifier = Modifier.fillMaxWidth(0.8f)) {
+                                Text(
+                                    modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally),
+                                    text = "Inventory management",
+                                    style = MaterialTheme.typography.headlineSmall
+                                )
+                                Divider()
                                 Spacer(modifier = Modifier.height(16.dp))
+                                
 
                                 // Home / Categories
                                 NavigationDrawerItem(
@@ -57,8 +67,12 @@ class MainActivity : ComponentActivity() {
                                     label = { Text(text = "Categories") },
                                     selected = navController.currentDestination?.route == "categoriesScreen",
                                     onClick = {
-                                        navController.navigate("categoriesScreen")
-                                        scope.launch { drawerState.close() }
+                                        if (navController.currentDestination?.route != "categoriesScreen") {
+                                            navController.navigate("categoriesScreen"){
+                                                popUpTo("loginScreen") { inclusive = true }
+                                            }
+                                            scope.launch { drawerState.close() }
+                                        }
                                               },
                                     icon = {
                                         Icon(
@@ -75,8 +89,12 @@ class MainActivity : ComponentActivity() {
                                     label = { Text(text = "Login") },
                                     selected = navController.currentDestination?.route == "loginScreen",
                                     onClick = {
-                                        navController.navigate("loginScreen")
-                                        scope.launch { drawerState.close() }
+                                        if (navController.currentDestination?.route != "loginScreen") {
+                                            navController.navigate("loginScreen"){
+                                                popUpTo("categoriesScreen") { inclusive = true }
+                                            }
+                                            scope.launch { drawerState.close() }
+                                        }
                                               },
                                     icon = {
                                         Icon(
@@ -110,13 +128,21 @@ class MainActivity : ComponentActivity() {
                                 LoginScreen(
                                     onLoginClick = {
                                         scope.launch {
-                                            navController.navigate("categoriesScreen")
+                                            navController.navigate("categoriesScreen") {
+                                                popUpTo("loginScreen") { inclusive = true }
+                                            }
                                         }
                                     }
                                 )
                             }
-                            composable(route="categoryEditScreen/{categoryId}" ) {
-                                EditCategoryScreen()
+                            composable(route="categoryEditScreen/{categoryId}") {
+                                EditCategoryScreen(
+                                    onArrowClick = {
+                                        scope.launch {
+                                            navController.navigateUp()
+                                        }
+                                    }
+                                )
                             }
                         }
                     } // Navhost end
@@ -124,4 +150,5 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }
