@@ -1,10 +1,13 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.api
 
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoriesRes
+import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryRes
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 
 private val retrofit = createClient()
@@ -17,6 +20,10 @@ interface CategoriesApi {
     suspend fun getCategories() : CategoriesRes
 
     @POST("category/")
-    suspend fun postCategory(@Body categoryRes: CategoryRes) : CategoryRes
+    suspend fun postCategory(@Body categoryReq: CategoryReq) : CategoryRes
+
+    @DELETE("category/{categoryId}")
+    suspend fun deleteCategory(@Path("categoryId") categoryId: Int)
+
 
 }

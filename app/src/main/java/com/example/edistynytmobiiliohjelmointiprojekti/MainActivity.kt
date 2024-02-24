@@ -26,10 +26,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
+import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.NavigationdrawerViewModel
 import kotlinx.coroutines.launch
 
 
@@ -46,6 +48,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                     val scope = rememberCoroutineScope()
+                    val navigationdrawerVm: NavigationdrawerViewModel = viewModel()
 
                     ModalNavigationDrawer(
                         drawerState = drawerState,
@@ -67,9 +70,10 @@ class MainActivity : ComponentActivity() {
                                     modifier = Modifier
                                         .padding(NavigationDrawerItemDefaults.ItemPadding),
                                     label = { Text(text = "Categories") },
-                                    selected = navController.currentDestination?.route == "categoriesScreen",
+                                    selected = navigationdrawerVm.selected.value.selected == "categoriesScreen",
                                     onClick = {
                                         if (navController.currentDestination?.route != "categoriesScreen") {
+                                            navigationdrawerVm.setSelected("categoriesScreen")
                                             navController.navigate("categoriesScreen"){
                                                 popUpTo("loginScreen") { inclusive = true }
                                             }
@@ -89,9 +93,10 @@ class MainActivity : ComponentActivity() {
                                     modifier = Modifier
                                         .padding(NavigationDrawerItemDefaults.ItemPadding),
                                     label = { Text(text = "Login") },
-                                    selected = navController.currentDestination?.route == "loginScreen",
+                                    selected = navigationdrawerVm.selected.value.selected == "loginScreen",
                                     onClick = {
                                         if (navController.currentDestination?.route != "loginScreen") {
+                                            navigationdrawerVm.setSelected("loginScreen")
                                             navController.navigate("loginScreen"){
                                                 popUpTo("categoriesScreen") { inclusive = true }
                                             }
@@ -122,6 +127,11 @@ class MainActivity : ComponentActivity() {
                                     onClickEditCategory = {
                                         scope.launch {
                                             navController.navigate("editCategoryScreen/${it.categoryId}")
+                                        }
+                                    },
+                                    onLoginClick = {
+                                        scope.launch {
+                                            navController.navigate("loginScreen")
                                         }
                                     }
                                 )
