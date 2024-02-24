@@ -1,12 +1,32 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.model
 
+import com.google.gson.annotations.SerializedName
+
 data class CategoriesState(
     val list: List<CategoryItem> = emptyList(),
     val loading: Boolean = false,
     val error: String? = null
 )
 
+
+/* GET 200 on muotoa:
+{
+    "categories": [
+    {
+        "category_id": 1,
+        "category_name": "Kategoria 1"
+    }
+    ]
+}
+*/
+
 data class CategoryItem(
+    @SerializedName("category_id")
     val categoryId: Int = 0,
+    @SerializedName("category_name")
     val categoryName: String = ""
+)
+
+data class CategoriesRes(
+    val categories: List<CategoryItem> = emptyList()
 )

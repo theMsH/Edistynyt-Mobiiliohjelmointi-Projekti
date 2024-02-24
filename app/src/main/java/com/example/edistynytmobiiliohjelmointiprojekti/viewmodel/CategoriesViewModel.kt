@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.edistynytmobiiliohjelmointiprojekti.api.categoriesService
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoriesState
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import kotlinx.coroutines.delay
@@ -23,16 +24,18 @@ class CategoriesViewModel : ViewModel() {
 
     private fun getCategories() {
         viewModelScope.launch {
-            _categoriesState.value =_categoriesState.value.copy(loading = true)
-            fakeLoading()
-            _categoriesState.value =_categoriesState.value.copy(
-                list = listOf<CategoryItem>(
-                    CategoryItem(categoryId = 1, categoryName = "Kategoria 1"),
-                    CategoryItem(categoryId = 2, categoryName = "Kategoria 2"),
-                    CategoryItem(categoryId = 3, categoryName = "Kategoria 3"),
-                ),
-                loading = false
-            )
+            try {
+                _categoriesState.value = _categoriesState.value.copy(loading = true)
+
+                val categoriesRes = categoriesService.getCategories()
+                _categoriesState.value =
+                    _categoriesState.value.copy(list = categoriesRes.categories)
+            } catch (e: Exception) {
+                _categoriesState.value = _categoriesState.value.copy(error = e.toString())
+
+            } finally {
+                _categoriesState.value = _categoriesState.value.copy(loading = false)
+            }
         }
     }
 

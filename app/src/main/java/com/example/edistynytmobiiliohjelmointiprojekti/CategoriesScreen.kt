@@ -58,11 +58,16 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                 .padding(20.dp)
         ) {
             when {
-                // Piirretään loading icon indikaattori keskelle näyttöä loading vaiheessa.
+                // Loading indicator
                 categoriesVm.categoriesState.value.loading -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
 
+                // In case of error
+                categoriesVm.categoriesState.value.error != null ->
+                    Text(text = "error: ${categoriesVm.categoriesState.value.error}")
+
+                // Draw items
                 else -> LazyColumn(Modifier.fillMaxSize()) {
                     items(categoriesVm.categoriesState.value.list) {
                         Column(modifier = Modifier.fillMaxSize()) {
@@ -101,12 +106,11 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                                     )
                                 }
                             }
-
-
                         }
                     }
                 }
             }
+
         }
     }
 
