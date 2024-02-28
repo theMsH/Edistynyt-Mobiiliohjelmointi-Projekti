@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authService
 import com.example.edistynytmobiiliohjelmointiprojekti.model.AuthReq
+import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginRes
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ class LoginViewModel : ViewModel() {
             try{
                 _loginState.value = _loginState.value.copy(loading = true)
                 authService.login(AuthReq(username = _loginState.value.username, password = _loginState.value.password))
+                val user = LoginRes()
             }
             catch (e: Exception) {
                 _loginState.value = _loginState.value.copy(error = e.toString())

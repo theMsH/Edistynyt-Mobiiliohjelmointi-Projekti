@@ -22,16 +22,16 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
-import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.NavigationdrawerViewModel
 import kotlinx.coroutines.launch
 
 
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                     val scope = rememberCoroutineScope()
-                    val navigationdrawerVm: NavigationdrawerViewModel = viewModel()
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
                     ModalNavigationDrawer(
                         drawerState = drawerState,
@@ -63,22 +63,20 @@ class MainActivity : ComponentActivity() {
                                 )
                                 Divider()
                                 Spacer(modifier = Modifier.height(16.dp))
-                                
+
 
                                 // Home / Categories
                                 NavigationDrawerItem(
                                     modifier = Modifier
                                         .padding(NavigationDrawerItemDefaults.ItemPadding),
                                     label = { Text(text = "Categories") },
-                                    selected = navigationdrawerVm.selected.value.selected == "categoriesScreen",
+                                    selected = navBackStackEntry?.destination?.route == "categoriesScreen",
                                     onClick = {
-                                        if (navController.currentDestination?.route != "categoriesScreen") {
-                                            navigationdrawerVm.setSelected("categoriesScreen")
-                                            navController.navigate("categoriesScreen"){
-                                                popUpTo("loginScreen") { inclusive = true }
-                                            }
-                                            scope.launch { drawerState.close() }
+                                        navController.navigate("categoriesScreen"){
+                                            popUpTo("loginScreen") { inclusive = true }
+                                            launchSingleTop = true
                                         }
+                                        scope.launch { drawerState.close() }
                                               },
                                     icon = {
                                         Icon(
@@ -93,15 +91,13 @@ class MainActivity : ComponentActivity() {
                                     modifier = Modifier
                                         .padding(NavigationDrawerItemDefaults.ItemPadding),
                                     label = { Text(text = "Login") },
-                                    selected = navigationdrawerVm.selected.value.selected == "loginScreen",
+                                    selected = navBackStackEntry?.destination?.route == "loginScreen",
                                     onClick = {
-                                        if (navController.currentDestination?.route != "loginScreen") {
-                                            navigationdrawerVm.setSelected("loginScreen")
-                                            navController.navigate("loginScreen"){
-                                                popUpTo("categoriesScreen") { inclusive = true }
-                                            }
-                                            scope.launch { drawerState.close() }
+                                        navController.navigate("loginScreen"){
+                                            popUpTo("categoriesScreen") { inclusive = true }
+                                            launchSingleTop = true
                                         }
+                                        scope.launch { drawerState.close() }
                                               },
                                     icon = {
                                         Icon(
@@ -142,6 +138,7 @@ class MainActivity : ComponentActivity() {
                                         scope.launch {
                                             navController.navigate("categoriesScreen") {
                                                 popUpTo("loginScreen") { inclusive = true }
+                                                launchSingleTop = true
                                             }
                                         }
                                     }
