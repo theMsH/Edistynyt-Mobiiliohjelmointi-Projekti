@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -187,7 +187,7 @@ fun DeleteDialog(showDeleteDialog: MutableState<Boolean>, categoryName: String, 
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.35f)
+                .size(width = 300.dp, height = 300.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
@@ -241,7 +241,7 @@ fun CreateCategoryDialog(showCreateCategoryDialog: MutableState<Boolean>, catego
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.35f)
+                .size(width = 300.dp, height = 300.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
         ) {

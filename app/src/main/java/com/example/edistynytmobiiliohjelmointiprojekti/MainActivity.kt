@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -53,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     ModalNavigationDrawer(
                         drawerState = drawerState,
                         drawerContent = {
-                            ModalDrawerSheet(modifier = Modifier.fillMaxWidth(0.8f)) {
+                            ModalDrawerSheet(modifier = Modifier) {
                                 Text(
                                     modifier = Modifier
                                         .padding(16.dp)
