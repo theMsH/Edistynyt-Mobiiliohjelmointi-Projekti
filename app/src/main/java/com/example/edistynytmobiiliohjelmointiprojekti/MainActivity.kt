@@ -128,6 +128,12 @@ class MainActivity : ComponentActivity() {
                                         scope.launch {
                                             navController.navigate("loginScreen")
                                         }
+                                    },
+                                    openCategory = {
+                                        scope.launch {
+                                            navController.navigate("rentalItemScreen/${it.categoryId}/${it.categoryName}") {
+                                            }
+                                        }
                                     }
                                 )
                             }
@@ -156,6 +162,15 @@ class MainActivity : ComponentActivity() {
                                                 popUpTo("categoriesScreen") { inclusive = true }
                                                 launchSingleTop = true
                                             }
+                                        }
+                                    }
+                                )
+                            }
+                            composable(route = "rentalItemScreen/{categoryId}/{categoryName}") {
+                                RentalItemsScreen(
+                                    goBack = {
+                                        scope.launch {
+                                            navController.navigateUp()
                                         }
                                     }
                                 )

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,12 +25,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -46,9 +49,16 @@ fun RandomImage(size: Int = 250) {
     )
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem) -> Unit, onLoginClick: () -> Unit) {
+fun CategoriesScreen(
+    onMenuClick: () -> Unit,
+    onClickEditCategory: (CategoryItem) -> Unit,
+    onLoginClick: () -> Unit,
+    openCategory: (CategoryItem) -> Unit
+) {
+
     val categoriesVm: CategoriesViewModel = viewModel()
 
     Scaffold(
@@ -64,7 +74,8 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
-        }) {
+        }
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -85,88 +96,100 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                     Modifier.fillMaxSize()
                 ) {
                     var itemRow = 0
+
                     items(categoriesVm.categoriesState.value.list) {
                         itemRow++
                         val darkerRow = itemRow % 2 == 0
 
-                        Row(modifier = Modifier
-                            .background(
-                                if (darkerRow) Color(250,250,255)
-                                else Color.White
-                            )
-                            .height(80.dp)
+                        TextButton(
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                            shape = RectangleShape,
+                            onClick = { openCategory(it) }
                         ) {
-                            Column(
-                                modifier = Modifier.padding(4.dp, 4.dp),
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                // Replace with real image from database
-                                RandomImage(300)
-                            }
-
-                            Column {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(end = 16.dp),
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-                                    Text(
-                                        text = it.categoryName,
-                                        style = MaterialTheme.typography.headlineLarge
+                            Row(
+                                modifier = Modifier
+                                    .background(
+                                        if (darkerRow) Color(250, 250, 255)
+                                        else Color.White
                                     )
-                                }
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.End
+                                    .height(80.dp)
+                            ) {
+                                Column(
+                                    //modifier = Modifier.padding(4.dp, 4.dp),
+                                    verticalArrangement = Arrangement.Center
                                 ) {
-                                    IconButton(
-                                        onClick = {
-                                            categoriesVm.showDeleteDialog.value = true
-                                            categoriesVm.selectedCategoryItem.value = it
-                                        }
-                                    ) {
-                                        Icon(imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                            tint = Color(220,0,0)
-                                        )
-                                    }
-                                    IconButton(
-                                        onClick = {
-                                            onClickEditCategory(it)
-                                        }
-                                    ) {
-                                        Icon(imageVector = Icons.Default.Edit,
-                                            contentDescription = "Edit",
-                                            tint = Color(0,100,0)
-                                        )
-                                    }
+                                    // Replace with real image from database
+                                    RandomImage(300)
                                 }
 
-                            }
-                        } // End of items row()
+                                Column {
+                                    Row(
+                                        modifier = Modifier
+                                            //.padding(end = 16.dp)
+                                            .fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        Text(
+                                            text = it.categoryName,
+                                            style = MaterialTheme.typography.headlineMedium
+                                        )
+                                    }
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        IconButton(
+                                            onClick = {
+                                                categoriesVm.showDeleteDialog.value = true
+                                                categoriesVm.selectedCategoryItem.value = it
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                tint = Color(220, 0, 0)
+                                            )
+                                        }
+                                        IconButton(
+                                            onClick = {
+                                                onClickEditCategory(it)
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "Edit",
+                                                tint = Color(0, 100, 0)
+                                            )
+                                        }
+                                    }
+
+                                }
+                            } // End of items row()
+                        }
                     }
                 } // End of when
             }
             Column(
-                modifier = Modifier.fillMaxSize().padding(vertical = 16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
                 FloatingActionButton(
                     onClick = {
-                        categoriesVm.showCreateCategoryDialog.value = true
+                        categoriesVm.showCreateNewDialog.value = true
                     }
                 ) {
                     Icon(Icons.Filled.Add, "Floating action button.")
                 }
 
                 // Create new category dialog
-                if (categoriesVm.showCreateCategoryDialog.value) {
-                    CreateCategoryDialog(
-                        showCreateCategoryDialog = categoriesVm.showCreateCategoryDialog,
-                        categoriesVm = categoriesVm
+                if (categoriesVm.showCreateNewDialog.value) {
+                    CreateNewCategoryDialog(
+                        showCreateNewDialog = categoriesVm.showCreateNewDialog,
+                        onConfirm = { categoriesVm.postCategory(it)}
                     )
                 }
 

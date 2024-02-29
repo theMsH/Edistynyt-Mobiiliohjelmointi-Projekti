@@ -17,7 +17,7 @@ class CategoriesViewModel : ViewModel() {
     val categoriesState: State<CategoriesState> = _categoriesState
 
     val showDeleteDialog = mutableStateOf(false)
-    val showCreateCategoryDialog = mutableStateOf(false)
+    val showCreateNewDialog = mutableStateOf(false)
     val selectedCategoryItem = mutableStateOf(CategoryItem())
 
 

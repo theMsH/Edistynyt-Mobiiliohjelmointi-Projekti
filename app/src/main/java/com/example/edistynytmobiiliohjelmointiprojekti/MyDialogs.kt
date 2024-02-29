@@ -32,7 +32,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditCategoryViewModel
 
 
@@ -135,10 +134,13 @@ fun DeleteDialog(showDeleteDialog: MutableState<Boolean>, categoryName: String, 
 }
 
 @Composable
-fun CreateCategoryDialog(showCreateCategoryDialog: MutableState<Boolean>, categoriesVm: CategoriesViewModel) {
+fun CreateNewCategoryDialog(
+    showCreateNewDialog: MutableState<Boolean>,
+    onConfirm: (String) -> Unit
+) {
     val vm: EditCategoryViewModel = viewModel()
 
-    Dialog(onDismissRequest = { showCreateCategoryDialog.value = false }) {
+    Dialog(onDismissRequest = { showCreateNewDialog.value = false }) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -168,9 +170,9 @@ fun CreateCategoryDialog(showCreateCategoryDialog: MutableState<Boolean>, catego
                     keyboardActions = KeyboardActions(
                         onDone = {
                             if (vm.categoryState.value.categoryName != "") {
-                                showCreateCategoryDialog.value = false
+                                showCreateNewDialog.value = false
                                 Log.d("dialog", vm.categoryState.value.categoryName )
-                                categoriesVm.postCategory(vm.categoryState.value.categoryName)
+                                onConfirm(vm.categoryState.value.categoryName)
                                 vm.setCategoryName("")
                             }
                         }
@@ -179,8 +181,8 @@ fun CreateCategoryDialog(showCreateCategoryDialog: MutableState<Boolean>, catego
                 Button(
                     enabled = vm.categoryState.value.categoryName != "",
                     onClick = {
-                        showCreateCategoryDialog.value = false
-                        categoriesVm.postCategory(vm.categoryState.value.categoryName)
+                        showCreateNewDialog.value = false
+                        onConfirm(vm.categoryState.value.categoryName)
                         vm.setCategoryName("")
                     }
                 ) {
