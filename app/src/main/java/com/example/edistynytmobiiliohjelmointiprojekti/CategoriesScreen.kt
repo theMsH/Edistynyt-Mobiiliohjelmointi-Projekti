@@ -68,7 +68,7 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it).padding(bottom = 16.dp)
+                .padding(it)
         ) {
             when {
                 // Loading indicator
@@ -150,7 +150,7 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                 } // End of when
             }
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
