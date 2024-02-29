@@ -9,16 +9,12 @@ import com.example.edistynytmobiiliohjelmointiprojekti.api.categoriesService
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoriesState
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryReq
-import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class CategoriesViewModel : ViewModel() {
     private val _categoriesState = mutableStateOf(CategoriesState())
     val categoriesState: State<CategoriesState> = _categoriesState
-
-    private val _categoryState = mutableStateOf(CategoryState())
-    val categoryState: State<CategoryState> = _categoryState
 
     val showDeleteDialog = mutableStateOf(false)
     val showCreateCategoryDialog = mutableStateOf(false)
@@ -27,10 +23,6 @@ class CategoriesViewModel : ViewModel() {
 
     init {
         getCategories()
-    }
-
-    private suspend fun fakeLoading() {
-        delay(1000)
     }
 
     private fun getCategories() {
@@ -71,35 +63,37 @@ class CategoriesViewModel : ViewModel() {
         }
     }
 
-    fun setCategoryName(newCategoryName: String) {
-        _categoryState.value = _categoryState.value.copy(categoryName = newCategoryName)
-    }
-
     fun postCategory(categoryName: String) {
         viewModelScope.launch {
             try {
                 val response = categoriesService.postCategory(CategoryReq(categoryName))
 
-                // Luodaan uusi item responsesta
+                // Option 1: muokataan lista, jolloin vältytään ylimääräiseltä api kutsulta
+                // Option 2: pyyhitään alla oleva ja kutsutaan simppelisti getCategories()
+
+                // Luodaan repsonsesta uusi categoryitem
                 val newCategoryItem = CategoryItem(
-                    categoryName = response.categoryName,
-                    categoryId = response.categoryId
+                    response.categoryId,
+                    response.categoryName
                 )
-                val categories = _categoriesState.value.list + newCategoryItem
+
+                // Lisätään luotu categoria categoriesstaten listaan.
+                val categories = (_categoriesState.value.list + newCategoryItem)
+                    // Järjestetään lista, jottei se ole aina eri järjestyksessä
+                    .sortedBy {
+                        it.categoryName.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(Locale.ROOT)
+                            else it.toString()
+                        }
+                    }
 
                 // Päivitetään lista
-                _categoriesState.value =_categoriesState.value.copy(list = categories)
-
+                _categoriesState.value = _categoriesState.value.copy(list = categories)
             }
             catch (e: Exception) {
                 Log.d("error PostCategory()", "$e")
             }
         }
     }
-
-    fun resetError() {
-        _categoriesState.value = _categoriesState.value.copy(error = null)
-    }
-
 
 }

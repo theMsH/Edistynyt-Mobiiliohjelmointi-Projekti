@@ -1,5 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -45,6 +45,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditCategoryViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,9 +80,8 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                 )
 
                 // In case of error
-                categoriesVm.categoriesState.value.error != null
-                        && categoriesVm.categoriesState.value.error != "retrofit2.HttpException: HTTP 401 Unauthorized"
-                -> Text(text = "error: ${categoriesVm.categoriesState.value.error}")
+                categoriesVm.categoriesState.value.error != null ->
+                    Text(text = "error: ${categoriesVm.categoriesState.value.error}")
 
                 // Draw items
                 else -> LazyColumn(
@@ -143,21 +143,19 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                     Icon(Icons.Filled.Add, "Floating action button.")
                 }
 
+                // Create new category dialog
                 if (categoriesVm.showCreateCategoryDialog.value) {
                     CreateCategoryDialog(
                         showCreateCategoryDialog = categoriesVm.showCreateCategoryDialog,
                         categoriesVm = categoriesVm
                     )
                 }
-
-                // Unauthorized action
-                if (categoriesVm.categoriesState.value.error == "retrofit2.HttpException: HTTP 401 Unauthorized") {
+/*
+                // Unauthorized action dialog
+                if () {
                     MyDialog(
-                        onDismissRequest = { categoriesVm.resetError() },
-                        onConfirmation = {
-                            categoriesVm.resetError()
-                            onLoginClick()
-                                         },
+                        onDismissRequest = {},
+                        onConfirmation = { onLoginClick() },
                         dialogTitle = "Unauthorized",
                         dialogText = "Please login to perform this action",
                         icon = Icons.Default.Lock,
@@ -165,7 +163,8 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                         dismissButtonText = "Dismiss"
                     )
                 }
-
+*/
+                // Delete category warning dialog
                 if (categoriesVm.showDeleteDialog.value) {
                     DeleteDialog(
                         showDeleteDialog = categoriesVm.showDeleteDialog,
@@ -182,7 +181,6 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
 
 @Composable
 fun DeleteDialog(showDeleteDialog: MutableState<Boolean>, categoryName: String, onConfirm: () -> Unit) {
-
     Dialog(onDismissRequest = { showDeleteDialog.value = false }) {
         Card(
             modifier = Modifier
@@ -236,6 +234,7 @@ fun DeleteDialog(showDeleteDialog: MutableState<Boolean>, categoryName: String, 
 
 @Composable
 fun CreateCategoryDialog(showCreateCategoryDialog: MutableState<Boolean>, categoriesVm: CategoriesViewModel) {
+    val vm: EditCategoryViewModel = viewModel()
 
     Dialog(onDismissRequest = { showCreateCategoryDialog.value = false }) {
         Card(
@@ -258,31 +257,32 @@ fun CreateCategoryDialog(showCreateCategoryDialog: MutableState<Boolean>, catego
                 )
                 TextField(
                     modifier = Modifier.padding(20.dp, 30.dp),
-                    value = categoriesVm.categoryState.value.categoryName,
+                    value = vm.categoryState.value.categoryName,
                     placeholder = { Text(text = "New Category") },
                     onValueChange = {
-                        categoriesVm.setCategoryName(it)
+                        vm.setCategoryName(it)
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            if (categoriesVm.categoryState.value.categoryName != "") {
+                            if (vm.categoryState.value.categoryName != "") {
                                 showCreateCategoryDialog.value = false
-                                categoriesVm.postCategory(categoriesVm.categoryState.value.categoryName)
-                                categoriesVm.setCategoryName("")
+                                Log.d("dialog", vm.categoryState.value.categoryName )
+                                categoriesVm.postCategory(vm.categoryState.value.categoryName)
+                                vm.setCategoryName("")
                             }
                         }
                     )
                 )
                 Button(
-                    enabled = categoriesVm.categoryState.value.categoryName != "",
+                    enabled = vm.categoryState.value.categoryName != "",
                     onClick = {
                         showCreateCategoryDialog.value = false
-                        categoriesVm.postCategory(categoriesVm.categoryState.value.categoryName)
-                        categoriesVm.setCategoryName("")
+                        categoriesVm.postCategory(vm.categoryState.value.categoryName)
+                        vm.setCategoryName("")
                     }
                 ) {
-                    Text(style = MaterialTheme.typography.bodyLarge, text = "Add")
+                    Text(style = MaterialTheme.typography.bodyLarge, text = "Create")
                 }
             }
         }

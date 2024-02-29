@@ -145,9 +145,17 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(route="editCategoryScreen/{categoryId}") {
                                 EditCategoryScreen(
-                                    onArrowClick = {
+                                    goBack = {
                                         scope.launch {
                                             navController.navigateUp()
+                                        }
+                                    },
+                                    goToCategoriesScreen = {
+                                        scope.launch {
+                                            navController.navigate("categoriesScreen") {
+                                                popUpTo("categoriesScreen") { inclusive = true }
+                                                launchSingleTop = true
+                                            }
                                         }
                                     }
                                 )

@@ -49,8 +49,12 @@ data class CategoryReq(
 )
 
 data class CategoryRes(
-    @SerializedName("category_id")
-    val categoryId: Int = 0,
+    val category : CategoryItem = CategoryItem()
+)
+
+data class PostCategoryRes(
     @SerializedName("category_name")
-    val categoryName: String = ""
+    val categoryName: String = "",
+    @SerializedName("category_id")
+    val categoryId: Int = 0
 )
