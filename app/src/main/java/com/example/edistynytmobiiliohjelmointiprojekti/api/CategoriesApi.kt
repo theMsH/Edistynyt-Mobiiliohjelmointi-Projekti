@@ -23,7 +23,7 @@ interface CategoriesApi {
     suspend fun postCategory(@Body categoryReq: CategoryReq) : CategoryRes
 
     @DELETE("category/{categoryId}")
-    suspend fun deleteCategory(@Path("categoryId") categoryId: Int)
+    suspend fun deleteCategoryById(@Path("categoryId") categoryId: Int)
 
 
 }

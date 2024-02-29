@@ -1,5 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -53,45 +54,45 @@ class CategoriesViewModel : ViewModel() {
     fun deleteCategory(categoryId: Int) {
         viewModelScope.launch {
             try {
-                _categoriesState.value = _categoriesState.value.copy(loading = true)
-                categoriesService.deleteCategory(categoryId)
+                categoriesService.deleteCategoryById(categoryId)
+
+                // Filteröidään kategorialistaan kaikki kategoriat, joiden id on eri kuin valittu id.
+                val categories =_categoriesState.value.list.filter {
+                    // Jos palautuu false, se filteröityy pois
+                    it.categoryId != categoryId
+                }
+                // Päivitetään lista
+                _categoriesState.value =_categoriesState.value.copy(list = categories)
+
             }
             catch (e: Exception) {
-                _categoriesState.value = _categoriesState.value.copy(error = e.toString())
-            }
-            finally {
-                _categoriesState.value = _categoriesState.value.copy(loading = false)
-                getCategories()
+                Log.d("error DeleteCategory()", "$e")
             }
         }
-        /*
-        // Filteröidään kategorialistaan kaikki kategoriat, joiden id on eri kuin valittu id.
-        val categories =_categoriesState.value.list.filter {
-            // Jos palautuu false, se filteröityy pois
-            it.categoryId != category.categoryId
-        }
-
-        // Määritellään se uudeksi listaksi
-        _categoriesState.value =_categoriesState.value.copy(list = categories)
-        */
     }
 
     fun setCategoryName(newCategoryName: String) {
         _categoryState.value = _categoryState.value.copy(categoryName = newCategoryName)
     }
 
-    fun postCategory() {
+    fun postCategory(categoryName: String) {
         viewModelScope.launch {
             try {
-                _categoryState.value = _categoryState.value.copy(loading = true)
-                categoriesService.postCategory(CategoryReq(_categoryState.value.categoryName))
+                val response = categoriesService.postCategory(CategoryReq(categoryName))
+
+                // Luodaan uusi item responsesta
+                val newCategoryItem = CategoryItem(
+                    categoryName = response.categoryName,
+                    categoryId = response.categoryId
+                )
+                val categories = _categoriesState.value.list + newCategoryItem
+
+                // Päivitetään lista
+                _categoriesState.value =_categoriesState.value.copy(list = categories)
+
             }
             catch (e: Exception) {
-                _categoriesState.value = _categoriesState.value.copy(error = e.toString())
-            }
-            finally {
-                _categoriesState.value = _categoriesState.value.copy(loading = false)
-                getCategories()
+                Log.d("error PostCategory()", "$e")
             }
         }
     }

@@ -39,15 +39,18 @@ data class CategoriesRes(
 
 data class CategoryState(
     val categoryName: String = "",
-    val loading: Boolean = false
+    val loading: Boolean = false,
+    val error: String? = null
 )
 
 data class CategoryReq(
     @SerializedName("category_name")
-    val categoryName: String
+    val categoryName: String = ""
 )
 
 data class CategoryRes(
+    @SerializedName("category_id")
+    val categoryId: Int = 0,
     @SerializedName("category_name")
-    val categoryName: String
+    val categoryName: String = ""
 )

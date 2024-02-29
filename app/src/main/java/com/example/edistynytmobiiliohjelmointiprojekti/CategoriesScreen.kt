@@ -268,7 +268,7 @@ fun CreateCategoryDialog(showCreateCategoryDialog: MutableState<Boolean>, catego
                         onDone = {
                             if (categoriesVm.categoryState.value.categoryName != "") {
                                 showCreateCategoryDialog.value = false
-                                categoriesVm.postCategory()
+                                categoriesVm.postCategory(categoriesVm.categoryState.value.categoryName)
                                 categoriesVm.setCategoryName("")
                             }
                         }
@@ -278,7 +278,7 @@ fun CreateCategoryDialog(showCreateCategoryDialog: MutableState<Boolean>, catego
                     enabled = categoriesVm.categoryState.value.categoryName != "",
                     onClick = {
                         showCreateCategoryDialog.value = false
-                        categoriesVm.postCategory()
+                        categoriesVm.postCategory(categoriesVm.categoryState.value.categoryName)
                         categoriesVm.setCategoryName("")
                     }
                 ) {
