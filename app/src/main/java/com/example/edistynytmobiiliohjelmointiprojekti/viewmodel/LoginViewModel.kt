@@ -8,7 +8,6 @@ import com.example.edistynytmobiiliohjelmointiprojekti.api.authService
 import com.example.edistynytmobiiliohjelmointiprojekti.model.AuthReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginRes
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
@@ -39,7 +38,4 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    private suspend fun fakeLoading() {
-        delay(1000)
-    }
 }
