@@ -1,26 +1,21 @@
 package com.example.edistynytmobiiliohjelmointiprojekti
 
-import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -29,24 +24,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
-import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditCategoryViewModel
+import java.time.LocalDateTime
 
+
+@Composable
+fun RandomImage(size: Int = 250) {
+    AsyncImage(
+        model = "https://picsum.photos/seed/${LocalDateTime.now()}/$size",
+        contentDescription = null
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,8 +68,7 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-                .padding(20.dp)
+                .padding(it).padding(bottom = 16.dp)
         ) {
             when {
                 // Loading indicator
@@ -87,54 +84,76 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                 else -> LazyColumn(
                     Modifier.fillMaxSize()
                 ) {
+                    var itemRow = 0
                     items(categoriesVm.categoriesState.value.list) {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                        itemRow++
+                        val darkerRow = itemRow % 2 == 0
+
+                        Row(modifier = Modifier
+                            .background(
+                                if (darkerRow) Color(250,250,255)
+                                else Color.White
+                            )
+                            .height(80.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(4.dp, 4.dp),
+                                verticalArrangement = Arrangement.Center
                             ) {
-                                Text(text = "Kuva")
-                                Text(
-                                    text = it.categoryName,
-                                    style = MaterialTheme.typography.headlineLarge
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.End
-                            ) {
-                                IconButton(
-                                    onClick = {
-                                        categoriesVm.showDeleteDialog.value = true
-                                        categoriesVm.selectedCategoryItem.value = it
-                                    }
-                                ) {
-                                    Icon(imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete",
-                                        tint = Color(220,0,0)
-                                    )
-                                }
-                                IconButton(
-                                    onClick = {
-                                        onClickEditCategory(it)
-                                    }
-                                ) {
-                                    Icon(imageVector = Icons.Default.Edit,
-                                        contentDescription = "Edit",
-                                        tint = Color(0,100,0)
-                                    )
-                                }
+                                // Replace with real image from database
+                                RandomImage(300)
                             }
 
+                            Column {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(end = 16.dp),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    Text(
+                                        text = it.categoryName,
+                                        style = MaterialTheme.typography.headlineLarge
+                                    )
+                                }
 
-                        }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    IconButton(
+                                        onClick = {
+                                            categoriesVm.showDeleteDialog.value = true
+                                            categoriesVm.selectedCategoryItem.value = it
+                                        }
+                                    ) {
+                                        Icon(imageVector = Icons.Default.Delete,
+                                            contentDescription = "Delete",
+                                            tint = Color(220,0,0)
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = {
+                                            onClickEditCategory(it)
+                                        }
+                                    ) {
+                                        Icon(imageVector = Icons.Default.Edit,
+                                            contentDescription = "Edit",
+                                            tint = Color(0,100,0)
+                                        )
+                                    }
+                                }
+
+                            }
+                        } // End of items row()
                     }
-                }
+                } // End of when
             }
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom) {
+                verticalArrangement = Arrangement.Bottom
+            ) {
                 FloatingActionButton(
                     onClick = {
                         categoriesVm.showCreateCategoryDialog.value = true
@@ -150,10 +169,20 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                         categoriesVm = categoriesVm
                     )
                 }
+
+                // Delete category warning dialog
+                if (categoriesVm.showDeleteDialog.value) {
+                    DeleteDialog(
+                        showDeleteDialog = categoriesVm.showDeleteDialog,
+                        categoryName = categoriesVm.selectedCategoryItem.value.categoryName,
+                        onConfirm = { categoriesVm.deleteCategory(categoriesVm.selectedCategoryItem.value.categoryId) }
+                    )
+                }
+
 /*
-                // Unauthorized action dialog
+                // Unauthorized action dialog ( Planned for login )
                 if () {
-                    MyDialog(
+                    MyAlert(
                         onDismissRequest = {},
                         onConfirmation = { onLoginClick() },
                         dialogTitle = "Unauthorized",
@@ -164,130 +193,11 @@ fun CategoriesScreen(onMenuClick: () -> Unit, onClickEditCategory: (CategoryItem
                     )
                 }
 */
-                // Delete category warning dialog
-                if (categoriesVm.showDeleteDialog.value) {
-                    DeleteDialog(
-                        showDeleteDialog = categoriesVm.showDeleteDialog,
-                        categoryName = categoriesVm.selectedCategoryItem.value.categoryName,
-                        onConfirm = { categoriesVm.deleteCategory(categoriesVm.selectedCategoryItem.value.categoryId) }
-                    )
-                }
-
             }
         }
     }
 
 }
 
-@Composable
-fun DeleteDialog(showDeleteDialog: MutableState<Boolean>, categoryName: String, onConfirm: () -> Unit) {
-    Dialog(onDismissRequest = { showDeleteDialog.value = false }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(width = 300.dp, height = 300.dp)
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Icon(
-                    modifier = Modifier.scale(2f),
-                    tint = Color.Red,
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete"
-                )
-                Text(
-                    style = MaterialTheme.typography.titleLarge,
-                    text = "Delete $categoryName",
-                    modifier = Modifier.padding(10.dp, 26.dp, 10.dp, 26.dp),
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(0.7f),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    TextButton(
-                        onClick = {
-                            showDeleteDialog.value = false
-                        }
-                    ) {
-                        Text(style = MaterialTheme.typography.bodyLarge, text = "Cancel")
-                    }
-                    TextButton(
-                        onClick = {
-                            showDeleteDialog.value = false
-                            onConfirm()
-                        }
-                    ) {
-                        Text(style = MaterialTheme.typography.bodyLarge, text = "Delete", color = Color.Red)
-                    }
-                }
-            }
-        }
-    }
-
-}
-
-@Composable
-fun CreateCategoryDialog(showCreateCategoryDialog: MutableState<Boolean>, categoriesVm: CategoriesViewModel) {
-    val vm: EditCategoryViewModel = viewModel()
-
-    Dialog(onDismissRequest = { showCreateCategoryDialog.value = false }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(width = 300.dp, height = 300.dp)
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    style = MaterialTheme.typography.titleLarge,
-                    text = "Create category",
-                    modifier = Modifier.padding(10.dp, 26.dp, 10.dp, 0.dp),
-                )
-                TextField(
-                    modifier = Modifier.padding(20.dp, 30.dp),
-                    value = vm.categoryState.value.categoryName,
-                    placeholder = { Text(text = "New Category") },
-                    onValueChange = {
-                        vm.setCategoryName(it)
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            if (vm.categoryState.value.categoryName != "") {
-                                showCreateCategoryDialog.value = false
-                                Log.d("dialog", vm.categoryState.value.categoryName )
-                                categoriesVm.postCategory(vm.categoryState.value.categoryName)
-                                vm.setCategoryName("")
-                            }
-                        }
-                    )
-                )
-                Button(
-                    enabled = vm.categoryState.value.categoryName != "",
-                    onClick = {
-                        showCreateCategoryDialog.value = false
-                        categoriesVm.postCategory(vm.categoryState.value.categoryName)
-                        vm.setCategoryName("")
-                    }
-                ) {
-                    Text(style = MaterialTheme.typography.bodyLarge, text = "Create")
-                }
-            }
-        }
-    }
-
-}
 
 

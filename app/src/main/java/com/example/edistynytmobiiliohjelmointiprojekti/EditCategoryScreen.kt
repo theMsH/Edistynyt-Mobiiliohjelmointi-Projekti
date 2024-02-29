@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -25,6 +26,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditCategoryViewModel
@@ -66,13 +68,17 @@ fun EditCategoryScreen(goBack: () -> Unit, goToCategoriesScreen: () -> Unit) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    RandomImage(600)
+                    Spacer(modifier = Modifier.height(30.dp))
                     OutlinedTextField(
                         value = vm.categoryState.value.categoryName,
                         onValueChange = {
                             vm.setCategoryName(it)
-                        }
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Row {
                         Button(
                             onClick = {
@@ -89,7 +95,6 @@ fun EditCategoryScreen(goBack: () -> Unit, goToCategoriesScreen: () -> Unit) {
                         ) {
                             Text(text = "Update")
                         }
-
                     }
 
                 }
