@@ -31,8 +31,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -99,24 +99,25 @@ fun CategoriesScreen(
 
                     items(categoriesVm.categoriesState.value.list) {
                         itemRow++
-                        val darkerRow = itemRow % 2 == 0
+                        val evenRow = itemRow % 2 == 0
 
                         TextButton(
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                            contentPadding = PaddingValues(vertical = 4.dp),
                             shape = RectangleShape,
                             onClick = { openCategory(it) }
                         ) {
                             Row(
                                 modifier = Modifier
                                     .background(
-                                        if (darkerRow) Color(250, 250, 255)
-                                        else Color.White
+                                        color =
+                                        if (evenRow) MaterialTheme.colorScheme.background
+                                        else colorResource(R.color.row_uneven)
                                     )
                                     .height(80.dp)
                             ) {
                                 Column(
-                                    //modifier = Modifier.padding(4.dp, 4.dp),
-                                    verticalArrangement = Arrangement.Center
+                                    verticalArrangement = Arrangement.Center,
+                                    modifier = Modifier.padding(start = 10.dp)
                                 ) {
                                     // Replace with real image from database
                                     RandomImage(300)
@@ -125,13 +126,14 @@ fun CategoriesScreen(
                                 Column {
                                     Row(
                                         modifier = Modifier
-                                            //.padding(end = 16.dp)
+                                            .padding(end = 12.dp)
                                             .fillMaxWidth(),
                                         horizontalArrangement = Arrangement.End
                                     ) {
                                         Text(
                                             text = it.categoryName,
-                                            style = MaterialTheme.typography.headlineMedium
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            color = MaterialTheme.colorScheme.secondary
                                         )
                                     }
 
@@ -148,7 +150,7 @@ fun CategoriesScreen(
                                             Icon(
                                                 imageVector = Icons.Default.Delete,
                                                 contentDescription = "Delete",
-                                                tint = Color(220, 0, 0)
+                                                tint = colorResource(id = R.color.delete)
                                             )
                                         }
                                         IconButton(
@@ -159,7 +161,7 @@ fun CategoriesScreen(
                                             Icon(
                                                 imageVector = Icons.Default.Edit,
                                                 contentDescription = "Edit",
-                                                tint = Color(0, 100, 0)
+                                                tint = colorResource(id = R.color.edit)
                                             )
                                         }
                                     }

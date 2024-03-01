@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="row_uneven">#F5F5FF</color>
+    <color name="edit">#244D27</color>
+    <color name="delete">#B3261E</color>
+
 </resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="row_uneven">#16171C</color>
+    <color name="edit">#63D46D</color>
+    <color name="delete">#F25F5F</color>
+</resources>
