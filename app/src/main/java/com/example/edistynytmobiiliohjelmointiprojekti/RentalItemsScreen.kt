@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -82,6 +83,7 @@ fun RentalItemsScreen(goBack: () -> Unit) {
                     items(vm.rentalItemsState.value.list) {
                         itemRow++
                         val darkerRow = itemRow % 2 == 0
+                        Log.d("rentalitem name", it.rentalItemName)
 
                         TextButton(
                             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
@@ -96,12 +98,27 @@ fun RentalItemsScreen(goBack: () -> Unit) {
                                     )
                                     .height(80.dp)
                             ) {
-
-                                // Rental item name
-                                // Rental item desc
-                                // Rental item serial
-                                // Rented by user
-
+                                Column(
+                                    verticalArrangement = Arrangement.Center,
+                                    modifier = Modifier.padding(start = 10.dp)
+                                ) {
+                                    // Replace with real image from database
+                                    RandomImage(200)
+                                }
+                                Column {
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(end = 12.dp)
+                                            .fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        Text(
+                                            text = it.rentalItemName,
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            color = MaterialTheme.colorScheme.secondary
+                                        )
+                                    }
+                                }
                             } // End of items row()
                         }
                     }
