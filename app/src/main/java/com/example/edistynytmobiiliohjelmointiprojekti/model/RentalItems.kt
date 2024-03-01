@@ -11,12 +11,13 @@ data class RentalItemsState(
 
 data class RentalItemsByCategory(
     @SerializedName("rental_item_id")
-    val rentalItemId: Int = 0,
+    val rentalItemId: Int,
     @SerializedName("rental_item_name")
-    val rentalItemName: String = ""
+    val rentalItemName: String
 )
 
 data class RentalItemsRes(
+    @SerializedName("items")
     val rentalItems: List<RentalItemsByCategory> = emptyList()
 )
 
@@ -42,7 +43,7 @@ data class RentalItem(
     @SerializedName("rental_item_name")
     val rentalItemName: String = "",
     @SerializedName("created_at")
-    val createdAt: Date,
+    val createdAt: Date
     @SerializedName("rental_item_state_rental_item_state")
     val rentalState: RentalState = RentalState(),
     @SerializedName("rental_item_description")

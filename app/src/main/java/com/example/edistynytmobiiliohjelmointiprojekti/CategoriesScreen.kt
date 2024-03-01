@@ -110,8 +110,8 @@ fun CategoriesScreen(
                                 modifier = Modifier
                                     .background(
                                         color =
-                                        if (evenRow) MaterialTheme.colorScheme.background
-                                        else colorResource(R.color.row_uneven)
+                                        if (evenRow) colorResource(R.color.row_uneven)
+                                        else MaterialTheme.colorScheme.background
                                     )
                                     .height(80.dp)
                             ) {

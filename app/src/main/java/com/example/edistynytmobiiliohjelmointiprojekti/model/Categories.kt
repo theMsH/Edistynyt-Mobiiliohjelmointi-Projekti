@@ -9,17 +9,6 @@ data class CategoriesState(
     val error: String? = null
 )
 
-/* GET 200:
-{
-    "categories": [
-    {
-        "category_id": 1,
-        "category_name": "Kategoria 1"
-    }
-    ]
-}
-*/
-
 data class CategoryItem(
     @SerializedName("category_id")
     val categoryId: Int = 0,
@@ -30,12 +19,6 @@ data class CategoryItem(
 data class CategoriesRes(
     val categories: List<CategoryItem> = emptyList()
 )
-
-/* POST 200:
-{
-    "category_name" : "Kategoria 1"
-}
-*/
 
 data class CategoryState(
     val categoryName: String = "",

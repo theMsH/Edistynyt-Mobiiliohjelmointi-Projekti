@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -30,8 +30,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsViewModel
@@ -47,7 +47,7 @@ fun RentalItemsScreen(goBack: () -> Unit) {
                 navigationIcon = {
                     IconButton(onClick = { goBack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Go back"
                         )
                     }
@@ -82,19 +82,19 @@ fun RentalItemsScreen(goBack: () -> Unit) {
 
                     items(vm.rentalItemsState.value.list) {
                         itemRow++
-                        val darkerRow = itemRow % 2 == 0
+                        val evenRow = itemRow % 2 == 0
                         Log.d("rentalitem name", it.rentalItemName)
 
                         TextButton(
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                            contentPadding = PaddingValues(vertical = 4.dp),
                             shape = RectangleShape,
                             onClick = { Log.d("rental itemclick", it.rentalItemName) }
                         ) {
                             Row(
                                 modifier = Modifier
-                                    .background(
-                                        if (darkerRow) Color(250, 250, 255)
-                                        else Color.White
+                                    .background(color =
+                                        if (evenRow) colorResource(R.color.row_uneven)
+                                        else MaterialTheme.colorScheme.background
                                     )
                                     .height(80.dp)
                             ) {

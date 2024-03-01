@@ -10,7 +10,6 @@ data class LoginState(
     val showPassword: Boolean = false
 )
 
-
 data class LoginReq(
     val username: String = "",
     val password: String = ""
