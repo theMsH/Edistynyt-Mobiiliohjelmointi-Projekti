@@ -1,6 +1,7 @@
 package com.example.edistynytmobiiliohjelmointiprojekti
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Spacer
@@ -139,13 +140,16 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(route="loginScreen") {
                                 LoginScreen(
-                                    onLoginClick = {
+                                    onLoginSuccess = {
                                         scope.launch {
                                             navController.navigate("categoriesScreen") {
                                                 popUpTo("loginScreen") { inclusive = true }
                                                 launchSingleTop = true
                                             }
                                         }
+                                    },
+                                    onLoginFail = {
+                                        Toast.makeText(this@MainActivity, "User or password is not valid", Toast.LENGTH_SHORT).show()
                                     }
                                 )
                             }
