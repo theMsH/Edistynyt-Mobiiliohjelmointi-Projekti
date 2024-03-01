@@ -121,31 +121,22 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     onClickEditCategory = {
-                                        scope.launch {
-                                            navController.navigate("editCategoryScreen/${it.categoryId}")
-                                        }
+                                        navController.navigate("editCategoryScreen/${it.categoryId}")
                                     },
                                     onLoginClick = {
-                                        scope.launch {
-                                            navController.navigate("loginScreen")
-                                        }
+                                        navController.navigate("loginScreen")
                                     },
                                     openCategory = {
-                                        scope.launch {
-                                            navController.navigate("rentalItemScreen/${it.categoryId}/${it.categoryName}") {
-                                            }
-                                        }
+                                        navController.navigate("rentalItemScreen/${it.categoryId}/${it.categoryName}")
                                     }
                                 )
                             }
                             composable(route="loginScreen") {
                                 LoginScreen(
                                     onLoginSuccess = {
-                                        scope.launch {
-                                            navController.navigate("categoriesScreen") {
-                                                popUpTo("loginScreen") { inclusive = true }
-                                                launchSingleTop = true
-                                            }
+                                        navController.navigate("categoriesScreen") {
+                                            popUpTo("loginScreen") { inclusive = true }
+                                            launchSingleTop = true
                                         }
                                     },
                                     onLoginFail = {
@@ -156,16 +147,12 @@ class MainActivity : ComponentActivity() {
                             composable(route="editCategoryScreen/{categoryId}") {
                                 EditCategoryScreen(
                                     goBack = {
-                                        scope.launch {
-                                            navController.navigateUp()
-                                        }
+                                        navController.navigateUp()
                                     },
                                     goToCategoriesScreen = {
-                                        scope.launch {
-                                            navController.navigate("categoriesScreen") {
-                                                popUpTo("categoriesScreen") { inclusive = true }
-                                                launchSingleTop = true
-                                            }
+                                        navController.navigate("categoriesScreen") {
+                                            popUpTo("categoriesScreen") { inclusive = true }
+                                            launchSingleTop = true
                                         }
                                     }
                                 )
@@ -173,9 +160,7 @@ class MainActivity : ComponentActivity() {
                             composable(route = "rentalItemScreen/{categoryId}/{categoryName}") {
                                 RentalItemsScreen(
                                     goBack = {
-                                        scope.launch {
-                                            navController.navigateUp()
-                                        }
+                                        navController.navigateUp()
                                     }
                                 )
                             }
