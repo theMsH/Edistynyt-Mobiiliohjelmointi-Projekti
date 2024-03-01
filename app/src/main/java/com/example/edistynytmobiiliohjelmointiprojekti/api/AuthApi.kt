@@ -5,9 +5,8 @@ import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginRes
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-private val retrofit = createClient()
 
-val authService = retrofit.create(AuthApi::class.java)
+val authService: AuthApi = retrofit.create(AuthApi::class.java)
 
 interface AuthApi {
     // POST::http://localhost:8000/api/v1/auth/login

@@ -5,8 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 
-private val retrofit = createClient()
-
 val rentalItemsService: RentalItemsApi = retrofit.create(RentalItemsApi::class.java)
 
 interface RentalItemsApi {

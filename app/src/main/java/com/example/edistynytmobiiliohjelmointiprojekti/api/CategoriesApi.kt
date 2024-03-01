@@ -12,9 +12,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 
-private val retrofit = createClient()
-
-val categoriesService = retrofit.create(CategoriesApi::class.java)
+val categoriesService: CategoriesApi = retrofit.create(CategoriesApi::class.java)
 
 interface CategoriesApi {
     // GET::http://localhost:8000/api/v1/category/
