@@ -18,6 +18,7 @@ class CategoriesViewModel : ViewModel() {
 
     val showDeleteDialog = mutableStateOf(false)
     val showCreateNewDialog = mutableStateOf(false)
+    val showUnauthorizedDialog = mutableStateOf(false)
     val selectedCategoryItem = mutableStateOf(CategoryItem())
 
 

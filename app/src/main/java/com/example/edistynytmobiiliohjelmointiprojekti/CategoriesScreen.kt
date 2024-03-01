@@ -201,13 +201,15 @@ fun CategoriesScreen(
                         onConfirm = { categoriesVm.deleteCategory(categoriesVm.selectedCategoryItem.value.categoryId) }
                     )
                 }
-
 /*
-                // Unauthorized action dialog ( Planned for login )
-                if () {
+                // Unauthorized action dialog
+                if (categoriesVm.showUnauthorizedDialog.value) {
                     MyAlert(
-                        onDismissRequest = {},
-                        onConfirmation = { onLoginClick() },
+                        onDismissRequest = { categoriesVm.showUnauthorizedDialog.value = false },
+                        onConfirmation = {
+                            onLoginClick()
+                            categoriesVm.showUnauthorizedDialog.value = false
+                                         },
                         dialogTitle = "Unauthorized",
                         dialogText = "Please login to perform this action",
                         icon = Icons.Default.Lock,
