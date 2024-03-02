@@ -1,4 +1,4 @@
-package com.example.edistynytmobiiliohjelmointiprojekti
+package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

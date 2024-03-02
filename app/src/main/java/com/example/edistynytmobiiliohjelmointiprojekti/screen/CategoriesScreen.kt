@@ -1,4 +1,4 @@
-package com.example.edistynytmobiiliohjelmointiprojekti
+package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +36,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewCategoryDialog
+import com.example.edistynytmobiiliohjelmointiprojekti.DeleteDialog
+import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
 import java.time.LocalDateTime

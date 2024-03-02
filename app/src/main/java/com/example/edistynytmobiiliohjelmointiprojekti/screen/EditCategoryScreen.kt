@@ -1,4 +1,4 @@
-package com.example.edistynytmobiiliohjelmointiprojekti
+package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +42,7 @@ fun EditCategoryScreen(goBack: () -> Unit, goToCategoriesScreen: () -> Unit) {
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { goBack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Go back")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go back")
                     }
                 },
                 title = { Text(text = vm.categoryState.value.categoryName) },

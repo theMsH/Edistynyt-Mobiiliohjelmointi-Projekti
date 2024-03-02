@@ -31,6 +31,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.edistynytmobiiliohjelmointiprojekti.screen.CategoriesScreen
+import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditCategoryScreen
+import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditRentalItemScreen
+import com.example.edistynytmobiiliohjelmointiprojekti.screen.LoginScreen
+import com.example.edistynytmobiiliohjelmointiprojekti.screen.RentalItemsScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
 import kotlinx.coroutines.launch
 
@@ -64,7 +69,6 @@ class MainActivity : ComponentActivity() {
                                 Divider()
                                 Spacer(modifier = Modifier.height(16.dp))
 
-
                                 // Home / Categories
                                 NavigationDrawerItem(
                                     modifier = Modifier
@@ -94,7 +98,7 @@ class MainActivity : ComponentActivity() {
                                     selected = navBackStackEntry?.destination?.route == "loginScreen",
                                     onClick = {
                                         navController.navigate("loginScreen"){
-                                            popUpTo("categoriesScreen") { inclusive = true }
+                                            popUpTo("categoriesScreen") { inclusive = false }
                                             launchSingleTop = true
                                         }
                                         scope.launch { drawerState.close() }
@@ -159,6 +163,17 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(route = "rentalItemScreen/{categoryId}/{categoryName}") {
                                 RentalItemsScreen(
+                                    goBack = {
+                                        navController.navigateUp()
+                                    },
+                                    goToRentalItemScreen = {
+                                        navController.navigate("editRentalItemScreen/${it}")
+                                    }
+
+                                )
+                            }
+                            composable(route = "editRentalItemScreen/{rentalItemId}") {
+                                EditRentalItemScreen (
                                     goBack = {
                                         navController.navigateUp()
                                     }

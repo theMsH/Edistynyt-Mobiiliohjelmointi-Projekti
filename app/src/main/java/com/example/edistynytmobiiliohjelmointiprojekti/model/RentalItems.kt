@@ -1,12 +1,21 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.model
 
 import com.google.gson.annotations.SerializedName
+import java.time.Instant
 
 data class RentalItemsState(
     val categoryName: String = "",
     val list: List<RentalItemsByCategory> = emptyList(),
     val loading: Boolean = false,
     val error: String? = null
+)
+
+data class RentalItemState(
+    val categoryId: Int = 0,
+    val rentalItem: RentalItem = RentalItem(),
+    val loading: Boolean = false,
+    val error: String? = null
+
 )
 
 data class RentalItemsByCategory(
@@ -30,12 +39,11 @@ data class RentalItemPostReq(
     val rentalItemSerial: String = ""
 )
 
-/*
 data class RentalItem(
     @SerializedName("rental_item_id")
     val rentalItemId: Int = 0,
     @SerializedName("created_by_user")
-    val createdByUser: User = User(),
+    val createdByUser: Account = Account(),
     @SerializedName("category_category")
     val category: CategoryItem = CategoryItem(),
     @SerializedName("serial_number")
@@ -43,12 +51,19 @@ data class RentalItem(
     @SerializedName("rental_item_name")
     val rentalItemName: String = "",
     @SerializedName("created_at")
-    val createdAt: Date
+    val createdAt: Instant = Instant.now(),
     @SerializedName("rental_item_state_rental_item_state")
     val rentalState: RentalState = RentalState(),
     @SerializedName("rental_item_description")
     val rentalItemDesc: String = "",
     @SerializedName("deleted_at")
-    val deletedAt: Date,
+    val deletedAt: Instant? = null
 )
-*/
+
+data class RentalState(
+    @SerializedName("rental_item_state_id")
+    val rentalStateId: Int = 0,
+    @SerializedName("rental_item_state")
+    val rentalState: String = ""
+)
+

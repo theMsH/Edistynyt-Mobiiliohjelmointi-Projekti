@@ -1,4 +1,4 @@
-package com.example.edistynytmobiiliohjelmointiprojekti
+package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -34,11 +34,12 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RentalItemsScreen(goBack: () -> Unit) {
+fun RentalItemsScreen(goBack: () -> Unit, goToRentalItemScreen: (Int) -> Unit) {
     val vm: RentalItemsViewModel = viewModel()
 
     Scaffold(
@@ -88,7 +89,10 @@ fun RentalItemsScreen(goBack: () -> Unit) {
                         TextButton(
                             contentPadding = PaddingValues(vertical = 4.dp),
                             shape = RectangleShape,
-                            onClick = { Log.d("rental itemclick", it.rentalItemName) }
+                            onClick = {
+                                Log.d("rental itemclick", it.rentalItemName)
+                                goToRentalItemScreen(it.rentalItemId)
+                            }
                         ) {
                             Row(
                                 modifier = Modifier
