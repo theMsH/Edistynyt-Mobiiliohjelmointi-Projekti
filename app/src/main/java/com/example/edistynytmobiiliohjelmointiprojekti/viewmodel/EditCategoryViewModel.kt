@@ -19,8 +19,14 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     private val _categoryState = mutableStateOf(CategoryState())
     val categoryState: State<CategoryState> = _categoryState
 
+    // Used for static TopAppBar title
+    var categoryTitle = ""
+    // Used for checking dublicate categoryNames
+    var availableNames: List<String> = emptyList()
+
     init {
         getCategoryById()
+        getAvailableNames()
     }
 
     fun setCategoryName(newCategoryName: String) {
@@ -56,6 +62,8 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                 val response = categoriesService.getCategoryById(id)
                 _categoryState.value =
                     _categoryState.value.copy(categoryName = response.category.categoryName)
+
+                categoryTitle = _categoryState.value.categoryName
             }
             catch (e: Exception) {
                 Log.d("error getCategoryById()", "$e")
@@ -63,6 +71,24 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             }
             finally {
                 _categoryState.value = _categoryState.value.copy(loading = false)
+            }
+        }
+    }
+
+
+    private fun getAvailableNames() {
+        viewModelScope.launch {
+            try {
+                val categoriesRes = categoriesService.getCategories()
+
+                for (category in categoriesRes.categories) {
+                    if (category.categoryName != categoryTitle) {
+                        availableNames += category.categoryName
+                    }
+                }
+            }
+            catch (e: Exception) {
+                Log.d("error getAvailableNames()", "$e")
             }
         }
     }

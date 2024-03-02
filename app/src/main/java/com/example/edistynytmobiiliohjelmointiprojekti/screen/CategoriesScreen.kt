@@ -61,7 +61,6 @@ fun CategoriesScreen(
     onLoginClick: () -> Unit,
     openCategory: (CategoryItem) -> Unit
 ) {
-
     val categoriesVm: CategoriesViewModel = viewModel()
 
     Scaffold(

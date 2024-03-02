@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -34,7 +36,10 @@ import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditCategoryVie
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditCategoryScreen(goBack: () -> Unit, goToCategoriesScreen: () -> Unit) {
+fun EditCategoryScreen(
+    goBack: () -> Unit, 
+    goToCategoriesScreen: () -> Unit
+) {
     val vm : EditCategoryViewModel = viewModel()
 
     Scaffold(
@@ -45,7 +50,7 @@ fun EditCategoryScreen(goBack: () -> Unit, goToCategoriesScreen: () -> Unit) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go back")
                     }
                 },
-                title = { Text(text = vm.categoryState.value.categoryName) },
+                title = { Text(text = vm.categoryTitle) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -54,7 +59,6 @@ fun EditCategoryScreen(goBack: () -> Unit, goToCategoriesScreen: () -> Unit) {
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(it)
-            .padding(20.dp)
         ) {
             when{
                 vm.categoryState.value.loading -> CircularProgressIndicator(
@@ -69,29 +73,50 @@ fun EditCategoryScreen(goBack: () -> Unit, goToCategoriesScreen: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     RandomImage(600)
-                    Spacer(modifier = Modifier.height(30.dp))
+
+                    if (vm.availableNames.contains(vm.categoryState.value.categoryName)) {
+                        Text(
+                            modifier = Modifier.padding(vertical = 10.dp),
+                            text = "Category already exists!",
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                    else Spacer(modifier = Modifier.height(30.dp))
+
+
                     OutlinedTextField(
+                        singleLine = true,
+                        modifier = Modifier.requiredWidth(280.dp),
                         value = vm.categoryState.value.categoryName,
                         onValueChange = {
                             vm.setCategoryName(it)
                         },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done
+                        )
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     Row {
                         Button(
                             onClick = {
                                 goBack()
-                            }
+                            },
+                            modifier = Modifier.size(120.dp,40.dp)
                         ) {
                             Text(text = "Cancel")
                         }
-                        Spacer(modifier = Modifier.width(30.dp))
+                        Spacer(modifier = Modifier.width(32.dp))
                         Button(
                             onClick = {
                                 vm.updateCategoryById(goToCategoriesScreen)
-                            }
+                            },
+                            modifier = Modifier.size(120.dp,40.dp),
+                            enabled = (
+                                    vm.categoryState.value.categoryName != "" &&
+                                    !vm.availableNames.contains(vm.categoryState.value.categoryName)
+                                    && vm.categoryState.value.categoryName != vm.categoryTitle
+                                    )
                         ) {
                             Text(text = "Update")
                         }

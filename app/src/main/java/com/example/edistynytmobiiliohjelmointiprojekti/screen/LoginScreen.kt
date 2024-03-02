@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
@@ -34,7 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit) {
+fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterClick: () -> Unit) {
     val loginVm : LoginViewModel = viewModel()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -55,7 +55,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit) {
             ) {
 
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.requiredWidth(280.dp),
                     singleLine = true,
                     placeholder = { Text(text = "Username") },
                     value = loginVm.loginState.value.username,
@@ -70,7 +70,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.requiredWidth(280.dp),
                     singleLine = true,
                     visualTransformation =
                         if (loginVm.loginState.value.showPassword) VisualTransformation.None
@@ -81,18 +81,19 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit) {
                         loginVm.setPassword(it)
                     },
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
+                        imeAction = (
+                                if (loginVm.loginState.value.username == "" ) ImeAction.Previous
+                                else if (loginVm.loginState.value.password == "" ) ImeAction.None
+                                else ImeAction.Done
+                                ),
                         keyboardType = KeyboardType.Password
                     ),
                     // Näppäimistöllä voidaan myös painaa nappia, jos fieldit on täytetty.
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            if (loginVm.loginState.value.username != ""
-                                && loginVm.loginState.value.password != "")
-                            {
-                                loginVm.login(onLoginSuccess, onLoginFail)
+                            if (loginVm.loginState.value.password != "") {
+                                defaultKeyboardAction(imeAction = ImeAction.Done)
                             }
-                            else defaultKeyboardAction(imeAction = ImeAction.Previous)
                         }
                     ),
                     trailingIcon = {
@@ -128,13 +129,13 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit) {
 
                 Row() {
                     Button(
-                        onClick = {},
+                        onClick = { onRegisterClick() },
                         modifier = Modifier.size(120.dp,40.dp)
                     ) {
                         Text(text = "Register")
                     }
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(32.dp))
 
                     Button(
                         onClick = { onLoginSuccess() },

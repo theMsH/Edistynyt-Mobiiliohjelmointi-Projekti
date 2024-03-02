@@ -1,5 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.api
 
+import com.example.edistynytmobiiliohjelmointiprojekti.model.Account
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginRes
 import retrofit2.http.Body
@@ -12,4 +13,7 @@ interface AuthApi {
     // POST::http://localhost:8000/api/v1/auth/login
     @POST("auth/login")
     suspend fun login(@Body loginReq: LoginReq) : LoginRes
+
+    @POST("auth/register")
+    suspend fun register(@Body loginReq: LoginReq) : Account
 }

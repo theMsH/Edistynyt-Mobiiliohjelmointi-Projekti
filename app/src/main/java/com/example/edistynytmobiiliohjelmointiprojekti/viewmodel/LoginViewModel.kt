@@ -51,6 +51,30 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    fun createNewUser(onRegisterClick: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                _loginState.value = _loginState.value.copy(loading = true)
+
+                authService.register(
+                    LoginReq(
+                        _loginState.value.username,
+                        _loginState.value.password
+                    )
+                )
+                onRegisterClick()
+            }
+            catch (e: Exception) {
+                Log.d("error createNewUser()", "$e")
+                _loginState.value = _loginState.value.copy(error = e.toString())
+            }
+            finally {
+                _loginState.value = _loginState.value.copy(loading = false)
+            }
+        }
+    }
+
+
     fun toggleShowPassword() {
         if (_loginState.value.showPassword) {
             _loginState.value = _loginState.value.copy(showPassword = false)

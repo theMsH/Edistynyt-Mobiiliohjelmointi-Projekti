@@ -35,6 +35,7 @@ import com.example.edistynytmobiiliohjelmointiprojekti.screen.CategoriesScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditCategoryScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditRentalItemScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.LoginScreen
+import com.example.edistynytmobiiliohjelmointiprojekti.screen.RegisterScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.RentalItemsScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
 import kotlinx.coroutines.launch
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
                                     modifier = Modifier
                                         .padding(16.dp)
                                         .align(Alignment.CenterHorizontally),
-                                    text = "Inventory management",
+                                    text = "Item Rental App",
                                     style = MaterialTheme.typography.headlineSmall
                                 )
                                 Divider()
@@ -126,6 +127,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onClickEditCategory = {
                                         navController.navigate("editCategoryScreen/${it.categoryId}")
+
                                     },
                                     onLoginClick = {
                                         navController.navigate("loginScreen")
@@ -145,6 +147,9 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onLoginFail = {
                                         Toast.makeText(this@MainActivity, "User or password is not valid", Toast.LENGTH_SHORT).show()
+                                    },
+                                    onRegisterClick = {
+                                        navController.navigate("registerScreen")
                                     }
                                 )
                             }
@@ -174,6 +179,17 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(route = "editRentalItemScreen/{rentalItemId}") {
                                 EditRentalItemScreen (
+                                    goBack = {
+                                        navController.navigateUp()
+                                    }
+                                )
+                            }
+                            composable(route = "registerScreen") {
+                                RegisterScreen(
+                                    onRegisterClick = {
+                                        navController.navigateUp()
+                                        Toast.makeText(this@MainActivity, "New account registered!", Toast.LENGTH_SHORT).show()
+                                    },
                                     goBack = {
                                         navController.navigateUp()
                                     }
