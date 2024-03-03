@@ -24,7 +24,7 @@ data class LoginRes(
 data class Account(
     @SerializedName("auth_user_id")
     val authUserId: Int = 0,
-    val userName: String = "",
+    val username: String = "",
     @SerializedName("auth_role_auth_role")
     val authRole: AuthRole = AuthRole()
 )

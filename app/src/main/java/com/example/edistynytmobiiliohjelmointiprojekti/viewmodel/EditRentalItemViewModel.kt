@@ -10,6 +10,7 @@ import com.example.edistynytmobiiliohjelmointiprojekti.api.rentalItemsService
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemState
 import kotlinx.coroutines.launch
 
+
 class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     private val _rentalItemState = mutableStateOf(RentalItemState())
     val rentalItemState: State<RentalItemState> = _rentalItemState
@@ -20,7 +21,7 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
         getRentalItem(rentalItemId)
     }
 
-    private fun getRentalItem(rentalItemId: Int) {
+private fun getRentalItem(rentalItemId: Int) {
         viewModelScope.launch {
             try {
                 _rentalItemState.value = _rentalItemState.value.copy(loading = true)

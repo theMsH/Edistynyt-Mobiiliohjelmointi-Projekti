@@ -1,5 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditRentalItemViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,8 +60,20 @@ fun EditRentalItemScreen(goBack: () -> Unit) {
                 vm.rentalItemState.value.error != null ->
                     Text(text = "error: ${vm.rentalItemState.value.error}")
 
-                else -> Column(Modifier.fillMaxSize()) {
-                    Text(text = "RentalItemScreen")
+                else -> Column(
+                    Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Rental State: ${
+                        vm.rentalItemState.value.rentalItem.rentalState.rentalState
+                    }")
+                    Text(text = "From user: ${
+                        vm.rentalItemState.value.rentalItem.createdByUser.username
+                    }")
+                    Text(text = "Created at: ${
+                        getFormattedTime(vm.rentalItemState.value.rentalItem.createdAt)
+                    }")
                 }
             }
 
@@ -68,4 +83,12 @@ fun EditRentalItemScreen(goBack: () -> Unit) {
     }
 
 
+}
+
+fun getFormattedTime(dateString: String) : String{
+    // Parse the date string to LocalDateTime
+    val dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
+
+    // Format the LocalDateTime to a custom pattern
+    return dateTime.format(DateTimeFormatter.ofPattern("d MMM uuuu  HH:mm"))
 }

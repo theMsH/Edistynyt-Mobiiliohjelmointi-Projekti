@@ -84,7 +84,6 @@ fun RentalItemsScreen(goBack: () -> Unit, goToRentalItemScreen: (Int) -> Unit) {
                     items(vm.rentalItemsState.value.list) {
                         itemRow++
                         val evenRow = itemRow % 2 == 0
-                        Log.d("rentalitem name", it.rentalItemName)
 
                         TextButton(
                             contentPadding = PaddingValues(vertical = 4.dp),

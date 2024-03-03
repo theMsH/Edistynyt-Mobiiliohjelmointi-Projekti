@@ -1,7 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.model
 
 import com.google.gson.annotations.SerializedName
-import java.time.Instant
 
 data class RentalItemsState(
     val categoryName: String = "",
@@ -46,18 +45,18 @@ data class RentalItem(
     val createdByUser: Account = Account(),
     @SerializedName("category_category")
     val category: CategoryItem = CategoryItem(),
-    @SerializedName("serial_number")
-    val serialNumber: String = "",
+    //@SerializedName("serial_number")
+    //val serialNumber: String = "",
     @SerializedName("rental_item_name")
     val rentalItemName: String = "",
     @SerializedName("created_at")
-    val createdAt: Instant = Instant.now(),
+    val createdAt: String = "",
     @SerializedName("rental_item_state_rental_item_state")
     val rentalState: RentalState = RentalState(),
-    @SerializedName("rental_item_description")
-    val rentalItemDesc: String = "",
+    //@SerializedName("rental_item_description")
+    //val rentalItemDesc: String = "",
     @SerializedName("deleted_at")
-    val deletedAt: Instant? = null
+    val deletedAt: String? = null
 )
 
 data class RentalState(
@@ -66,4 +65,3 @@ data class RentalState(
     @SerializedName("rental_item_state")
     val rentalState: String = ""
 )
-
