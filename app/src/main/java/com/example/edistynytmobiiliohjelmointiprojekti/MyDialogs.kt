@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,10 +24,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
@@ -33,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditCategoryViewModel
+import kotlinx.coroutines.job
 
 
 @Composable
@@ -136,9 +143,20 @@ fun DeleteDialog(showDeleteDialog: MutableState<Boolean>, categoryName: String, 
 @Composable
 fun CreateNewCategoryDialog(
     showCreateNewDialog: MutableState<Boolean>,
-    onConfirm: (String) -> Unit
+    onConfirm: (String) -> Unit,
+    notValidNames: List<String>
 ) {
     val vm: EditCategoryViewModel = viewModel()
+
+
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        this.coroutineContext.job.invokeOnCompletion {
+            focusRequester.requestFocus()
+        }
+    }
+
 
     Dialog(onDismissRequest = { showCreateNewDialog.value = false }) {
         Card(
@@ -157,29 +175,52 @@ fun CreateNewCategoryDialog(
                 Text(
                     style = MaterialTheme.typography.titleLarge,
                     text = "Create category",
-                    modifier = Modifier.padding(10.dp, 26.dp, 10.dp, 0.dp),
+                    modifier = Modifier.padding(horizontal = 10.dp),
                 )
+
+                if (notValidNames.contains(vm.categoryState.value.categoryName)) {
+                    Text(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        text = "Category already exists!",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+                else Spacer(modifier = Modifier.height(40.dp))
+
                 TextField(
-                    modifier = Modifier.padding(20.dp, 30.dp),
+                    singleLine = true,
+                    maxLines = 1,
+                    modifier = Modifier.padding(horizontal = 20.dp).focusRequester(focusRequester),
                     value = vm.categoryState.value.categoryName,
                     placeholder = { Text(text = "New Category") },
                     onValueChange = {
                         vm.setCategoryName(it)
                     },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = (
+                            if (vm.categoryState.value.categoryName == ""
+                                || notValidNames.contains(vm.categoryState.value.categoryName)) {
+                                    ImeAction.Done
+                                }
+                            else ImeAction.Go
+                        )
+                    ),
                     keyboardActions = KeyboardActions(
-                        onDone = {
+                        onGo = {
                             if (vm.categoryState.value.categoryName != "") {
-                                showCreateNewDialog.value = false
                                 Log.d("dialog", vm.categoryState.value.categoryName )
+                                defaultKeyboardAction(imeAction = ImeAction.Done)
+                                showCreateNewDialog.value = false
                                 onConfirm(vm.categoryState.value.categoryName)
                                 vm.setCategoryName("")
                             }
                         }
                     )
                 )
+                Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    enabled = vm.categoryState.value.categoryName != "",
+                    enabled = vm.categoryState.value.categoryName != ""
+                            && !notValidNames.contains(vm.categoryState.value.categoryName),
                     onClick = {
                         showCreateNewDialog.value = false
                         onConfirm(vm.categoryState.value.categoryName)

@@ -21,12 +21,13 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
     // Used for static TopAppBar title
     var categoryTitle = ""
-    // Used for checking dublicate categoryNames
-    var availableNames: List<String> = emptyList()
+    // Used for checking duplicate categoryNames
+    var categoryNamesList: List<String> = emptyList()
+
 
     init {
         getCategoryById()
-        getAvailableNames()
+        getCategoryNamesList()
     }
 
     fun setCategoryName(newCategoryName: String) {
@@ -76,14 +77,14 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     }
 
 
-    private fun getAvailableNames() {
+    private fun getCategoryNamesList() {
         viewModelScope.launch {
             try {
                 val categoriesRes = categoriesService.getCategories()
 
                 for (category in categoriesRes.categories) {
                     if (category.categoryName != categoryTitle) {
-                        availableNames += category.categoryName
+                        categoryNamesList += category.categoryName
                     }
                 }
             }

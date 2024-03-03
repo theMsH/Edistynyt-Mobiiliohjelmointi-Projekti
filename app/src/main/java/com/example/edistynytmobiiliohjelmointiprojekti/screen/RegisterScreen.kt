@@ -41,7 +41,10 @@ import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(onRegisterClick: () -> Unit, goBack: () -> Unit) {
+fun RegisterScreen(
+    onRegisterClick: () -> Unit,
+    goBack: () -> Unit
+) {
     val vm: LoginViewModel = viewModel()
 
     Scaffold(
@@ -61,19 +64,20 @@ fun RegisterScreen(onRegisterClick: () -> Unit, goBack: () -> Unit) {
                 )
             )
         }
-    ) {
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
         ) {
             when {
                 // Loading
                 vm.loginState.value.loading -> CircularProgressIndicator(
-                    modifier = Modifier.align(
-                        Alignment.Center
-                    )
+                    modifier = Modifier.align(Alignment.Center)
                 )
+
+                vm.loginState.value.error != null -> Text(text = "${vm.loginState.value.error}")
+
 
                 // Ready
                 else -> Column(
@@ -102,9 +106,10 @@ fun RegisterScreen(onRegisterClick: () -> Unit, goBack: () -> Unit) {
                     OutlinedTextField(
                         modifier = Modifier.requiredWidth(280.dp),
                         singleLine = true,
-                        visualTransformation =
-                        if (vm.loginState.value.showPassword) VisualTransformation.None
-                        else PasswordVisualTransformation(),
+                        visualTransformation = (
+                                if (vm.loginState.value.showPassword) VisualTransformation.None
+                                else PasswordVisualTransformation()
+                                ),
                         placeholder = { Text(text = "Password") },
                         value = vm.loginState.value.password,
                         onValueChange = {
@@ -144,7 +149,7 @@ fun RegisterScreen(onRegisterClick: () -> Unit, goBack: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    Row() {
+                    Row {
                         Button(
                             onClick = { goBack() },
                             modifier = Modifier.size(120.dp, 40.dp)
@@ -157,12 +162,15 @@ fun RegisterScreen(onRegisterClick: () -> Unit, goBack: () -> Unit) {
                         Button(
                             onClick = { vm.createNewUser(onRegisterClick) },
                             modifier = Modifier.size(120.dp, 40.dp),
-                            enabled = vm.loginState.value.username != ""
+                            enabled = (
+                                    vm.loginState.value.username != ""
                                     && vm.loginState.value.password != ""
+                                    )
                         ) {
                             Text(text = "Register")
                         }
                     }
+
                 }
             }
         }

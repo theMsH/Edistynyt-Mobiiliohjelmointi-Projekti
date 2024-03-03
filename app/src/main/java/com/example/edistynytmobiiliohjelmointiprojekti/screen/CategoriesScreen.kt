@@ -1,5 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -41,6 +43,8 @@ import com.example.edistynytmobiiliohjelmointiprojekti.DeleteDialog
 import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 
@@ -59,9 +63,12 @@ fun CategoriesScreen(
     onMenuClick: () -> Unit,
     onClickEditCategory: (CategoryItem) -> Unit,
     onLoginClick: () -> Unit,
-    openCategory: (CategoryItem) -> Unit
+    openCategory: (CategoryItem) -> Unit,
+    deleteToast: (deleted: Boolean) -> Unit
 ) {
     val categoriesVm: CategoriesViewModel = viewModel()
+    val itemsVm: RentalItemsViewModel = viewModel()
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -193,7 +200,8 @@ fun CategoriesScreen(
                 if (categoriesVm.showCreateNewDialog.value) {
                     CreateNewCategoryDialog(
                         showCreateNewDialog = categoriesVm.showCreateNewDialog,
-                        onConfirm = { categoriesVm.postCategory(it)}
+                        onConfirm = { categoriesVm.postCategory(it) },
+                        notValidNames = categoriesVm.getNonValidNamesList(categoriesVm.categoriesState.value.list)
                     )
                 }
 
@@ -202,7 +210,21 @@ fun CategoriesScreen(
                     DeleteDialog(
                         showDeleteDialog = categoriesVm.showDeleteDialog,
                         categoryName = categoriesVm.selectedCategoryItem.value.categoryName,
-                        onConfirm = { categoriesVm.deleteCategory(categoriesVm.selectedCategoryItem.value.categoryId) }
+                        onConfirm = {
+                            Log.d("delete", "CategoryId: ${categoriesVm.selectedCategoryItem.value.categoryId}")
+
+                            scope.launch {
+                                if (itemsVm.categoryHasItems(categoriesVm.selectedCategoryItem.value.categoryId)) {
+                                    Log.d("delete", "category deleted")
+                                    categoriesVm.deleteCategory(categoriesVm.selectedCategoryItem.value.categoryId)
+                                    deleteToast(true)
+                                }
+                                else {
+                                    Log.d("delete", "category has items inside")
+                                    deleteToast(false)
+                                }
+                           }
+                        }
                     )
                 }
 /*

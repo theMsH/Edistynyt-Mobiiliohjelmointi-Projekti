@@ -133,7 +133,15 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate("loginScreen")
                                     },
                                     openCategory = {
-                                        navController.navigate("rentalItemScreen/${it.categoryId}/${it.categoryName}")
+                                        navController.navigate(
+                                            "rentalItemScreen/${it.categoryId}/${it.categoryName}"
+                                        )
+                                    },
+                                    deleteToast = { deleted ->
+                                        val text =
+                                            if (deleted) "Category deleted"
+                                            else "Delete failed: Category has items!"
+                                        Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
                                     }
                                 )
                             }
@@ -146,7 +154,11 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     onLoginFail = {
-                                        Toast.makeText(this@MainActivity, "User or password is not valid", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            this@MainActivity,
+                                            "User or password is not valid",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     },
                                     onRegisterClick = {
                                         navController.navigate("registerScreen")
@@ -188,7 +200,11 @@ class MainActivity : ComponentActivity() {
                                 RegisterScreen(
                                     onRegisterClick = {
                                         navController.navigateUp()
-                                        Toast.makeText(this@MainActivity, "New account registered!", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            this@MainActivity,
+                                            "New account registered!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     },
                                     goBack = {
                                         navController.navigateUp()

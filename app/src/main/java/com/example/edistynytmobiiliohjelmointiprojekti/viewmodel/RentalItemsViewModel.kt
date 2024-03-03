@@ -43,4 +43,19 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         }
     }
 
+    suspend fun categoryHasItems(categoryId: Int) : Boolean {
+        try {
+            val response = rentalItemsService.getRentalItems(categoryId)
+            _rentalItemsState.value = _rentalItemsState.value.copy(list = response.rentalItems)
+            Log.d("delete", "${_rentalItemsState.value.list.isNotEmpty()}")
+        }
+        catch (e: Exception) {
+            Log.d("error getRentalItems()","$e")
+            _rentalItemsState.value = _rentalItemsState.value.copy(error = e.toString())
+        }
+
+        Log.d("delete2", "${_rentalItemsState.value.list.isNotEmpty()}")
+        return _rentalItemsState.value.list.isEmpty()
+    }
+
 }

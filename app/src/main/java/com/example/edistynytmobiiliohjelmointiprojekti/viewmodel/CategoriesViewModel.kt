@@ -97,4 +97,15 @@ class CategoriesViewModel : ViewModel() {
         }
     }
 
+    // Get list of names used for categories. Used in creating new category.
+    fun getNonValidNamesList(categories: List<CategoryItem>) : List<String> {
+        var notValidNamesList: Array<String> = emptyArray()
+
+        for (category in categories) {
+            notValidNamesList += category.categoryName
+        }
+
+        return notValidNamesList.toList()
+    }
+
 }
