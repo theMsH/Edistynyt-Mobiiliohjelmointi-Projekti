@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                                     modifier = Modifier
                                         .padding(16.dp)
                                         .align(Alignment.CenterHorizontally),
-                                    text = "Item Rental App",
+                                    text = "Rental App",
                                     style = MaterialTheme.typography.headlineSmall
                                 )
                                 Divider()
