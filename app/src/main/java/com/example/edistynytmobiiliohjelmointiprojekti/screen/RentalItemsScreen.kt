@@ -39,7 +39,7 @@ import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RentalItemsScreen(goBack: () -> Unit, goToRentalItemScreen: (Int) -> Unit) {
+fun RentalItemsScreen(goBack: () -> Unit, goToRentalItemScreen: (Int, Int, String) -> Unit) {
     val vm: RentalItemsViewModel = viewModel()
 
     Scaffold(
@@ -90,7 +90,7 @@ fun RentalItemsScreen(goBack: () -> Unit, goToRentalItemScreen: (Int) -> Unit) {
                             shape = RectangleShape,
                             onClick = {
                                 Log.d("rental itemclick", it.rentalItemName)
-                                goToRentalItemScreen(it.rentalItemId)
+                                goToRentalItemScreen(it.rentalItemId, vm.categoryId, vm.categoryName)
                             }
                         ) {
                             Row(

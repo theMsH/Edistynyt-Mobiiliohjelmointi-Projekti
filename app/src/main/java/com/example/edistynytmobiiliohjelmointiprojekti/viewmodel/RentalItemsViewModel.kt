@@ -17,8 +17,9 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     val showCreateNewRentalItemDialog = mutableStateOf(false)
     val showDeleteDialog = mutableStateOf(false)
 
-    private val categoryId = savedStateHandle.get<String>("categoryId")?.toIntOrNull() ?: 0
-    private val categoryName = savedStateHandle.get<String>("categoryName")?.toString() ?: ""
+    val categoryId = savedStateHandle.get<String>("categoryId")?.toIntOrNull() ?: 0
+    val categoryName = savedStateHandle.get<String>("categoryName")?.toString() ?: ""
+
 
     init {
         // Init when id is found to avoid pointless API call

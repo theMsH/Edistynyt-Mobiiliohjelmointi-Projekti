@@ -10,7 +10,6 @@ data class RentalItemsState(
 )
 
 data class RentalItemState(
-    val categoryId: Int = 0,
     val rentalItem: RentalItem = RentalItem(),
     val loading: Boolean = false,
     val error: String? = null

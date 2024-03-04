@@ -17,6 +17,8 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
     val rentalItemState: State<RentalItemState> = _rentalItemState
 
     private val rentalItemId = savedStateHandle.get<String>("rentalItemId")?.toIntOrNull() ?: 0
+    private val categoryId = savedStateHandle.get<String>("categoryItemId")?.toIntOrNull() ?: 0
+    private val categoryName = savedStateHandle.get<String>("categoryItemName")?.toString() ?: ""
 
     private val _rentalItemTitle = mutableStateOf("")
     val rentalItemTitle: State<String> = _rentalItemTitle
@@ -48,7 +50,7 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
         }
     }
 
-    fun updateRentalItemName() {
+    fun updateRentalItemName(goToRentalItemsScreen: (Int, String) -> Unit) {
         viewModelScope.launch {
             try {
                 _rentalItemState.value = _rentalItemState.value.copy(loading = true)
@@ -59,7 +61,7 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
                 )
                 _rentalItemState.value = _rentalItemState.value.copy(rentalItem = response)
 
-                _rentalItemTitle.value = response.rentalItemName
+                goToRentalItemsScreen(categoryId, categoryName)
             }
             catch (e: Exception) {
                 Log.d("error updateRentalItemName", "$e")

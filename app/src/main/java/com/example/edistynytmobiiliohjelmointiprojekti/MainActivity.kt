@@ -183,16 +183,33 @@ class MainActivity : ComponentActivity() {
                                     goBack = {
                                         navController.navigateUp()
                                     },
-                                    goToRentalItemScreen = {
-                                        navController.navigate("editRentalItemScreen/${it}")
+                                    goToRentalItemScreen = { rentalItemId, categoryId, categoryItem ->
+                                        navController.navigate("editRentalItemScreen" +
+                                                    "/${rentalItemId}" +
+                                                    "/${categoryId}" +
+                                                    "/${categoryItem}"
+                                        )
                                     }
-
                                 )
                             }
-                            composable(route = "editRentalItemScreen/{rentalItemId}") {
+                            composable(route = "editRentalItemScreen/{rentalItemId}/{categoryItemId}/{categoryItemName}") {
                                 EditRentalItemScreen (
                                     goBack = {
                                         navController.navigateUp()
+                                    },
+                                    goToRentalItemsScreen = { categoryId, categoryName ->
+                                        navController.navigate("rentalItemScreen" +
+                                                "/${categoryId}" +
+                                                "/${categoryName}"
+                                        ) {
+                                            popUpTo("rentalItemScreen" +
+                                                    "/${categoryId}" +
+                                                    "/${categoryName}"
+                                            ) {
+                                                inclusive = true
+                                            }
+                                            launchSingleTop = true
+                                        }
                                     }
                                 )
                             }

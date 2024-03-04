@@ -36,7 +36,7 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditRentalItemScreen(goBack: () -> Unit) {
+fun EditRentalItemScreen(goBack: () -> Unit, goToRentalItemsScreen: (Int, String) -> Unit) {
     val vm: EditRentalItemViewModel = viewModel()
 
     Scaffold(
@@ -93,7 +93,7 @@ fun EditRentalItemScreen(goBack: () -> Unit) {
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(
                         onClick = {
-                            vm.updateRentalItemName()
+                            vm.updateRentalItemName(goToRentalItemsScreen)
                                   },
                         modifier = Modifier.size(120.dp,40.dp),
                         enabled = (
