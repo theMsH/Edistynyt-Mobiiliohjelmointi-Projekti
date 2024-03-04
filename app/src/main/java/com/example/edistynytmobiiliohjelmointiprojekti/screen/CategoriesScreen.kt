@@ -45,13 +45,14 @@ import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 @Composable
-fun RandomImage(size: Int = 250) {
+fun RandomImage(size: Int = 250,seed: Int = LocalTime.now().toSecondOfDay()) {
+    val newSeed = seed + 81753
     AsyncImage(
-        model = "https://picsum.photos/seed/${LocalDateTime.now()}/$size",
+        model = "https://picsum.photos/seed/$newSeed/$size",
         contentDescription = null
     )
 }
@@ -118,7 +119,7 @@ fun CategoriesScreen(
                         val evenRow = itemRow % 2 == 0
 
                         TextButton(
-                            contentPadding = PaddingValues(vertical = 4.dp),
+                            contentPadding = PaddingValues(0.dp),
                             shape = RectangleShape,
                             onClick = { openCategory(it) }
                         ) {
@@ -133,10 +134,10 @@ fun CategoriesScreen(
                             ) {
                                 Column(
                                     verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier.padding(start = 10.dp)
+                                    modifier = Modifier.padding(start = 10.dp, top = 4.dp, bottom = 4.dp)
                                 ) {
                                     // Replace with real image from database
-                                    RandomImage(300)
+                                    RandomImage(300, seed = it.categoryId)
                                 }
 
                                 Column {

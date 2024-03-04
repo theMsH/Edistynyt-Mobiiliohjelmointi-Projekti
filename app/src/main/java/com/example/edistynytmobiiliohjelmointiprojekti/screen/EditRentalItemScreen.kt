@@ -82,7 +82,7 @@ fun EditRentalItemScreen(goBack: () -> Unit, goToRentalItemsScreen: (Int, String
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    RandomImage(600)
+                    RandomImage(600, vm.rentalItemState.value.rentalItem.rentalItemId)
 
                     Spacer(modifier = Modifier.height(30.dp))
 

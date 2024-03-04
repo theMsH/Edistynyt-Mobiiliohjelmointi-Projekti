@@ -85,7 +85,7 @@ fun EditCategoryScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    RandomImage(600)
+                    RandomImage(600, vm.id)
 
                     if (vm.categoryNamesList.contains(vm.categoryState.value.categoryName)
                         && vm.categoryState.value.categoryName != vm.categoryTitle

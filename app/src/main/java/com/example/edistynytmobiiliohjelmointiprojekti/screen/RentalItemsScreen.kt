@@ -93,7 +93,7 @@ fun RentalItemsScreen(
                         val evenRow = itemRow % 2 == 0
 
                         TextButton(
-                            contentPadding = PaddingValues(vertical = 4.dp),
+                            contentPadding = PaddingValues(0.dp),
                             shape = RectangleShape,
                             onClick = {
                                 Log.d("rental itemclick", it.rentalItemName)
@@ -111,10 +111,10 @@ fun RentalItemsScreen(
                             ) {
                                 Column(
                                     verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier.padding(start = 10.dp)
+                                    modifier = Modifier.padding(start = 10.dp, top = 4.dp, bottom = 4.dp)
                                 ) {
                                     // Replace with real image from database
-                                    RandomImage(200)
+                                    RandomImage(200, it.rentalItemId)
                                 }
                                 Column {
                                     Row(

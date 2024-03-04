@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     // Haetaan välitetystä routesta id. Se tunnistaa routen stringistä {id} muuttujana.
     // Sieltä voi palautua myös null, joten "elvis operatorilla" ( ?: ) asetetaan se 0.
-    private val id = savedStateHandle.get<String>("categoryId")?.toIntOrNull() ?: 0
+    val id = savedStateHandle.get<String>("categoryId")?.toIntOrNull() ?: 0
 
     private val _categoryState = mutableStateOf(CategoryState())
     val categoryState: State<CategoryState> = _categoryState
