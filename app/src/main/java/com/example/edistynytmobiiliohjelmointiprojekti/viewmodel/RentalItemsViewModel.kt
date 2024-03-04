@@ -21,11 +21,14 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     private val categoryName = savedStateHandle.get<String>("categoryName")?.toString() ?: ""
 
     init {
-        _rentalItemsState.value = _rentalItemsState.value.copy(categoryName = categoryName)
-        getRentalItems(categoryId)
+        // Init when id is found to avoid pointless API call
+        if (categoryId != 0) {
+            _rentalItemsState.value = _rentalItemsState.value.copy(categoryName = categoryName)
+            getRentalItems()
+        }
     }
 
-    private fun getRentalItems(categoryId: Int) {
+    private fun getRentalItems() {
         viewModelScope.launch {
             try {
                 _rentalItemsState.value = _rentalItemsState.value.copy(loading = true)

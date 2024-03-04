@@ -67,8 +67,15 @@ fun CategoriesScreen(
     deleteToast: (deleted: Boolean) -> Unit
 ) {
     val categoriesVm: CategoriesViewModel = viewModel()
-    val itemsVm: RentalItemsViewModel = viewModel()
+
+    lateinit var itemsVm: RentalItemsViewModel
+    // Initialized only when categoryId is given.
+    if (categoriesVm.selectedCategoryItem.value.categoryId != 0) {
+        Log.d("init", "initialized")
+        itemsVm = viewModel()
+    }
     val scope = rememberCoroutineScope()
+
 
     Scaffold(
         topBar = {
