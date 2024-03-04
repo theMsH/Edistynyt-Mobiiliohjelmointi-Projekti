@@ -3,15 +3,22 @@ package com.example.edistynytmobiiliohjelmointiprojekti.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -19,6 +26,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditRentalItemViewModel
 import java.time.LocalDateTime
@@ -40,7 +50,7 @@ fun EditRentalItemScreen(goBack: () -> Unit) {
                         )
                     }
                 },
-                title = { Text(text = vm.rentalItemState.value.rentalItem.rentalItemName) },
+                title = { Text(text = vm.rentalItemTitle.value) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -65,13 +75,45 @@ fun EditRentalItemScreen(goBack: () -> Unit) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Rental State: ${
+
+                    Spacer(modifier = Modifier.height(30.dp))
+                    OutlinedTextField(
+                        singleLine = true,
+                        modifier = Modifier.requiredWidth(280.dp),
+                        value = vm.rentalItemState.value.rentalItem.rentalItemName,
+                        onValueChange = {newValue ->
+                            vm.setRentalItemName(newValue)
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                            keyboardType = KeyboardType.Text
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Button(
+                        onClick = {
+                            vm.updateRentalItemName()
+                                  },
+                        modifier = Modifier.size(120.dp,40.dp),
+                        enabled = (
+                                vm.rentalItemState.value.rentalItem.rentalItemName != ""
+                                && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemTitle.value
+                                )
+                    ) {
+                        Text(text = "Update")
+                    }
+
+
+
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(text = "Status: ${
                         vm.rentalItemState.value.rentalItem.rentalState.rentalState
                     }")
                     Text(text = "From user: ${
                         vm.rentalItemState.value.rentalItem.createdByUser.username
                     }")
-                    Text(text = "Created at: ${
+                    Text(text = "Listed on ${
                         getFormattedTime(vm.rentalItemState.value.rentalItem.createdAt)
                     }")
                 }

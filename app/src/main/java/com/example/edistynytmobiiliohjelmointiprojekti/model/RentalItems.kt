@@ -48,7 +48,7 @@ data class RentalItem(
     //@SerializedName("serial_number")
     //val serialNumber: String = "",
     @SerializedName("rental_item_name")
-    val rentalItemName: String = "",
+    var rentalItemName: String = "",
     @SerializedName("created_at")
     val createdAt: String = "",
     @SerializedName("rental_item_state_rental_item_state")
@@ -64,4 +64,9 @@ data class RentalState(
     val rentalStateId: Int = 0,
     @SerializedName("rental_item_state")
     val rentalState: String = ""
+)
+
+data class UpdateRentalItemNameReq (
+    @SerializedName("rental_item_name")
+    val rentalItemName: String = ""
 )
