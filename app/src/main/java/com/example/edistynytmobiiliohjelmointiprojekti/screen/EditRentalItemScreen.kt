@@ -1,14 +1,17 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,18 +29,18 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditRentalItemViewModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditRentalItemScreen(goBack: () -> Unit, goToRentalItemsScreen: (Int, String) -> Unit) {
     val vm: EditRentalItemViewModel = viewModel()
+    val configuration = LocalConfiguration.current
 
     Scaffold(
         topBar = {
@@ -63,20 +66,26 @@ fun EditRentalItemScreen(goBack: () -> Unit, goToRentalItemsScreen: (Int, String
                 .padding(it)
         ) {
             when {
+                // Loading
                 vm.rentalItemState.value.loading -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
 
+                // Error
                 vm.rentalItemState.value.error != null ->
                     Text(text = "error: ${vm.rentalItemState.value.error}")
 
-                else -> Column(
+
+                // Orientation: Portrait
+                configuration.orientation == Configuration.ORIENTATION_PORTRAIT -> Column(
                     Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    RandomImage(600)
 
                     Spacer(modifier = Modifier.height(30.dp))
+
                     OutlinedTextField(
                         singleLine = true,
                         modifier = Modifier.requiredWidth(280.dp),
@@ -89,48 +98,82 @@ fun EditRentalItemScreen(goBack: () -> Unit, goToRentalItemsScreen: (Int, String
                             keyboardType = KeyboardType.Text
                         )
                     )
-
                     Spacer(modifier = Modifier.height(24.dp))
-                    Button(
-                        onClick = {
-                            vm.updateRentalItemName(goToRentalItemsScreen)
-                                  },
-                        modifier = Modifier.size(120.dp,40.dp),
-                        enabled = (
-                                vm.rentalItemState.value.rentalItem.rentalItemName != ""
-                                && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemTitle.value
-                                )
-                    ) {
-                        Text(text = "Update")
+
+                    Row {
+                        Button(
+                            onClick = { goBack() },
+                            modifier = Modifier.size(120.dp, 40.dp)
+                        ) {
+                            Text(text = "Cancel")
+                        }
+
+                        Spacer(modifier = Modifier.width(32.dp))
+
+                        Button(
+                            onClick = { vm.updateRentalItemName(goToRentalItemsScreen) },
+                            modifier = Modifier.size(120.dp,40.dp),
+                            enabled = (
+                                    vm.rentalItemState.value.rentalItem.rentalItemName != ""
+                                            && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemTitle.value
+                                    )
+                        ) {
+                            Text(text = "Update")
+                        }
                     }
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
 
 
+                // Orientation: Horizontal
+                else -> Column(
+                    Modifier.fillMaxSize().padding(top = 24.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Error used to print here. Now used as a height spacer
+                    Text(text = "",modifier = Modifier.padding(vertical = 10.dp))
 
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(text = "Status: ${
-                        vm.rentalItemState.value.rentalItem.rentalState.rentalState
-                    }")
-                    Text(text = "From user: ${
-                        vm.rentalItemState.value.rentalItem.createdByUser.username
-                    }")
-                    Text(text = "Listed on ${
-                        getFormattedTime(vm.rentalItemState.value.rentalItem.createdAt)
-                    }")
+                    OutlinedTextField(
+                        singleLine = true,
+                        modifier = Modifier.requiredWidth(280.dp),
+                        value = vm.rentalItemState.value.rentalItem.rentalItemName,
+                        onValueChange = {newValue ->
+                            vm.setRentalItemName(newValue)
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                            keyboardType = KeyboardType.Text
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row {
+                        Button(
+                            onClick = { goBack() },
+                            modifier = Modifier.size(120.dp, 40.dp)
+                        ) {
+                            Text(text = "Cancel")
+                        }
+
+                        Spacer(modifier = Modifier.width(32.dp))
+
+                        Button(
+                            onClick = { vm.updateRentalItemName(goToRentalItemsScreen) },
+                            modifier = Modifier.size(120.dp,40.dp),
+                            enabled = (
+                                    vm.rentalItemState.value.rentalItem.rentalItemName != ""
+                                    && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemTitle.value
+                                    )
+                        ) {
+                            Text(text = "Update")
+                        }
+                    }
                 }
             }
 
-
         }
-
     }
 
-
 }
 
-fun getFormattedTime(dateString: String) : String{
-    // Parse the date string to LocalDateTime
-    val dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
-
-    // Format the LocalDateTime to a custom pattern
-    return dateTime.format(DateTimeFormatter.ofPattern("d MMM uuuu  HH:mm"))
-}

@@ -1,5 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -37,9 +39,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsViewModel
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RentalItemsScreen(goBack: () -> Unit, goToRentalItemScreen: (Int, Int, String) -> Unit) {
+fun RentalItemsScreen(
+    goBack: () -> Unit,
+    goToEditRentalItemScreen: (Int, Int, String) -> Unit,
+    goToRentalItemScreen: (Int, Int, String) -> Unit
+) {
     val vm: RentalItemsViewModel = viewModel()
 
     Scaffold(
@@ -95,7 +102,8 @@ fun RentalItemsScreen(goBack: () -> Unit, goToRentalItemScreen: (Int, Int, Strin
                         ) {
                             Row(
                                 modifier = Modifier
-                                    .background(color =
+                                    .background(
+                                        color =
                                         if (evenRow) colorResource(R.color.row_uneven)
                                         else MaterialTheme.colorScheme.background
                                     )
@@ -121,6 +129,26 @@ fun RentalItemsScreen(goBack: () -> Unit, goToRentalItemScreen: (Int, Int, Strin
                                             color = MaterialTheme.colorScheme.secondary
                                         )
                                     }
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        IconButton(
+                                            onClick = {
+                                                goToEditRentalItemScreen(
+                                                    it.rentalItemId,
+                                                    vm.categoryId,
+                                                    vm.categoryName
+                                                )
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Edit,
+                                                contentDescription = "Edit item",
+                                                tint = colorResource(id = R.color.edit)
+                                            )
+                                        }
+                                    }
                                 }
                             } // End of items row()
                         }
@@ -142,7 +170,9 @@ fun RentalItemsScreen(goBack: () -> Unit, goToRentalItemScreen: (Int, Int, Strin
                     Icon(Icons.Filled.Add, "Floating action button.")
                 }
             }
+
         }
     }
 
 }
+

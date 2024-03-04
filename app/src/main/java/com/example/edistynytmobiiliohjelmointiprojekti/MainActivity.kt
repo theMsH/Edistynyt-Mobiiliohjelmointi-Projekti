@@ -36,6 +36,7 @@ import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditCategoryScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditRentalItemScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.LoginScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.RegisterScreen
+import com.example.edistynytmobiiliohjelmointiprojekti.screen.RentalItemScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.RentalItemsScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
 import kotlinx.coroutines.launch
@@ -183,11 +184,18 @@ class MainActivity : ComponentActivity() {
                                     goBack = {
                                         navController.navigateUp()
                                     },
-                                    goToRentalItemScreen = { rentalItemId, categoryId, categoryItem ->
+                                    goToEditRentalItemScreen = { rentalItemId, categoryId, categoryName ->
                                         navController.navigate("editRentalItemScreen" +
                                                     "/${rentalItemId}" +
                                                     "/${categoryId}" +
-                                                    "/${categoryItem}"
+                                                    "/${categoryName}"
+                                        )
+                                    },
+                                    goToRentalItemScreen = { rentalItemId, categoryId, categoryName ->
+                                        navController.navigate("rentalItemScreen" +
+                                                "/${rentalItemId}" +
+                                                "/${categoryId}" +
+                                                "/${categoryName}"
                                         )
                                     }
                                 )
@@ -213,6 +221,21 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
+                            composable(route = "rentalItemScreen/{rentalItemId}/{categoryItemId}/{categoryItemName}") {
+                                RentalItemScreen(
+                                    goBack = {
+                                        navController.navigateUp()
+                                    },
+                                    goToEditRentalItemScreen = { rentalItemId, categoryId, categoryName ->
+                                        navController.navigate("editRentalItemScreen" +
+                                                "/${rentalItemId}" +
+                                                "/${categoryId}" +
+                                                "/${categoryName}"
+                                        )
+                                    }
+                                )
+                            }
+
                             composable(route = "registerScreen") {
                                 RegisterScreen(
                                     onRegisterClick = {

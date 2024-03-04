@@ -13,7 +13,6 @@ data class RentalItemState(
     val rentalItem: RentalItem = RentalItem(),
     val loading: Boolean = false,
     val error: String? = null
-
 )
 
 data class RentalItemsByCategory(
