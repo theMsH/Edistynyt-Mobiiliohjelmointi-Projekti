@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,7 +49,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterC
 
             // Ready
         else -> Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 58.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 58.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -125,8 +127,28 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterC
                     Text(text = "Login")
                 }
 
-                Spacer(modifier = Modifier.height(36.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "No account?")
+                    Spacer(modifier = Modifier.width(16.dp))
+                    TextButton(onClick = { onRegisterClick() }) {
+                        Text(text = "Register here")
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row {
+                    TextButton(onClick = { onLoginSuccess() }) {
+                        Text(text = "Continue as quest")
+                    }
+                }
+
+
+
+/*
                 Row() {
                     Button(
                         onClick = { onRegisterClick() },
@@ -145,7 +167,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterC
                     }
                 }
 
-
+*/
 
             }
         }
