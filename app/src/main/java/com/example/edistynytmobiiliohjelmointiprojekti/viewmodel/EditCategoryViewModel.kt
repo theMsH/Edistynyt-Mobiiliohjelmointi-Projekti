@@ -26,7 +26,7 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
 
     init {
-        // Init when id is found to avoid pointless API call
+        // Init when id is found to avoid 422 API call
         if (id != 0) {
             getCategoryById()
         }

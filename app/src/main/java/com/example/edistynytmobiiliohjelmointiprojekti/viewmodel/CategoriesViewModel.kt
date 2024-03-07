@@ -59,10 +59,8 @@ class CategoriesViewModel : ViewModel() {
             }
             catch (e: Exception) {
                 Log.d("error getRentalItems in DeleteCategory()","$e")
-                rentalItemsState.value = rentalItemsState.value.copy(error = e.toString())
             }
             finally {
-
                 // Try delete category if empty
                 if (rentalItemsState.value.list.isEmpty()) {
                     try {
@@ -78,7 +76,6 @@ class CategoriesViewModel : ViewModel() {
 
                         Log.d("DeleteCategory()", "category deleted")
                         deleteToast(true)
-
                     }
                     catch (e: Exception) {
                         Log.d("error DeleteCategory()", "$e")

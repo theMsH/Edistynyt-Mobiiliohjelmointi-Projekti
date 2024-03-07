@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewCategoryDialog
 import com.example.edistynytmobiiliohjelmointiprojekti.DeleteDialog
+import com.example.edistynytmobiiliohjelmointiprojekti.MyAlert
 import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
@@ -213,7 +215,7 @@ fun CategoriesScreen(
                         }
                     )
                 }
-/*
+
                 // Unauthorized action dialog
                 if (categoriesVm.showUnauthorizedDialog.value) {
                     MyAlert(
@@ -229,12 +231,9 @@ fun CategoriesScreen(
                         dismissButtonText = "Dismiss"
                     )
                 }
-*/
+
             }
         }
     }
 
 }
-
-
-

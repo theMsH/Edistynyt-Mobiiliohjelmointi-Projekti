@@ -26,7 +26,6 @@ class LoginViewModel : ViewModel() {
         _loginState.value = _loginState.value.copy(password = userInput)
     }
 
-
     fun login(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit) {
         viewModelScope.launch {
             try{
@@ -62,6 +61,7 @@ class LoginViewModel : ViewModel() {
                         _loginState.value.password
                     )
                 )
+
                 onRegisterClick()
             }
             catch (e: Exception) {
@@ -73,7 +73,6 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
-
 
     fun toggleShowPassword() {
         if (_loginState.value.showPassword) {
