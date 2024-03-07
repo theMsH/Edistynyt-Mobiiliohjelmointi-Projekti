@@ -37,7 +37,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewCategoryDialog
+import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewDialog
 import com.example.edistynytmobiiliohjelmointiprojekti.DeleteDialog
 import com.example.edistynytmobiiliohjelmointiprojekti.MyAlert
 import com.example.edistynytmobiiliohjelmointiprojekti.R
@@ -195,10 +195,14 @@ fun CategoriesScreen(
 
                 // Create new category dialog
                 if (categoriesVm.showCreateNewDialog.value) {
-                    CreateNewCategoryDialog(
+                    CreateNewDialog(
                         showCreateNewDialog = categoriesVm.showCreateNewDialog,
                         onConfirm = { categoriesVm.postCategory(it) },
-                        notValidNames = categoriesVm.getNonValidNamesList(categoriesVm.categoriesState.value.list)
+                        notValidNames = categoriesVm.getNonValidNamesList(
+                            categoriesVm.categoriesState.value.list
+                        ),
+                        title = "Create category",
+                        placeholder = "New Category"
                     )
                 }
 
@@ -206,7 +210,7 @@ fun CategoriesScreen(
                 if (categoriesVm.showDeleteDialog.value) {
                     DeleteDialog(
                         showDeleteDialog = categoriesVm.showDeleteDialog,
-                        categoryName = categoriesVm.selectedCategoryItem.value.categoryName,
+                        name = categoriesVm.selectedCategoryItem.value.categoryName,
                         onConfirm = {
                             categoriesVm.deleteCategory(
                                 categoriesVm.selectedCategoryItem.value.categoryId,

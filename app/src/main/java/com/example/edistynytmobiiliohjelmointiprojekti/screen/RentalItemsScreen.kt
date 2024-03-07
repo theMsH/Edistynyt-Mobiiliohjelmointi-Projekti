@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewDialog
 import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsViewModel
 
@@ -66,11 +67,11 @@ fun RentalItemsScreen(
                 )
             )
         }
-    ) {
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
         ) {
             when {
                 // Loading indicator
@@ -164,10 +165,20 @@ fun RentalItemsScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        //vm.showCreateNewRentalItemDialog.value = true
+                        vm.showCreateNewRentalItemDialog.value = true
                     }
                 ) {
                     Icon(Icons.Filled.Add, "Floating action button.")
+                }
+
+                // Create new category dialog
+                if (vm.showCreateNewRentalItemDialog.value) {
+                    CreateNewDialog(
+                        showCreateNewDialog = vm.showCreateNewRentalItemDialog,
+                        onConfirm = { vm.postNewItem(it) },
+                        title = "Create item WIP",
+                        placeholder = "New Item"
+                    )
                 }
             }
 

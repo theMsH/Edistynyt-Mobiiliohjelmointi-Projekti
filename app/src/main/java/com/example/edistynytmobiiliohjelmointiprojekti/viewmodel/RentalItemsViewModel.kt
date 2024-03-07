@@ -44,4 +44,8 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         }
     }
 
+    fun postNewItem(itemName: String) {
+        Log.d("postNewItem()", "TODO: post $itemName to categoryId $categoryId")
+    }
+
 }
