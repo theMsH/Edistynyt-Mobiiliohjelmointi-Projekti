@@ -22,11 +22,8 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
 
     init {
-        // Init when id is found to avoid 422 API call
-        if (categoryId != 0) {
-            _rentalItemsState.value = _rentalItemsState.value.copy(categoryName = categoryName)
-            getRentalItems()
-        }
+        _rentalItemsState.value = _rentalItemsState.value.copy(categoryName = categoryName)
+        getRentalItems()
     }
 
     private fun getRentalItems() {
