@@ -1,6 +1,5 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,7 +29,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -43,8 +41,6 @@ import com.example.edistynytmobiiliohjelmointiprojekti.DeleteDialog
 import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
-import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsViewModel
-import kotlinx.coroutines.launch
 import java.time.LocalTime
 
 
@@ -69,15 +65,6 @@ fun CategoriesScreen(
 ) {
     val categoriesVm: CategoriesViewModel = viewModel()
 
-    lateinit var itemsVm: RentalItemsViewModel
-    // Initialized only when categoryId is given.
-    if (categoriesVm.selectedCategoryItem.value.categoryId != 0) {
-        Log.d("init", "initialized")
-        itemsVm = viewModel()
-    }
-    val scope = rememberCoroutineScope()
-
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -92,11 +79,11 @@ fun CategoriesScreen(
                 )
             )
         }
-    ) {
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
         ) {
             when {
                 // Loading indicator
@@ -219,19 +206,10 @@ fun CategoriesScreen(
                         showDeleteDialog = categoriesVm.showDeleteDialog,
                         categoryName = categoriesVm.selectedCategoryItem.value.categoryName,
                         onConfirm = {
-                            Log.d("delete", "CategoryId: ${categoriesVm.selectedCategoryItem.value.categoryId}")
-
-                            scope.launch {
-                                if (itemsVm.categoryHasItems(categoriesVm.selectedCategoryItem.value.categoryId)) {
-                                    Log.d("delete", "category deleted")
-                                    categoriesVm.deleteCategory(categoriesVm.selectedCategoryItem.value.categoryId)
-                                    deleteToast(true)
-                                }
-                                else {
-                                    Log.d("delete", "category has items inside")
-                                    deleteToast(false)
-                                }
-                           }
+                            categoriesVm.deleteCategory(
+                                categoriesVm.selectedCategoryItem.value.categoryId,
+                                deleteToast
+                            )
                         }
                     )
                 }

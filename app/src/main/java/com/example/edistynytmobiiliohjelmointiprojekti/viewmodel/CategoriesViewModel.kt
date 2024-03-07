@@ -6,9 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiiliohjelmointiprojekti.api.categoriesService
+import com.example.edistynytmobiiliohjelmointiprojekti.api.rentalItemsService
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoriesState
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryReq
+import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemsState
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -44,22 +46,48 @@ class CategoriesViewModel : ViewModel() {
         }
     }
 
-    fun deleteCategory(categoryId: Int) {
+    fun deleteCategory(categoryId: Int, deleteToast: (Boolean) -> Unit) {
+        Log.d("deleteCategory", "CategoryId: $categoryId")
+
+        val rentalItemsState = mutableStateOf(RentalItemsState())
+
         viewModelScope.launch {
+            // Check contents of category by given id
             try {
-                categoriesService.deleteCategoryById(categoryId)
-
-                // Filteröidään kategorialistaan kaikki kategoriat, joiden id on eri kuin valittu id.
-                val categories =_categoriesState.value.list.filter {
-                    // Jos palautuu false, se filteröityy pois
-                    it.categoryId != categoryId
-                }
-                // Päivitetään lista
-                _categoriesState.value =_categoriesState.value.copy(list = categories)
-
+                val response = rentalItemsService.getRentalItems(categoryId)
+                rentalItemsState.value = rentalItemsState.value.copy(list = response.rentalItems)
             }
             catch (e: Exception) {
-                Log.d("error DeleteCategory()", "$e")
+                Log.d("error getRentalItems in DeleteCategory()","$e")
+                rentalItemsState.value = rentalItemsState.value.copy(error = e.toString())
+            }
+            finally {
+
+                // Try delete category if empty
+                if (rentalItemsState.value.list.isEmpty()) {
+                    try {
+                        categoriesService.deleteCategoryById(categoryId)
+
+                        // Filteröidään kategorialistaan kaikki kategoriat, joiden id on eri kuin valittu id.
+                        val categories =_categoriesState.value.list.filter {
+                            // Jos palautuu false, se filteröityy pois
+                            it.categoryId != categoryId
+                        }
+                        // Päivitetään lista
+                        _categoriesState.value =_categoriesState.value.copy(list = categories)
+
+                        Log.d("DeleteCategory()", "category deleted")
+                        deleteToast(true)
+
+                    }
+                    catch (e: Exception) {
+                        Log.d("error DeleteCategory()", "$e")
+                    }
+                }
+                else {
+                    Log.d("DeleteCategory()", "category has items inside")
+                    deleteToast(false)
+                }
             }
         }
     }
