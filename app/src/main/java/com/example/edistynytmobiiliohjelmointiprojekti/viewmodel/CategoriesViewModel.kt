@@ -106,8 +106,8 @@ class CategoriesViewModel : ViewModel() {
                 // Lisätään luotu categoria categoriesstaten listaan.
                 val categories = (_categoriesState.value.list + newCategoryItem)
                     // Järjestetään lista, jottei se ole aina eri järjestyksessä
-                    .sortedBy {
-                        it.categoryName.replaceFirstChar {
+                    .sortedBy { categoryItem ->
+                        categoryItem.categoryName.replaceFirstChar {
                             if (it.isLowerCase()) it.titlecase(Locale.ROOT)
                             else it.toString()
                         }

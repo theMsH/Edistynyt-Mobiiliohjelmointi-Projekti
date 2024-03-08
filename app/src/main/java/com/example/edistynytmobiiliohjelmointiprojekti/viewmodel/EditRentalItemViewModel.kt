@@ -16,6 +16,8 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
     private val _rentalItemState = mutableStateOf(RentalItemState())
     val rentalItemState: State<RentalItemState> = _rentalItemState
 
+    val showUnauthorizedDialog = mutableStateOf(false)
+
     private val rentalItemId = savedStateHandle.get<String>("rentalItemId")?.toIntOrNull() ?: 0
     private val categoryId = savedStateHandle.get<String>("categoryItemId")?.toIntOrNull() ?: 0
     private val categoryName = savedStateHandle.get<String>("categoryItemName")?.toString() ?: ""

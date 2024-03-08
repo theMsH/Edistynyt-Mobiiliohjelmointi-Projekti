@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,7 +31,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.MyAlert
 import com.example.edistynytmobiiliohjelmointiprojekti.R
+import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditRentalItemViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -39,7 +42,8 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun RentalItemScreen(
     goBack: () -> Unit,
-    goToEditRentalItemScreen: (Int, Int, String) -> Unit
+    goToEditRentalItemScreen: (Int, Int, String) -> Unit,
+    onLoginClick: () -> Unit
 ) {
     val vm: EditRentalItemViewModel = viewModel()
     val configuration = LocalConfiguration.current
@@ -62,11 +66,16 @@ fun RentalItemScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            goToEditRentalItemScreen(
-                                vm.rentalItemState.value.rentalItem.rentalItemId,
-                                vm.rentalItemState.value.rentalItem.category.categoryId,
-                                vm.rentalItemState.value.rentalItem.category.categoryName
-                            )
+                            if (authInterceptor.hasEmptyToken()) {
+                                vm.showUnauthorizedDialog.value = true
+                            }
+                            else {
+                                goToEditRentalItemScreen(
+                                    vm.rentalItemState.value.rentalItem.rentalItemId,
+                                    vm.rentalItemState.value.rentalItem.category.categoryId,
+                                    vm.rentalItemState.value.rentalItem.category.categoryName
+                                )
+                            }
                         }
                     ) {
                         Icon(
@@ -138,20 +147,34 @@ fun RentalItemScreen(
                 }
             }
 
+            // Unauthorized action dialog
+            if (vm.showUnauthorizedDialog.value) {
+                MyAlert(
+                    onDismissRequest = { vm.showUnauthorizedDialog.value = false },
+                    onConfirmation = {
+                        onLoginClick()
+                        vm.showUnauthorizedDialog.value = false
+                    },
+                    dialogTitle = "Unauthorized",
+                    dialogText = "Please login to perform this action",
+                    icon = Icons.Default.Lock,
+                    confirmButtonText = "Login",
+                    dismissButtonText = "Dismiss"
+                )
+            }
         }
     }
 
 }
 
-fun getFormattedTime(dateString: String) : String{
+fun getFormattedTime(dateString: String): String {
     // Parse the date string to LocalDateTime
     val dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
 
     // Format the LocalDateTime to a custom pattern
     val date = dateTime.format(DateTimeFormatter.ofPattern("d MMM uuuu"))
     val time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-    val formattedTime = "$date at $time"
 
-    return formattedTime
+    return "$date at $time"
 }
 

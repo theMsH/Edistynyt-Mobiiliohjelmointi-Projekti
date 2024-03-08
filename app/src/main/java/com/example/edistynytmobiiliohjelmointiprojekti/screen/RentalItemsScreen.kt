@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -37,7 +38,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewDialog
+import com.example.edistynytmobiiliohjelmointiprojekti.MyAlert
 import com.example.edistynytmobiiliohjelmointiprojekti.R
+import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsViewModel
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -46,7 +49,8 @@ import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsView
 fun RentalItemsScreen(
     goBack: () -> Unit,
     goToEditRentalItemScreen: (Int, Int, String) -> Unit,
-    goToRentalItemScreen: (Int, Int, String) -> Unit
+    goToRentalItemScreen: (Int, Int, String) -> Unit,
+    onLoginClick: () -> Unit
 ) {
     val vm: RentalItemsViewModel = viewModel()
 
@@ -136,11 +140,16 @@ fun RentalItemsScreen(
                                     ) {
                                         IconButton(
                                             onClick = {
-                                                goToEditRentalItemScreen(
-                                                    it.rentalItemId,
-                                                    vm.categoryId,
-                                                    vm.categoryName
-                                                )
+                                                if (authInterceptor.hasEmptyToken()) {
+                                                   vm.showUnauthorizedDialog.value = true
+                                                }
+                                                else {
+                                                    goToEditRentalItemScreen(
+                                                        it.rentalItemId,
+                                                        vm.categoryId,
+                                                        vm.categoryName
+                                                    )
+                                                }
                                             }
                                         ) {
                                             Icon(
@@ -165,7 +174,10 @@ fun RentalItemsScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        vm.showCreateNewRentalItemDialog.value = true
+                        if (authInterceptor.hasEmptyToken()) {
+                            vm.showUnauthorizedDialog.value = true
+                        }
+                        else vm.showCreateNewRentalItemDialog.value = true
                     }
                 ) {
                     Icon(Icons.Filled.Add, "Floating action button.")
@@ -176,12 +188,27 @@ fun RentalItemsScreen(
                     CreateNewDialog(
                         showCreateNewDialog = vm.showCreateNewRentalItemDialog,
                         onConfirm = { vm.postNewItem(it) },
-                        title = "Create item WIP",
+                        title = "Create item",
                         placeholder = "New Item"
                     )
                 }
-            }
 
+                // Unauthorized action dialog
+                if (vm.showUnauthorizedDialog.value) {
+                    MyAlert(
+                        onDismissRequest = { vm.showUnauthorizedDialog.value = false },
+                        onConfirmation = {
+                            onLoginClick()
+                            vm.showUnauthorizedDialog.value = false
+                        },
+                        dialogTitle = "Unauthorized",
+                        dialogText = "Please login to perform this action",
+                        icon = Icons.Default.Lock,
+                        confirmButtonText = "Login",
+                        dismissButtonText = "Dismiss"
+                    )
+                }
+            }
         }
     }
 

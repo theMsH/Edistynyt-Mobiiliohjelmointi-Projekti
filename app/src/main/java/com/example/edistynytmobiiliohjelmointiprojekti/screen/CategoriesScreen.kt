@@ -41,6 +41,7 @@ import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewDialog
 import com.example.edistynytmobiiliohjelmointiprojekti.DeleteDialog
 import com.example.edistynytmobiiliohjelmointiprojekti.MyAlert
 import com.example.edistynytmobiiliohjelmointiprojekti.R
+import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.CategoriesViewModel
 import java.time.LocalTime
@@ -149,7 +150,10 @@ fun CategoriesScreen(
                                     ) {
                                         IconButton(
                                             onClick = {
-                                                categoriesVm.showDeleteDialog.value = true
+                                                if (authInterceptor.hasEmptyToken()) {
+                                                    categoriesVm.showUnauthorizedDialog.value = true
+                                                }
+                                                else categoriesVm.showDeleteDialog.value = true
                                                 categoriesVm.selectedCategoryItem.value = it
                                             }
                                         ) {
@@ -161,7 +165,10 @@ fun CategoriesScreen(
                                         }
                                         IconButton(
                                             onClick = {
-                                                onClickEditCategory(it)
+                                                if (authInterceptor.hasEmptyToken()) {
+                                                    categoriesVm.showUnauthorizedDialog.value = true
+                                                }
+                                                else onClickEditCategory(it)
                                             }
                                         ) {
                                             Icon(
@@ -187,7 +194,10 @@ fun CategoriesScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        categoriesVm.showCreateNewDialog.value = true
+                        if (authInterceptor.hasEmptyToken()) {
+                            categoriesVm.showUnauthorizedDialog.value = true
+                        }
+                        else categoriesVm.showCreateNewDialog.value = true
                     }
                 ) {
                     Icon(Icons.Filled.Add, "Floating action button.")

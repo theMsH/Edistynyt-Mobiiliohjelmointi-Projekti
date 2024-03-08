@@ -29,12 +29,12 @@ interface RentalItemsApi {
         @Body updateRentalItemNameReq: UpdateRentalItemNameReq
     ) : RentalItem
 
-    @Headers("Authorization: Bearer " + "")
+    @Headers("Content-Type: application/json")
     @POST("category/{categoryId}/items")
     suspend fun postRentalItem(
         @Path("categoryId") categoryId: Int,
         @Body rentalItemPostReq: RentalItemPostReq
-    ) : RentalItemsByCategory
-
+    ): RentalItemsByCategory
 
 }
+

@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 
 @Composable
@@ -46,6 +47,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterC
                     Alignment.Center
                 )
             )
+
+            // If this has token, you are already logged in so go to categories.
+            !authInterceptor.hasEmptyToken() -> onLoginSuccess()
 
             // Ready
         else -> Column(
@@ -145,29 +149,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterC
                         Text(text = "Continue as quest")
                     }
                 }
-
-
-
-/*
-                Row() {
-                    Button(
-                        onClick = { onRegisterClick() },
-                        modifier = Modifier.size(120.dp,40.dp)
-                    ) {
-                        Text(text = "Register")
-                    }
-
-                    Spacer(modifier = Modifier.width(32.dp))
-
-                    Button(
-                        onClick = { onLoginSuccess() },
-                        modifier = Modifier.size(120.dp,40.dp)
-                    ) {
-                        Text(text = "Skip")
-                    }
-                }
-
-*/
 
             }
         }

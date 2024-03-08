@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.CategoriesScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditCategoryScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditRentalItemScreen
@@ -39,10 +41,12 @@ import com.example.edistynytmobiiliohjelmointiprojekti.screen.RegisterScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.RentalItemScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.RentalItemsScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
+import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -92,26 +96,55 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
 
-                                // Login
-                                NavigationDrawerItem(
-                                    modifier = Modifier
-                                        .padding(NavigationDrawerItemDefaults.ItemPadding),
-                                    label = { Text(text = "Login") },
-                                    selected = navBackStackEntry?.destination?.route == "loginScreen",
-                                    onClick = {
-                                        navController.navigate("loginScreen"){
-                                            popUpTo("categoriesScreen") { inclusive = false }
-                                            launchSingleTop = true
+                                if (authInterceptor.hasEmptyToken()) {
+                                    // Login
+                                    NavigationDrawerItem(
+                                        modifier = Modifier
+                                            .padding(NavigationDrawerItemDefaults.ItemPadding),
+                                        label = {
+                                            Text(text = "Login")
+                                        },
+                                        selected = navBackStackEntry?.destination?.route == "loginScreen",
+                                        onClick = {
+                                            navController.navigate("loginScreen"){
+                                                popUpTo("categoriesScreen") { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                            scope.launch { drawerState.close() }
+                                        },
+                                        icon = {
+                                            Icon(
+                                                imageVector = Icons.Filled.Lock,
+                                                contentDescription = "Login"
+                                            )
                                         }
-                                        scope.launch { drawerState.close() }
-                                              },
-                                    icon = {
-                                        Icon(
-                                            imageVector = Icons.Filled.Lock,
-                                            contentDescription = "Login"
-                                        )
-                                    }
-                                )
+                                    )
+                                }
+                                else {
+                                    // Logout
+                                    NavigationDrawerItem(
+                                        modifier = Modifier
+                                            .padding(NavigationDrawerItemDefaults.ItemPadding),
+                                        label = {
+                                            Text(text = "Logout")
+                                        },
+                                        selected = navBackStackEntry?.destination?.route == "loginScreen",
+                                        onClick = {
+                                            navController.navigate("loginScreen"){
+                                                popUpTo("categoriesScreen") { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                            LoginViewModel().logout()
+                                            scope.launch { drawerState.close() }
+                                        },
+                                        icon = {
+                                            Icon(
+                                                imageVector = Icons.Filled.LockOpen,
+                                                contentDescription = "Logout"
+                                            )
+                                        }
+                                    )
+                                }
                             }
                         }
                     ) { // Navhost
@@ -197,6 +230,9 @@ class MainActivity : ComponentActivity() {
                                                 "/${categoryId}" +
                                                 "/${categoryName}"
                                         )
+                                    },
+                                    onLoginClick = {
+                                        navController.navigate("loginScreen")
                                     }
                                 )
                             }
@@ -232,6 +268,9 @@ class MainActivity : ComponentActivity() {
                                                 "/${categoryId}" +
                                                 "/${categoryName}"
                                         )
+                                    },
+                                    onLoginClick = {
+                                        navController.navigate("loginScreen")
                                     }
                                 )
                             }
