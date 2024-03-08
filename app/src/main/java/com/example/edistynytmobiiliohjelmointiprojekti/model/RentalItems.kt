@@ -30,10 +30,10 @@ data class RentalItemsRes(
 data class RentalItemPostReq(
     @SerializedName("rental_item_name")
     val rentalItemName: String = "",
-    @SerializedName("rental_item_description")
-    val rentalItemDesc: String = "",
-    @SerializedName("serial_number")
-    val rentalItemSerial: String = ""
+    //@SerializedName("rental_item_description")
+    //val rentalItemDesc: String = "",
+    //@SerializedName("serial_number")
+    //val rentalItemSerial: String = ""
 )
 
 data class RentalItem(

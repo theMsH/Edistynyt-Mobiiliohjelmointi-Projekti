@@ -1,10 +1,14 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.api
 
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItem
+import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemPostReq
+import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemsByCategory
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemsRes
 import com.example.edistynytmobiiliohjelmointiprojekti.model.UpdateRentalItemNameReq
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
@@ -24,4 +28,13 @@ interface RentalItemsApi {
         @Path("rentalItemId") rentalItemId: Int,
         @Body updateRentalItemNameReq: UpdateRentalItemNameReq
     ) : RentalItem
+
+    @Headers("Authorization: Bearer " + "")
+    @POST("category/{categoryId}/items")
+    suspend fun postRentalItem(
+        @Path("categoryId") categoryId: Int,
+        @Body rentalItemPostReq: RentalItemPostReq
+    ) : RentalItemsByCategory
+
+
 }

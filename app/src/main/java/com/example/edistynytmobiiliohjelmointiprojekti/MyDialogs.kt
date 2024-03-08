@@ -1,6 +1,5 @@
 package com.example.edistynytmobiiliohjelmointiprojekti
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -203,7 +202,6 @@ fun CreateNewDialog(
                     placeholder = { Text(text = placeholder) },
                     onValueChange = {
                         nameState.value = it.text
-                        Log.d("cursor", "${textState.value.text.length}")
                         textState.value = it.copy(it.text, TextRange(it.text.length))
                     },
                     keyboardOptions = KeyboardOptions(
