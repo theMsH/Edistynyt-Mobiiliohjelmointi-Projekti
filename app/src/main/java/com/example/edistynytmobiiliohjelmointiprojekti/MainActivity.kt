@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -68,7 +69,7 @@ class MainActivity : ComponentActivity() {
                                     modifier = Modifier
                                         .padding(16.dp)
                                         .align(Alignment.CenterHorizontally),
-                                    text = "Rental App",
+                                    text = stringResource(R.string.drawer_menu_title),
                                     style = MaterialTheme.typography.headlineSmall
                                 )
                                 Divider()
@@ -78,7 +79,7 @@ class MainActivity : ComponentActivity() {
                                 NavigationDrawerItem(
                                     modifier = Modifier
                                         .padding(NavigationDrawerItemDefaults.ItemPadding),
-                                    label = { Text(text = "Categories") },
+                                    label = { Text(text = stringResource(R.string.categories)) },
                                     selected = navBackStackEntry?.destination?.route == "categoriesScreen",
                                     onClick = {
                                         navController.navigate("categoriesScreen"){
@@ -101,7 +102,7 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier
                                             .padding(NavigationDrawerItemDefaults.ItemPadding),
                                         label = {
-                                            Text(text = "Login")
+                                            Text(text = stringResource(R.string.login))
                                         },
                                         selected = navBackStackEntry?.destination?.route == "loginScreen",
                                         onClick = {
@@ -125,7 +126,7 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier
                                             .padding(NavigationDrawerItemDefaults.ItemPadding),
                                         label = {
-                                            Text(text = "Logout")
+                                            Text(text = stringResource(R.string.logout))
                                         },
                                         selected = navBackStackEntry?.destination?.route == "loginScreen",
                                         onClick = {

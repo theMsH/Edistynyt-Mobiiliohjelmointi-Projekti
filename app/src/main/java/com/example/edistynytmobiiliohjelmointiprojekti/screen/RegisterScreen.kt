@@ -34,12 +34,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 
 
@@ -74,7 +76,7 @@ fun RegisterScreen(
                         )
                     }
                                  },
-                title = { Text(text = "Create account") },
+                title = { Text(text = stringResource(R.string.create_account)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -104,7 +106,7 @@ fun RegisterScreen(
                     OutlinedTextField(
                         modifier = Modifier.requiredWidth(280.dp),
                         singleLine = true,
-                        placeholder = { Text(text = "Username") },
+                        placeholder = { Text(text = stringResource(R.string.username_placeholder)) },
                         value = vm.loginState.value.username,
                         onValueChange = {
                             vm.setUsername(it)
@@ -123,7 +125,7 @@ fun RegisterScreen(
                                 if (vm.loginState.value.showPassword) VisualTransformation.None
                                 else PasswordVisualTransformation()
                                 ),
-                        placeholder = { Text(text = "Password") },
+                        placeholder = { Text(text = stringResource(R.string.password_placeholder)) },
                         value = vm.loginState.value.password,
                         onValueChange = {
                             vm.setPassword(it)
@@ -166,7 +168,7 @@ fun RegisterScreen(
                             onClick = { goBack() },
                             modifier = Modifier.size(120.dp, 40.dp)
                         ) {
-                            Text(text = "Cancel")
+                            Text(text = stringResource(R.string.cancel))
                         }
 
                         Spacer(modifier = Modifier.width(32.dp))
@@ -179,7 +181,7 @@ fun RegisterScreen(
                                     && vm.loginState.value.password != ""
                                     )
                         ) {
-                            Text(text = "Register")
+                            Text(text = stringResource(R.string.register))
                         }
                     }
 

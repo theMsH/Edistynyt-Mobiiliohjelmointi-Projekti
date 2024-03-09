@@ -28,12 +28,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 
@@ -53,8 +55,16 @@ fun LoginScreen(
         }
 
         when (vm.loginState.value.error) {
-            "500" -> Toast.makeText(context, "Connection lost, try again", Toast.LENGTH_LONG).show()
-            "404" -> Toast.makeText(context, "User not found!", Toast.LENGTH_LONG).show()
+            "500" -> Toast.makeText(
+                context,
+                context.getString(R.string.connection_lost),
+                Toast.LENGTH_LONG
+            ).show()
+            "404" -> Toast.makeText(
+                context,
+                context.getString(R.string.user_not_found),
+                Toast.LENGTH_LONG
+            ).show()
         }
 
         if (vm.loginState.value.error != null) {
@@ -87,7 +97,7 @@ fun LoginScreen(
                 OutlinedTextField(
                     modifier = Modifier.requiredWidth(280.dp),
                     singleLine = true,
-                    placeholder = { Text(text = "Username") },
+                    placeholder = { Text(text = stringResource(R.string.username_placeholder)) },
                     value = vm.loginState.value.username,
                     onValueChange = {
                         vm.setUsername(it)
@@ -105,7 +115,7 @@ fun LoginScreen(
                     visualTransformation =
                         if (vm.loginState.value.showPassword) VisualTransformation.None
                         else PasswordVisualTransformation(),
-                    placeholder = { Text(text = "Password") },
+                    placeholder = { Text(text = stringResource(R.string.password_placeholder)) },
                     value = vm.loginState.value.password,
                     onValueChange = {
                         vm.setPassword(it)
@@ -151,7 +161,7 @@ fun LoginScreen(
                     enabled = vm.loginState.value.username != ""
                             && vm.loginState.value.password != ""
                 ) {
-                    Text(text = "Login")
+                    Text(text = stringResource(R.string.login))
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -159,17 +169,17 @@ fun LoginScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "No account?")
+                    Text(text = stringResource(R.string.no_account))
                     Spacer(modifier = Modifier.width(16.dp))
                     TextButton(onClick = { onRegisterClick() }) {
-                        Text(text = "Register here")
+                        Text(text = stringResource(R.string.register_here))
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row {
                     TextButton(onClick = { onLoginSuccess() }) {
-                        Text(text = "Continue as quest")
+                        Text(text = stringResource(R.string.continue_as_quest))
                     }
                 }
 

@@ -2,5 +2,5 @@
 <resources>
     <color name="row_uneven">#16171C</color>
     <color name="edit">#63D46D</color>
-    <color name="delete">#F25F5F</color>
+    <color name="delete">#F95F5F</color>
 </resources>

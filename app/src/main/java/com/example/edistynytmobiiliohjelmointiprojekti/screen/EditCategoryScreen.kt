@@ -31,10 +31,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditCategoryViewModel
 
 
@@ -102,7 +104,7 @@ fun EditCategoryScreen(
                             vm.categoryState.value.categoryTitle) {
                         Text(
                             modifier = Modifier.padding(vertical = 10.dp),
-                            text = "Category already exists!",
+                            text = stringResource(R.string.category_exists_alert),
                             color = MaterialTheme.colorScheme.error
                         )
                     } else Text(text = "", modifier = Modifier.padding(vertical = 10.dp))
@@ -126,7 +128,7 @@ fun EditCategoryScreen(
                             onClick = { goBack() },
                             modifier = Modifier.size(120.dp, 40.dp)
                         ) {
-                            Text(text = "Cancel")
+                            Text(text = stringResource(R.string.cancel))
                         }
 
                         Spacer(modifier = Modifier.width(32.dp))
@@ -144,7 +146,7 @@ fun EditCategoryScreen(
                                             vm.categoryState.value.categoryTitle
                                     )
                         ) {
-                            Text(text = "Update")
+                            Text(text = stringResource(R.string.update))
                         }
                     }
                     Spacer(modifier = Modifier.height(100.dp))
@@ -166,7 +168,7 @@ fun EditCategoryScreen(
                             vm.categoryState.value.categoryTitle) {
                         Text(
                             modifier = Modifier.padding(vertical = 10.dp),
-                            text = "Category already exists!",
+                            text = stringResource(R.string.category_exists_alert),
                             color = MaterialTheme.colorScheme.error
                         )
                     } else Text(text = "",modifier = Modifier.padding(vertical = 10.dp))
@@ -190,7 +192,7 @@ fun EditCategoryScreen(
                             onClick = { goBack() },
                             modifier = Modifier.size(120.dp, 40.dp)
                         ) {
-                            Text(text = "Cancel")
+                            Text(text =  stringResource(R.string.cancel))
                         }
 
                         Spacer(modifier = Modifier.width(32.dp))
@@ -208,7 +210,7 @@ fun EditCategoryScreen(
                                             vm.categoryState.value.categoryTitle
                                     )
                         ) {
-                            Text(text = "Update")
+                            Text(text = stringResource(R.string.update))
                         }
                     }
 

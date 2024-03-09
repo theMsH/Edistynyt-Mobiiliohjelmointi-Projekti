@@ -31,10 +31,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditRentalItemViewModel
 
@@ -86,7 +88,7 @@ fun EditRentalItemScreen(
 
                 // Error
                 vm.rentalItemState.value.error != null ->
-                    Text(text = "error: ${vm.rentalItemState.value.error}")
+                    Text(text = "${vm.rentalItemState.value.error}")
 
 
                 // Orientation: Portrait
@@ -118,7 +120,7 @@ fun EditRentalItemScreen(
                             onClick = { goBack() },
                             modifier = Modifier.size(120.dp, 40.dp)
                         ) {
-                            Text(text = "Cancel")
+                            Text(text = stringResource(R.string.cancel))
                         }
 
                         Spacer(modifier = Modifier.width(32.dp))
@@ -131,7 +133,7 @@ fun EditRentalItemScreen(
                                             && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemState.value.rentalItemTitle
                                     )
                         ) {
-                            Text(text = "Update")
+                            Text(text = stringResource(R.string.update))
                         }
                     }
                     Spacer(modifier = Modifier.height(100.dp))
@@ -168,7 +170,7 @@ fun EditRentalItemScreen(
                             onClick = { goBack() },
                             modifier = Modifier.size(120.dp, 40.dp)
                         ) {
-                            Text(text = "Cancel")
+                            Text(text = stringResource(R.string.cancel))
                         }
 
                         Spacer(modifier = Modifier.width(32.dp))
@@ -181,7 +183,7 @@ fun EditRentalItemScreen(
                                     && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemState.value.rentalItemTitle
                                     )
                         ) {
-                            Text(text = "Update")
+                            Text(text = stringResource(R.string.update))
                         }
                     }
                 }

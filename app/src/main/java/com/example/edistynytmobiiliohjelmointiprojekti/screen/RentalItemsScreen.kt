@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewDialog
@@ -86,7 +87,7 @@ fun RentalItemsScreen(
 
                 // In case of error
                 vm.rentalItemsState.value.error != null ->
-                    Text(text = "error: ${vm.rentalItemsState.value.error}")
+                    Text(text = "${vm.rentalItemsState.value.error}")
 
                 // Draw items
                 else -> LazyColumn(
@@ -176,13 +177,13 @@ fun RentalItemsScreen(
                     // Create new category dialog
                     vm.createState.value.showDialog -> {
                         CreateNewDialog(
-                            onDismiss = {  },
+                            onDismiss = { vm.setShowCreateDialog(false) },
                             onConfirm = {
                                 vm.postNewItem(it)
                                 vm.setShowCreateDialog(false)
                             },
-                            title = "Create item",
-                            placeholder = "New Item"
+                            title = stringResource(R.string.create_item_title),
+                            placeholder = stringResource(R.string.create_item_placeholder)
                         )
                     }
 
@@ -195,11 +196,11 @@ fun RentalItemsScreen(
                                 onLoginClick()
                                 vm.showUnauthorizedDialog.value = false
                             },
-                            dialogTitle = "Unauthorized",
-                            dialogText = "Please login to perform this action",
+                            dialogTitle = stringResource(R.string.unauthorized_title),
+                            dialogText = stringResource(R.string.unauthorized_text),
                             icon = Icons.Default.Lock,
-                            confirmButtonText = "Login",
-                            dismissButtonText = "Dismiss"
+                            confirmButtonText = stringResource(R.string.login),
+                            dismissButtonText = stringResource(R.string.dismiss)
                         )
                     }
 

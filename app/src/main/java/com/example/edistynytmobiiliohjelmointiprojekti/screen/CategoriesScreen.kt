@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -78,8 +79,8 @@ fun CategoriesScreen(
             vm.setDeleteDone(false)
 
             val text =
-                if (vm.deleteState.value.success) "Category deleted"
-                else "Delete failed: Category has items!"
+                if (vm.deleteState.value.success) context.getString(R.string.category_delete_success)
+                else context.getString(R.string.category_delete_fail)
 
             val length =
                 if (vm.deleteState.value.success) Toast.LENGTH_SHORT
@@ -98,7 +99,7 @@ fun CategoriesScreen(
                         Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
                     }
                 },
-                title = { Text(text = "Categories") },
+                title = { Text(text = stringResource(R.string.categories)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -118,7 +119,7 @@ fun CategoriesScreen(
 
                 // In case of error
                 vm.categoriesState.value.error != null ->
-                    Text(text = "error: ${vm.categoriesState.value.error}")
+                    Text(text = "${vm.categoriesState.value.error}")
 
                 // Draw items
                 else -> LazyColumn(
@@ -224,8 +225,8 @@ fun CategoriesScreen(
                                 vm.setShowCreateDialog(false)
                                         },
                             notValidNames = vm.getNonValidNamesList(),
-                            title = "Create category",
-                            placeholder = "New Category"
+                            title = stringResource(R.string.create_category_title),
+                            placeholder = stringResource(R.string.create_category_placeholder)
                         )
                     }
 
@@ -249,11 +250,11 @@ fun CategoriesScreen(
                                 onLoginClick()
                                 vm.showUnauthorizedDialog.value = false
                             },
-                            dialogTitle = "Unauthorized",
-                            dialogText = "Please login to perform this action",
+                            dialogTitle = stringResource(R.string.unauthorized_title),
+                            dialogText = stringResource(R.string.unauthorized_text),
                             icon = Icons.Default.Lock,
-                            confirmButtonText = "Login",
-                            dismissButtonText = "Dismiss"
+                            confirmButtonText = stringResource(R.string.login),
+                            dismissButtonText = stringResource(R.string.dismiss)
                         )
                     }
 

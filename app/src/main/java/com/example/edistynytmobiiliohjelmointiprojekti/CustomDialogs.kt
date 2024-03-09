@@ -34,6 +34,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -79,7 +81,10 @@ fun CustomAlert(
                     onDismissRequest()
                 }
             ) {
-                Text(dismissButtonText)
+                Text(
+                    text = dismissButtonText,
+                    color = colorResource(R.color.delete)
+                )
             }
         }
     )
@@ -114,7 +119,7 @@ fun DeleteDialog(
                 )
                 Text(
                     style = MaterialTheme.typography.titleLarge,
-                    text = "Delete $name",
+                    text = "${stringResource(R.string.delete)} $name",
                     modifier = Modifier.padding(10.dp, 26.dp, 10.dp, 26.dp),
                 )
                 Row(
@@ -126,14 +131,21 @@ fun DeleteDialog(
                             onDismiss()
                         }
                     ) {
-                        Text(style = MaterialTheme.typography.bodyLarge, text = "Cancel")
+                        Text(
+                            style = MaterialTheme.typography.bodyLarge,
+                            text = stringResource(R.string.cancel)
+                        )
                     }
                     TextButton(
                         onClick = {
                             onConfirm()
                         }
                     ) {
-                        Text(style = MaterialTheme.typography.bodyLarge, text = "Delete", color = Color.Red)
+                        Text(
+                            style = MaterialTheme.typography.bodyLarge,
+                            text = stringResource(R.string.delete),
+                            color = colorResource(R.color.delete)
+                        )
                     }
                 }
             }
@@ -147,7 +159,7 @@ fun DeleteDialog(
 fun CreateNewDialog(
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit,
-    title: String = "Title here",
+    title: String = "",
     placeholder: String = "",
     notValidNames: List<String> = emptyList()
 ) {
@@ -184,7 +196,7 @@ fun CreateNewDialog(
                 // Error text
                 if (notValidNames.contains(nameState.value)) {
                     Text(
-                        text = "Category already exists!",
+                        text = stringResource(R.string.category_exists_alert),
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -228,7 +240,7 @@ fun CreateNewDialog(
                         onConfirm(nameState.value)
                     }
                 ) {
-                    Text(style = MaterialTheme.typography.bodyLarge, text = "Create")
+                    Text(style = MaterialTheme.typography.bodyLarge, text = stringResource(R.string.create))
                 }
             }
         }

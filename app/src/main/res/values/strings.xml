@@ -1,3 +1,52 @@
 <resources>
     <string name="app_name">EdistynytMobiiliohjelmointiProjekti</string>
+    <string name="drawer_menu_title">Rental App</string>
+
+
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit">Edit</string>
+    <string name="update">Update</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="create">Create</string>
+
+
+    <string name="create_account">Create account</string>
+    <string name="register">Register</string>
+    <string name="register_here">Register here</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="username_placeholder">Username</string>
+    <string name="password_placeholder">Password</string>
+    <string name="continue_as_quest">Continue as quest</string>
+    <string name="no_account">No account?</string>
+    <string name="user_not_found">User not found!</string>
+
+
+    <string name="category_delete_success">Categoria deleted</string>
+    <string name="category_delete_fail">Delete failed: Category has items!</string>
+    <string name="categories">Categories</string>
+    <string name="create_category_title">Create category</string>
+    <string name="create_category_placeholder">New category</string>
+    <string name="category_exists_alert">Name already exists!</string>
+    <string name="delete_category">Delete category</string>
+
+
+    <string name="create_item_title">Create item</string>
+    <string name="create_item_placeholder">New item"</string>
+
+
+    <string name="connection_lost">Connection lost, try again</string>
+
+
+    <string name="listed_on">Listed on</string>
+    <string name="by_user">by</string>
+    <string name="rental_status">Status</string>
+    <string name="at_time">at</string>
+    <string name="rented">Rented</string>
+    <string name="available">Available</string>
+
+
+    <string name="unauthorized_text">Please login to perform this action</string>
+    <string name="unauthorized_title">Unauthorized</string>
 </resources>

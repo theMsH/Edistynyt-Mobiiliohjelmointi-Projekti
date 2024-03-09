@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.CustomAlert
@@ -40,6 +41,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
+@Composable
 fun getFormattedTime(dateString: String): String {
     // Parse the date string to LocalDateTime
     val dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
@@ -48,7 +50,7 @@ fun getFormattedTime(dateString: String): String {
     val date = dateTime.format(DateTimeFormatter.ofPattern("d MMM uuuu"))
     val time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
 
-    return "$date at $time"
+    return "$date ${stringResource(R.string.at_time)} $time"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,7 +115,7 @@ fun RentalItemScreen(
 
                 // Error
                 vm.rentalItemState.value.error != null ->
-                    Text(text = "error: ${vm.rentalItemState.value.error}")
+                    Text(text = "${vm.rentalItemState.value.error}")
 
 
                 // Orientation: LandScape
@@ -134,10 +136,20 @@ fun RentalItemScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Spacer(modifier = Modifier.height(34.dp))
-                        Text(text = "Listed on ${getFormattedTime(vm.rentalItemState.value.rentalItem.createdAt)}")
-                        Text(text = "by ${vm.rentalItemState.value.rentalItem.createdByUser.username}")
+                        Text(text = stringResource(R.string.listed_on) + " " +
+                                getFormattedTime(vm.rentalItemState.value.rentalItem.createdAt)
+                        )
+                        Text(text = stringResource(R.string.by_user) + " " +
+                                vm.rentalItemState.value.rentalItem.createdByUser.username
+                        )
                         Spacer(modifier = Modifier.height(34.dp))
-                        Text(text = "Status: ${vm.rentalItemState.value.rentalItem.rentalState.rentalState}")
+                        Text(
+                            text =
+                            if (vm.rentalItemState.value.rentalItem.rentalState.rentalState == "free") {
+                                "${stringResource(R.string.rental_status)}: ${stringResource(R.string.available)}"
+                            }
+                            else "${stringResource(R.string.rental_status)}: ${stringResource(R.string.rented)}"
+                        )
                     }
                 }
 
@@ -152,10 +164,20 @@ fun RentalItemScreen(
                 ) {
                     RandomImage(600, vm.rentalItemState.value.rentalItem.rentalItemId)
                     Spacer(modifier = Modifier.height(34.dp))
-                    Text(text = "Listed on ${getFormattedTime(vm.rentalItemState.value.rentalItem.createdAt)}")
-                    Text(text = "by ${vm.rentalItemState.value.rentalItem.createdByUser.username}")
+                    Text(text = stringResource(R.string.listed_on) + " " +
+                            getFormattedTime(vm.rentalItemState.value.rentalItem.createdAt)
+                    )
+                    Text(text = stringResource(R.string.by_user) + " "  +
+                            vm.rentalItemState.value.rentalItem.createdByUser.username
+                    )
                     Spacer(modifier = Modifier.height(34.dp))
-                    Text(text = "Status: ${vm.rentalItemState.value.rentalItem.rentalState.rentalState}")
+                    Text(
+                        text =
+                        if (vm.rentalItemState.value.rentalItem.rentalState.rentalState == "free") {
+                            "${stringResource(R.string.rental_status)}: ${stringResource(R.string.available)}"
+                        }
+                        else "${stringResource(R.string.rental_status)}: ${stringResource(R.string.rented)}"
+                    )
                 }
             }
 
@@ -167,11 +189,11 @@ fun RentalItemScreen(
                         onLoginClick()
                         vm.showUnauthorizedDialog.value = false
                     },
-                    dialogTitle = "Unauthorized",
-                    dialogText = "Please login to perform this action",
+                    dialogTitle = stringResource(R.string.unauthorized_title),
+                    dialogText = stringResource(R.string.unauthorized_text),
                     icon = Icons.Default.Lock,
-                    confirmButtonText = "Login",
-                    dismissButtonText = "Dismiss"
+                    confirmButtonText = stringResource(R.string.login),
+                    dismissButtonText = stringResource(R.string.dismiss)
                 )
             }
         }
