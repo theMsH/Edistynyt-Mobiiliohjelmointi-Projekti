@@ -49,9 +49,6 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
 
                 val response = rentalItemsService.getRentalItem(_rentalItemId)
                 _rentalItemState.value = _rentalItemState.value.copy(rentalItem = response, rentalItemTitle = response.rentalItemName)
-
-                //_rentalItemTitle.value = response.rentalItemName
-
             }
             catch (e: Exception) {
                 Log.d("error getRentalItem", "$e")
