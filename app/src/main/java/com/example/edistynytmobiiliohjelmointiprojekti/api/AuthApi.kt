@@ -16,4 +16,5 @@ interface AuthApi {
 
     @POST("auth/register")
     suspend fun register(@Body loginReq: LoginReq) : Account
+
 }

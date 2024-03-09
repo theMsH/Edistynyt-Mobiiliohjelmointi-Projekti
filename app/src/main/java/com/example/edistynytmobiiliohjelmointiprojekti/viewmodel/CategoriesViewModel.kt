@@ -10,6 +10,8 @@ import com.example.edistynytmobiiliohjelmointiprojekti.api.rentalItemsService
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoriesState
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryReq
+import com.example.edistynytmobiiliohjelmointiprojekti.model.CreateState
+import com.example.edistynytmobiiliohjelmointiprojekti.model.DeleteState
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemsState
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -18,14 +20,44 @@ class CategoriesViewModel : ViewModel() {
     private val _categoriesState = mutableStateOf(CategoriesState())
     val categoriesState: State<CategoriesState> = _categoriesState
 
-    val showDeleteDialog = mutableStateOf(false)
-    val showCreateNewDialog = mutableStateOf(false)
+    private val _deleteState = mutableStateOf(DeleteState())
+    val deleteState: State<DeleteState> = _deleteState
+
+    private val _createState = mutableStateOf(CreateState())
+    val createState: State<CreateState> = _createState
+
     val showUnauthorizedDialog = mutableStateOf(false)
-    val selectedCategoryItem = mutableStateOf(CategoryItem())
 
 
     init {
         getCategories()
+    }
+
+    fun setShowDeleteDialog(show: Boolean) {
+        _deleteState.value = _deleteState.value.copy(showDialog = show)
+    }
+
+    fun setShowCreateDialog(show: Boolean) {
+        _createState.value = _createState.value.copy(showDialog = show)
+    }
+
+    fun setSelectedCategoryItem(categoryItem: CategoryItem) {
+        _deleteState.value = _deleteState.value.copy(selectedCategoryItem = categoryItem)
+    }
+
+    fun setDeleteDone(done: Boolean) {
+        _deleteState.value = _deleteState.value.copy(done = done)
+    }
+
+    // Get list of names used for categories. Used in creating new category.
+    fun getNonValidNamesList() : List<String> {
+        var notValidNamesList: Array<String> = emptyArray()
+
+        for (category in _categoriesState.value.list) {
+            notValidNamesList += category.categoryName
+        }
+
+        return notValidNamesList.toList()
     }
 
     private fun getCategories() {
@@ -46,7 +78,7 @@ class CategoriesViewModel : ViewModel() {
         }
     }
 
-    fun deleteCategory(categoryId: Int, deleteToast: (Boolean) -> Unit) {
+    fun deleteCategory(categoryId: Int) {
         Log.d("deleteCategory", "CategoryId: $categoryId")
 
         val rentalItemsState = mutableStateOf(RentalItemsState())
@@ -54,37 +86,39 @@ class CategoriesViewModel : ViewModel() {
         viewModelScope.launch {
             // Check contents of category by given id
             try {
+                _deleteState.value = _deleteState.value.copy(loading = true)
+
+                // Get rentalItems of category.
                 val response = rentalItemsService.getRentalItems(categoryId)
                 rentalItemsState.value = rentalItemsState.value.copy(list = response.rentalItems)
-            }
-            catch (e: Exception) {
-                Log.d("error getRentalItems in DeleteCategory()","$e")
-            }
-            finally {
-                // Try delete category if empty
+
+                // If no items found, continue to post.
                 if (rentalItemsState.value.list.isEmpty()) {
-                    try {
-                        categoriesService.deleteCategoryById(categoryId)
+                    categoriesService.deleteCategoryById(categoryId)
 
-                        // Filteröidään kategorialistaan kaikki kategoriat, joiden id on eri kuin valittu id.
-                        val categories =_categoriesState.value.list.filter {
-                            // Jos palautuu false, se filteröityy pois
-                            it.categoryId != categoryId
-                        }
-                        // Päivitetään lista
-                        _categoriesState.value =_categoriesState.value.copy(list = categories)
+                    // Filter categories into categoryList that has different categoryId than selected category.
+                    val categories = _categoriesState.value.list.filter {
+                        // false = filter out
+                        it.categoryId != categoryId
+                    }
 
-                        Log.d("DeleteCategory()", "category deleted")
-                        deleteToast(true)
-                    }
-                    catch (e: Exception) {
-                        Log.d("error DeleteCategory()", "$e")
-                    }
+                    // Update list
+                    _categoriesState.value = _categoriesState.value.copy(list = categories)
+
+                    Log.d("DeleteCategory()", "category deleted")
+                    _deleteState.value = _deleteState.value.copy(done = true, success = true)
                 }
                 else {
                     Log.d("DeleteCategory()", "category has items inside")
-                    deleteToast(false)
+                    _deleteState.value = _deleteState.value.copy(done = true, success = false)
                 }
+            }
+            catch (e: Exception) {
+                Log.d("error DeleteCategory()","$e")
+                _deleteState.value = _deleteState.value.copy(error = e.toString())
+            }
+            finally {
+                _deleteState.value = _deleteState.value.copy(loading = false)
             }
         }
     }
@@ -92,20 +126,18 @@ class CategoriesViewModel : ViewModel() {
     fun postCategory(categoryName: String) {
         viewModelScope.launch {
             try {
+                _createState.value = _createState.value.copy(loading = true)
                 val response = categoriesService.postCategory(CategoryReq(categoryName))
 
-                // Option 1: muokataan lista, jolloin vältytään ylimääräiseltä api kutsulta
-                // Option 2: pyyhitään alla oleva ja kutsutaan simppelisti getCategories()
-
-                // Luodaan repsonsesta uusi categoryitem
+                // Create new item from response
                 val newCategoryItem = CategoryItem(
                     response.categoryId,
                     response.categoryName
                 )
 
-                // Lisätään luotu categoria categoriesstaten listaan.
+                // Add into categoriesState list
                 val categories = (_categoriesState.value.list + newCategoryItem)
-                    // Järjestetään lista, jottei se ole aina eri järjestyksessä
+                    // Order list so it doesn't pop around randomly
                     .sortedBy { categoryItem ->
                         categoryItem.categoryName.replaceFirstChar {
                             if (it.isLowerCase()) it.titlecase(Locale.ROOT)
@@ -113,24 +145,17 @@ class CategoriesViewModel : ViewModel() {
                         }
                     }
 
-                // Päivitetään lista
+                // Update list
                 _categoriesState.value = _categoriesState.value.copy(list = categories)
             }
             catch (e: Exception) {
                 Log.d("error PostCategory()", "$e")
+                _createState.value = _createState.value.copy(error = e.toString())
+            }
+            finally {
+                _createState.value = _createState.value.copy(loading = false)
             }
         }
-    }
-
-    // Get list of names used for categories. Used in creating new category.
-    fun getNonValidNamesList(categories: List<CategoryItem>) : List<String> {
-        var notValidNamesList: Array<String> = emptyArray()
-
-        for (category in categories) {
-            notValidNamesList += category.categoryName
-        }
-
-        return notValidNamesList.toList()
     }
 
 }

@@ -31,18 +31,31 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.edistynytmobiiliohjelmointiprojekti.MyAlert
+import com.example.edistynytmobiiliohjelmointiprojekti.CustomAlert
 import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
+import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditRentalItemViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
+
+fun getFormattedTime(dateString: String): String {
+    // Parse the date string to LocalDateTime
+    val dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
+
+    // Format the LocalDateTime to a custom pattern
+    val date = dateTime.format(DateTimeFormatter.ofPattern("d MMM uuuu"))
+    val time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+    return "$date at $time"
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RentalItemScreen(
     goBack: () -> Unit,
-    goToEditRentalItemScreen: (Int, Int, String) -> Unit,
+    goToEditRentalItemScreen: (rentalItem: Int, CategoryItem) -> Unit,
     onLoginClick: () -> Unit
 ) {
     val vm: EditRentalItemViewModel = viewModel()
@@ -72,8 +85,7 @@ fun RentalItemScreen(
                             else {
                                 goToEditRentalItemScreen(
                                     vm.rentalItemState.value.rentalItem.rentalItemId,
-                                    vm.rentalItemState.value.rentalItem.category.categoryId,
-                                    vm.rentalItemState.value.rentalItem.category.categoryName
+                                    vm.categoryItem
                                 )
                             }
                         }
@@ -149,7 +161,7 @@ fun RentalItemScreen(
 
             // Unauthorized action dialog
             if (vm.showUnauthorizedDialog.value) {
-                MyAlert(
+                CustomAlert(
                     onDismissRequest = { vm.showUnauthorizedDialog.value = false },
                     onConfirmation = {
                         onLoginClick()
@@ -166,15 +178,3 @@ fun RentalItemScreen(
     }
 
 }
-
-fun getFormattedTime(dateString: String): String {
-    // Parse the date string to LocalDateTime
-    val dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
-
-    // Format the LocalDateTime to a custom pattern
-    val date = dateTime.format(DateTimeFormatter.ofPattern("d MMM uuuu"))
-    val time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-
-    return "$date at $time"
-}
-

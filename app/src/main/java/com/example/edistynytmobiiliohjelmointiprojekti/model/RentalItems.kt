@@ -3,7 +3,7 @@ package com.example.edistynytmobiiliohjelmointiprojekti.model
 import com.google.gson.annotations.SerializedName
 
 data class RentalItemsState(
-    val categoryName: String = "",
+    val categoryItem: CategoryItem = CategoryItem(),
     val list: List<RentalItemsByCategory> = emptyList(),
     val loading: Boolean = false,
     val error: String? = null
@@ -12,7 +12,15 @@ data class RentalItemsState(
 data class RentalItemState(
     val rentalItem: RentalItem = RentalItem(),
     val loading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val done: Boolean = false
+)
+
+data class RentalState(
+    @SerializedName("rental_item_state_id")
+    val rentalStateId: Int = 0,
+    @SerializedName("rental_item_state")
+    val rentalState: String = ""
 )
 
 data class RentalItemsByCategory(
@@ -20,20 +28,6 @@ data class RentalItemsByCategory(
     val rentalItemId: Int,
     @SerializedName("rental_item_name")
     val rentalItemName: String
-)
-
-data class RentalItemsRes(
-    @SerializedName("items")
-    val rentalItems: List<RentalItemsByCategory> = emptyList()
-)
-
-data class RentalItemPostReq(
-    @SerializedName("rental_item_name")
-    val rentalItemName: String = "",
-    //@SerializedName("rental_item_description")
-    //val rentalItemDesc: String = "",
-    //@SerializedName("serial_number")
-    //val rentalItemSerial: String = ""
 )
 
 data class RentalItem(
@@ -57,14 +51,21 @@ data class RentalItem(
     val deletedAt: String? = null
 )
 
-data class RentalState(
-    @SerializedName("rental_item_state_id")
-    val rentalStateId: Int = 0,
-    @SerializedName("rental_item_state")
-    val rentalState: String = ""
-)
-
 data class UpdateRentalItemNameReq (
     @SerializedName("rental_item_name")
     val rentalItemName: String = ""
+)
+
+data class RentalItemPostReq(
+    @SerializedName("rental_item_name")
+    val rentalItemName: String = "",
+    //@SerializedName("rental_item_description")
+    //val rentalItemDesc: String = "",
+    //@SerializedName("serial_number")
+    //val rentalItemSerial: String = ""
+)
+
+data class RentalItemsRes(
+    @SerializedName("items")
+    val rentalItems: List<RentalItemsByCategory> = emptyList()
 )

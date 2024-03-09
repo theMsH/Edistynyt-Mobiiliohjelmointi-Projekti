@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiiliohjelmointiprojekti.api.rentalItemsService
+import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemState
 import com.example.edistynytmobiiliohjelmointiprojekti.model.UpdateRentalItemNameReq
 import kotlinx.coroutines.launch
@@ -16,18 +17,30 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
     private val _rentalItemState = mutableStateOf(RentalItemState())
     val rentalItemState: State<RentalItemState> = _rentalItemState
 
-    val showUnauthorizedDialog = mutableStateOf(false)
-
-    private val rentalItemId = savedStateHandle.get<String>("rentalItemId")?.toIntOrNull() ?: 0
-    private val categoryId = savedStateHandle.get<String>("categoryItemId")?.toIntOrNull() ?: 0
-    private val categoryName = savedStateHandle.get<String>("categoryItemName")?.toString() ?: ""
-
     private val _rentalItemTitle = mutableStateOf("")
     val rentalItemTitle: State<String> = _rentalItemTitle
+
+    private val _rentalItemId = savedStateHandle.get<String>("rentalItemId")?.toIntOrNull() ?: 0
+    private val _categoryItem = CategoryItem(
+        categoryId = savedStateHandle.get<String>("categoryItemId")?.toIntOrNull() ?: 0,
+        categoryName = savedStateHandle.get<String>("categoryItemName")?.toString() ?: ""
+    )
+    val categoryItem = _categoryItem
+
+    val showUnauthorizedDialog = mutableStateOf(false)
 
 
     init {
         getRentalItem()
+    }
+
+    fun setDone(done: Boolean) {
+        _rentalItemState.value = _rentalItemState.value.copy(done = done)
+    }
+
+    fun setRentalItemName(newName: String) {
+        val updatedItem = _rentalItemState.value.rentalItem.copy(rentalItemName = newName)
+        _rentalItemState.value = _rentalItemState.value.copy(rentalItem = updatedItem)
     }
 
     private fun getRentalItem() {
@@ -36,7 +49,7 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
             try {
                 _rentalItemState.value = _rentalItemState.value.copy(loading = true)
 
-                val response = rentalItemsService.getRentalItem(rentalItemId)
+                val response = rentalItemsService.getRentalItem(_rentalItemId)
                 _rentalItemState.value = _rentalItemState.value.copy(rentalItem = response)
 
                 _rentalItemTitle.value = response.rentalItemName
@@ -52,18 +65,19 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
         }
     }
 
-    fun updateRentalItemName(goToRentalItemsScreen: (Int, String) -> Unit) {
+    fun updateRentalItemName() {
         viewModelScope.launch {
             try {
                 _rentalItemState.value = _rentalItemState.value.copy(loading = true)
 
                 val response = rentalItemsService.updateRentalItemName(
-                    rentalItemId,
+                    _rentalItemId,
                     UpdateRentalItemNameReq(_rentalItemState.value.rentalItem.rentalItemName)
                 )
-                _rentalItemState.value = _rentalItemState.value.copy(rentalItem = response)
-
-                goToRentalItemsScreen(categoryId, categoryName)
+                _rentalItemState.value = _rentalItemState.value.copy(
+                    rentalItem = response,
+                    done = true
+                )
             }
             catch (e: Exception) {
                 Log.d("error updateRentalItemName", "$e")
@@ -74,11 +88,6 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
             }
         }
 
-    }
-
-    fun setRentalItemName(newName: String) {
-        val updatedItem = _rentalItemState.value.rentalItem.copy(rentalItemName = newName)
-        _rentalItemState.value = _rentalItemState.value.copy(rentalItem = updatedItem)
     }
 
 }

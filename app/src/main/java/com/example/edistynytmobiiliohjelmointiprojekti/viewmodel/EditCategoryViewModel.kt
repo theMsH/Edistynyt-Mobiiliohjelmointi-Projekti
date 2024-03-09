@@ -7,52 +7,45 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiiliohjelmointiprojekti.api.categoriesService
+import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryState
 import kotlinx.coroutines.launch
 
 class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
-    // Haetaan välitetystä routesta id. Se tunnistaa routen stringistä {id} muuttujana.
-    // Sieltä voi palautua myös null, joten "elvis operatorilla" ( ?: ) asetetaan se 0.
-    val id = savedStateHandle.get<String>("categoryId")?.toIntOrNull() ?: 0
-
     private val _categoryState = mutableStateOf(CategoryState())
     val categoryState: State<CategoryState> = _categoryState
 
+    private val _nonValidNamesList = savedStateHandle.get<String>("nonValidNamesList") ?: ""
+    private val _categoryId = savedStateHandle.get<String>("categoryId")?.toIntOrNull() ?: 0
+
     // Used for static TopAppBar title
     var categoryTitle = ""
-    // Used for checking duplicate categoryNames
-    var categoryNamesList: List<String> = emptyList()
 
 
     init {
         getCategoryById()
-        getCategoryNamesList()
+        initNonValidNamesList()
+    }
+
+    // Used for checking duplicate categoryNames
+    private fun initNonValidNamesList() {
+        val nonValidNamesString = _nonValidNamesList.removeSurrounding("[","]")
+        val nonValidNamesList = nonValidNamesString.split(", ")
+        _categoryState.value = _categoryState.value.copy(nonValidNamesList = nonValidNamesList)
     }
 
     fun setCategoryName(newCategoryName: String) {
-        _categoryState.value = _categoryState.value.copy(categoryName = newCategoryName)
+        _categoryState.value = _categoryState.value.copy(
+            categoryItem = CategoryItem(
+                _categoryId,
+                newCategoryName
+            )
+        )
     }
 
-    fun updateCategoryById(goToCategoriesScreen: () -> Unit) {
-        viewModelScope.launch {
-            try {
-                _categoryState.value = _categoryState.value.copy(loading = true)
-
-                categoriesService.updateCategoryById(
-                    id,
-                    CategoryReq(_categoryState.value.categoryName)
-                )
-                goToCategoriesScreen()
-            }
-            catch (e: Exception) {
-                Log.d("error getCategoryById()", "$e")
-                _categoryState.value = _categoryState.value.copy(error = e.toString())
-            }
-            finally {
-                _categoryState.value = _categoryState.value.copy(loading = false)
-            }
-        }
+    fun setDone(done: Boolean) {
+        _categoryState.value = _categoryState.value.copy(done = done)
     }
 
     private fun getCategoryById() {
@@ -60,11 +53,14 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             try {
                 _categoryState.value = _categoryState.value.copy(loading = true)
 
-                val response = categoriesService.getCategoryById(id)
-                _categoryState.value =
-                    _categoryState.value.copy(categoryName = response.category.categoryName)
-
-                categoryTitle = _categoryState.value.categoryName
+                val response = categoriesService.getCategoryById(_categoryId)
+                _categoryState.value = _categoryState.value.copy(
+                        categoryItem = CategoryItem(
+                            response.category.categoryId,
+                            response.category.categoryName
+                        )
+                    )
+                categoryTitle = _categoryState.value.categoryItem.categoryName
             }
             catch (e: Exception) {
                 Log.d("error getCategoryById()", "$e")
@@ -76,20 +72,23 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         }
     }
 
-
-    private fun getCategoryNamesList() {
+    fun updateCategoryById() {
         viewModelScope.launch {
             try {
-                val categoriesRes = categoriesService.getCategories()
+                _categoryState.value = _categoryState.value.copy(loading = true)
 
-                for (category in categoriesRes.categories) {
-                    if (category.categoryName != categoryTitle) {
-                        categoryNamesList += category.categoryName
-                    }
-                }
+                categoriesService.updateCategoryById(
+                    _categoryId,
+                    CategoryReq(_categoryState.value.categoryItem.categoryName)
+                )
+                setDone(true)
             }
             catch (e: Exception) {
-                Log.d("error getAvailableNames()", "$e")
+                Log.d("error getCategoryById()", "$e")
+                _categoryState.value = _categoryState.value.copy(error = e.toString())
+            }
+            finally {
+                _categoryState.value = _categoryState.value.copy(loading = false)
             }
         }
     }

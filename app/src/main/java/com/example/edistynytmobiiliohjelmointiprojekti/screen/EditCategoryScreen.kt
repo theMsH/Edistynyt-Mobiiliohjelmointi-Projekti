@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -45,6 +46,13 @@ fun EditCategoryScreen(
 ) {
     val vm : EditCategoryViewModel = viewModel()
     val configuration = LocalConfiguration.current
+
+    LaunchedEffect(key1 = vm.categoryState.value.done) {
+        if (vm.categoryState.value.done) {
+            vm.setDone(false)
+            goToCategoriesScreen()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -85,11 +93,12 @@ fun EditCategoryScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    RandomImage(600, vm.id)
+                    RandomImage(600, vm.categoryState.value.categoryItem.categoryId)
 
-                    if (vm.categoryNamesList.contains(vm.categoryState.value.categoryName)
-                        && vm.categoryState.value.categoryName != vm.categoryTitle
-                    ) {
+                    if (vm.categoryState.value.nonValidNamesList.contains(
+                            vm.categoryState.value.categoryItem.categoryName)
+                        &&
+                        vm.categoryState.value.categoryItem.categoryName != vm.categoryTitle) {
                         Text(
                             modifier = Modifier.padding(vertical = 10.dp),
                             text = "Category already exists!",
@@ -100,7 +109,7 @@ fun EditCategoryScreen(
                     OutlinedTextField(
                         singleLine = true,
                         modifier = Modifier.requiredWidth(280.dp),
-                        value = vm.categoryState.value.categoryName,
+                        value = vm.categoryState.value.categoryItem.categoryName,
                         onValueChange = {
                             vm.setCategoryName(it)
                         },
@@ -122,12 +131,15 @@ fun EditCategoryScreen(
                         Spacer(modifier = Modifier.width(32.dp))
 
                         Button(
-                            onClick = { vm.updateCategoryById(goToCategoriesScreen) },
+                            onClick = { vm.updateCategoryById() },
                             modifier = Modifier.size(120.dp, 40.dp),
                             enabled = (
-                                    vm.categoryState.value.categoryName != ""
-                                    && !vm.categoryNamesList.contains(vm.categoryState.value.categoryName)
-                                    && vm.categoryState.value.categoryName != vm.categoryTitle
+                                    vm.categoryState.value.categoryItem.categoryName != ""
+                                    &&
+                                    !vm.categoryState.value.nonValidNamesList.contains(
+                                        vm.categoryState.value.categoryItem.categoryName)
+                                    &&
+                                    vm.categoryState.value.categoryItem.categoryName != vm.categoryTitle
                                     )
                         ) {
                             Text(text = "Update")
@@ -139,12 +151,16 @@ fun EditCategoryScreen(
 
                 // Orientation: Horizontal
                 else -> Column(
-                    modifier = Modifier.fillMaxSize().padding(top = 24.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 24.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (vm.categoryNamesList.contains(vm.categoryState.value.categoryName)
-                        && vm.categoryState.value.categoryName != vm.categoryTitle) {
+                    if (vm.categoryState.value.nonValidNamesList.contains(
+                            vm.categoryState.value.categoryItem.categoryName)
+                        &&
+                        vm.categoryState.value.categoryItem.categoryName != vm.categoryTitle) {
                         Text(
                             modifier = Modifier.padding(vertical = 10.dp),
                             text = "Category already exists!",
@@ -155,7 +171,7 @@ fun EditCategoryScreen(
                     OutlinedTextField(
                         singleLine = true,
                         modifier = Modifier.requiredWidth(280.dp),
-                        value = vm.categoryState.value.categoryName,
+                        value = vm.categoryState.value.categoryItem.categoryName,
                         onValueChange = {
                             vm.setCategoryName(it)
                         },
@@ -177,12 +193,15 @@ fun EditCategoryScreen(
                         Spacer(modifier = Modifier.width(32.dp))
 
                         Button(
-                            onClick = { vm.updateCategoryById(goToCategoriesScreen) },
+                            onClick = { vm.updateCategoryById() },
                             modifier = Modifier.size(120.dp,40.dp),
                             enabled = (
-                                    vm.categoryState.value.categoryName != "" &&
-                                    !vm.categoryNamesList.contains(vm.categoryState.value.categoryName)
-                                    && vm.categoryState.value.categoryName != vm.categoryTitle
+                                    vm.categoryState.value.categoryItem.categoryName != ""
+                                    &&
+                                    !vm.categoryState.value.nonValidNamesList.contains(
+                                        vm.categoryState.value.categoryItem.categoryName)
+                                    &&
+                                    vm.categoryState.value.categoryItem.categoryName != vm.categoryTitle
                                     )
                         ) {
                             Text(text = "Update")

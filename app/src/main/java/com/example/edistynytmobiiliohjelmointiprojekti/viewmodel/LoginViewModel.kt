@@ -12,25 +12,41 @@ import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginRes
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginState
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class LoginViewModel : ViewModel() {
     private val _loginState = mutableStateOf(LoginState())
     val loginState: State<LoginState> = _loginState
 
     private val _user = mutableStateOf(LoginRes())
-    val user: State<LoginRes> = _user
 
-    fun setUsername(userInput: String) {
-        _loginState.value = _loginState.value.copy(username = userInput)
+
+    fun setUsername(username: String) {
+        _loginState.value = _loginState.value.copy(username = username)
     }
 
-    fun setPassword(userInput: String) {
-        _loginState.value = _loginState.value.copy(password = userInput)
+    fun setPassword(password: String) {
+        _loginState.value = _loginState.value.copy(password = password)
     }
 
-    fun login(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit) {
+    fun setDone(done: Boolean) {
+        _loginState.value = _loginState.value.copy(done = done)
+    }
+
+    fun clearError() {
+        _loginState.value = _loginState.value.copy(error = null)
+    }
+
+    fun toggleShowPassword() {
+        if (_loginState.value.showPassword) {
+            _loginState.value = _loginState.value.copy(showPassword = false)
+        }
+        else _loginState.value = _loginState.value.copy(showPassword = true)
+    }
+
+    fun login() {
         viewModelScope.launch {
-            try{
+            try {
                 _loginState.value = _loginState.value.copy(loading = true)
 
                 _user.value = authService.login(
@@ -39,14 +55,16 @@ class LoginViewModel : ViewModel() {
                         password = _loginState.value.password
                     )
                 )
-                onLoginSuccess()
-
                 authInterceptor.updateToken(_user.value.accessToken)
+                _loginState.value = _loginState.value.copy(done = true)
             }
             catch (e: Exception) {
                 Log.d("error login()", "$e")
-                _loginState.value = _loginState.value.copy(error = e.toString())
-                onLoginFail()
+                if (e is HttpException) {
+                    _loginState.value = _loginState.value.copy(error = e.code().toString())
+                }
+                else _loginState.value = _loginState.value.copy(error = e.toString())
+
             }
             finally {
                 _loginState.value = _loginState.value.copy(loading = false)
@@ -54,7 +72,14 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun createNewUser(onRegisterClick: () -> Unit) {
+    fun logout() {
+        viewModelScope.launch {
+            _user.value = _user.value.copy(accessToken = "", account = Account())
+            authInterceptor.updateToken("")
+        }
+    }
+
+    fun createNewUser() {
         viewModelScope.launch {
             try {
                 _loginState.value = _loginState.value.copy(loading = true)
@@ -65,30 +90,18 @@ class LoginViewModel : ViewModel() {
                         _loginState.value.password
                     )
                 )
-
-                onRegisterClick()
+                _loginState.value = _loginState.value.copy(done = true)
             }
             catch (e: Exception) {
                 Log.d("error createNewUser()", "$e")
-                _loginState.value = _loginState.value.copy(error = e.toString())
+                if (e is HttpException) {
+                    _loginState.value = _loginState.value.copy(error = e.code().toString())
+                }
+                else _loginState.value = _loginState.value.copy(error = e.toString())
             }
             finally {
                 _loginState.value = _loginState.value.copy(loading = false)
             }
-        }
-    }
-
-    fun toggleShowPassword() {
-        if (_loginState.value.showPassword) {
-            _loginState.value = _loginState.value.copy(showPassword = false)
-        }
-        else _loginState.value = _loginState.value.copy(showPassword = true)
-    }
-
-    fun logout() {
-        viewModelScope.launch {
-            _user.value = _user.value.copy(accessToken = "", account = Account())
-            authInterceptor.updateToken("")
         }
     }
 

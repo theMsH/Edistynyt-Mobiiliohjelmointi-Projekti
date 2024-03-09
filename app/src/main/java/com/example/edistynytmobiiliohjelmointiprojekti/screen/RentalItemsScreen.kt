@@ -1,6 +1,5 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -38,18 +38,19 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewDialog
-import com.example.edistynytmobiiliohjelmointiprojekti.MyAlert
+import com.example.edistynytmobiiliohjelmointiprojekti.CustomAlert
 import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
+import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.RentalItemsViewModel
 
-@SuppressLint("CoroutineCreationDuringComposition")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RentalItemsScreen(
     goBack: () -> Unit,
-    goToEditRentalItemScreen: (Int, Int, String) -> Unit,
-    goToRentalItemScreen: (Int, Int, String) -> Unit,
+    goToEditRentalItemScreen: (itemId: Int, CategoryItem) -> Unit,
+    goToRentalItemScreen: (itemId: Int, CategoryItem) -> Unit,
     onLoginClick: () -> Unit
 ) {
     val vm: RentalItemsViewModel = viewModel()
@@ -65,7 +66,7 @@ fun RentalItemsScreen(
                         )
                     }
                                  },
-                title = { Text(text = vm.rentalItemsState.value.categoryName) },
+                title = { Text(text = vm.rentalItemsState.value.categoryItem.categoryName) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -101,8 +102,8 @@ fun RentalItemsScreen(
                             contentPadding = PaddingValues(0.dp),
                             shape = RectangleShape,
                             onClick = {
-                                Log.d("rental itemclick", it.rentalItemName)
-                                goToRentalItemScreen(it.rentalItemId, vm.categoryId, vm.categoryName)
+                                Log.d("rental itemClick", it.rentalItemName)
+                                goToRentalItemScreen(it.rentalItemId, vm.categoryItem)
                             }
                         ) {
                             Row(
@@ -146,8 +147,7 @@ fun RentalItemsScreen(
                                                 else {
                                                     goToEditRentalItemScreen(
                                                         it.rentalItemId,
-                                                        vm.categoryId,
-                                                        vm.categoryName
+                                                        vm.categoryItem
                                                     )
                                                 }
                                             }
@@ -172,41 +172,55 @@ fun RentalItemsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
+                when {
+                    // Create new category dialog
+                    vm.createState.value.showDialog -> {
+                        CreateNewDialog(
+                            onDismiss = {  },
+                            onConfirm = {
+                                vm.postNewItem(it)
+                                vm.setShowCreateDialog(false)
+                            },
+                            title = "Create item",
+                            placeholder = "New Item"
+                        )
+                    }
+
+
+                    // Unauthorized action dialog
+                    vm.showUnauthorizedDialog.value -> {
+                        CustomAlert(
+                            onDismissRequest = { vm.showUnauthorizedDialog.value = false },
+                            onConfirmation = {
+                                onLoginClick()
+                                vm.showUnauthorizedDialog.value = false
+                            },
+                            dialogTitle = "Unauthorized",
+                            dialogText = "Please login to perform this action",
+                            icon = Icons.Default.Lock,
+                            confirmButtonText = "Login",
+                            dismissButtonText = "Dismiss"
+                        )
+                    }
+
+                    vm.createState.value.loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .wrapContentSize(Alignment.Center)
+                        )
+                    }
+                }
+
                 FloatingActionButton(
                     onClick = {
                         if (authInterceptor.hasEmptyToken()) {
                             vm.showUnauthorizedDialog.value = true
                         }
-                        else vm.showCreateNewRentalItemDialog.value = true
+                        else vm.setShowCreateDialog(true)
                     }
                 ) {
                     Icon(Icons.Filled.Add, "Floating action button.")
-                }
-
-                // Create new category dialog
-                if (vm.showCreateNewRentalItemDialog.value) {
-                    CreateNewDialog(
-                        showCreateNewDialog = vm.showCreateNewRentalItemDialog,
-                        onConfirm = { vm.postNewItem(it) },
-                        title = "Create item",
-                        placeholder = "New Item"
-                    )
-                }
-
-                // Unauthorized action dialog
-                if (vm.showUnauthorizedDialog.value) {
-                    MyAlert(
-                        onDismissRequest = { vm.showUnauthorizedDialog.value = false },
-                        onConfirmation = {
-                            onLoginClick()
-                            vm.showUnauthorizedDialog.value = false
-                        },
-                        dialogTitle = "Unauthorized",
-                        dialogText = "Please login to perform this action",
-                        icon = Icons.Default.Lock,
-                        confirmButtonText = "Login",
-                        dismissButtonText = "Dismiss"
-                    )
                 }
             }
         }

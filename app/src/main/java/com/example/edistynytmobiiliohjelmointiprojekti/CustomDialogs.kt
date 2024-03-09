@@ -24,7 +24,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -43,7 +42,7 @@ import androidx.compose.ui.window.Dialog
 
 
 @Composable
-fun MyAlert(
+fun CustomAlert(
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
     dialogTitle: String,
@@ -89,11 +88,11 @@ fun MyAlert(
 
 @Composable
 fun DeleteDialog(
-    showDeleteDialog: MutableState<Boolean>,
     name: String,
+    onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    Dialog(onDismissRequest = { showDeleteDialog.value = false }) {
+    Dialog(onDismissRequest = { onDismiss() }) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -124,14 +123,13 @@ fun DeleteDialog(
                 ) {
                     TextButton(
                         onClick = {
-                            showDeleteDialog.value = false
+                            onDismiss()
                         }
                     ) {
                         Text(style = MaterialTheme.typography.bodyLarge, text = "Cancel")
                     }
                     TextButton(
                         onClick = {
-                            showDeleteDialog.value = false
                             onConfirm()
                         }
                     ) {
@@ -147,8 +145,8 @@ fun DeleteDialog(
 
 @Composable
 fun CreateNewDialog(
-    showCreateNewDialog: MutableState<Boolean>,
     onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
     title: String = "Title here",
     placeholder: String = "",
     notValidNames: List<String> = emptyList()
@@ -164,7 +162,7 @@ fun CreateNewDialog(
         textState.value = textState.value.copy(nameState.value, TextRange(nameState.value.length))
     }
 
-    Dialog(onDismissRequest = { showCreateNewDialog.value = false }) {
+    Dialog(onDismissRequest = { onDismiss() }) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -217,7 +215,6 @@ fun CreateNewDialog(
                         onGo = {
                             if (nameState.value != "") {
                                 defaultKeyboardAction(imeAction = ImeAction.Done)
-                                showCreateNewDialog.value = false
                                 onConfirm(nameState.value)
                             }
                         }
@@ -228,7 +225,6 @@ fun CreateNewDialog(
                     enabled = nameState.value != ""
                             && !notValidNames.contains(nameState.value),
                     onClick = {
-                        showCreateNewDialog.value = false
                         onConfirm(nameState.value)
                     }
                 ) {

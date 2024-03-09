@@ -4,14 +4,15 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 
+
 val authInterceptor = AuthInterceptor("")
 
 val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(authInterceptor)
     .build()
 
-class AuthInterceptor(private var token: String) : Interceptor {
 
+class AuthInterceptor(private var token: String) : Interceptor {
     fun updateToken(newToken: String) {
         this.token = newToken
     }

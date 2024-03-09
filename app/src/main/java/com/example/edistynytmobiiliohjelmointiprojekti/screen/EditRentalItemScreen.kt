@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -34,13 +35,25 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditRentalItemViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditRentalItemScreen(goBack: () -> Unit, goToRentalItemsScreen: (Int, String) -> Unit) {
+fun EditRentalItemScreen(
+    goBack: () -> Unit,
+    goToRentalItemsScreen: (CategoryItem) -> Unit
+) {
     val vm: EditRentalItemViewModel = viewModel()
     val configuration = LocalConfiguration.current
+
+    LaunchedEffect(key1 = vm.rentalItemState.value.done) {
+        if (vm.rentalItemState.value.done) {
+            vm.setDone(false)
+            goToRentalItemsScreen(vm.categoryItem)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -111,7 +124,7 @@ fun EditRentalItemScreen(goBack: () -> Unit, goToRentalItemsScreen: (Int, String
                         Spacer(modifier = Modifier.width(32.dp))
 
                         Button(
-                            onClick = { vm.updateRentalItemName(goToRentalItemsScreen) },
+                            onClick = { vm.updateRentalItemName() },
                             modifier = Modifier.size(120.dp,40.dp),
                             enabled = (
                                     vm.rentalItemState.value.rentalItem.rentalItemName != ""
@@ -127,7 +140,9 @@ fun EditRentalItemScreen(goBack: () -> Unit, goToRentalItemsScreen: (Int, String
 
                 // Orientation: Horizontal
                 else -> Column(
-                    Modifier.fillMaxSize().padding(top = 24.dp),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(top = 24.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -159,7 +174,7 @@ fun EditRentalItemScreen(goBack: () -> Unit, goToRentalItemsScreen: (Int, String
                         Spacer(modifier = Modifier.width(32.dp))
 
                         Button(
-                            onClick = { vm.updateRentalItemName(goToRentalItemsScreen) },
+                            onClick = { vm.updateRentalItemName() },
                             modifier = Modifier.size(120.dp,40.dp),
                             enabled = (
                                     vm.rentalItemState.value.rentalItem.rentalItemName != ""

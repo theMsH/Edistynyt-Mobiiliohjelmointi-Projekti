@@ -46,7 +46,6 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -147,7 +146,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                    ) { // Navhost
+                    ) { // NavHost
                         NavHost(
                             navController = navController,
                             startDestination = "loginScreen"
@@ -159,8 +158,10 @@ class MainActivity : ComponentActivity() {
                                             drawerState.open()
                                         }
                                     },
-                                    onClickEditCategory = {
-                                        navController.navigate("editCategoryScreen/${it.categoryId}")
+                                    onClickEditCategory = { categoryItem, nonValidNamesList ->
+                                        navController.navigate("editCategoryScreen" +
+                                                "/${categoryItem.categoryId}" +
+                                                "/${nonValidNamesList}")
 
                                     },
                                     onLoginClick = {
@@ -170,12 +171,6 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(
                                             "rentalItemScreen/${it.categoryId}/${it.categoryName}"
                                         )
-                                    },
-                                    deleteToast = { deleted ->
-                                        val text =
-                                            if (deleted) "Category deleted"
-                                            else "Delete failed: Category has items!"
-                                        Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
                                     }
                                 )
                             }
@@ -187,19 +182,12 @@ class MainActivity : ComponentActivity() {
                                             launchSingleTop = true
                                         }
                                     },
-                                    onLoginFail = {
-                                        Toast.makeText(
-                                            this@MainActivity,
-                                            "User or password is not valid",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    },
                                     onRegisterClick = {
                                         navController.navigate("registerScreen")
                                     }
                                 )
                             }
-                            composable(route="editCategoryScreen/{categoryId}") {
+                            composable(route="editCategoryScreen/{categoryId}/{nonValidNamesList}") {
                                 EditCategoryScreen(
                                     goBack = {
                                         navController.navigateUp()
@@ -217,18 +205,18 @@ class MainActivity : ComponentActivity() {
                                     goBack = {
                                         navController.navigateUp()
                                     },
-                                    goToEditRentalItemScreen = { rentalItemId, categoryId, categoryName ->
+                                    goToEditRentalItemScreen = { rentalItemId, categoryItem ->
                                         navController.navigate("editRentalItemScreen" +
                                                     "/${rentalItemId}" +
-                                                    "/${categoryId}" +
-                                                    "/${categoryName}"
+                                                    "/${categoryItem.categoryId}" +
+                                                    "/${categoryItem.categoryName}"
                                         )
                                     },
-                                    goToRentalItemScreen = { rentalItemId, categoryId, categoryName ->
+                                    goToRentalItemScreen = { rentalItemId, categoryItem ->
                                         navController.navigate("rentalItemScreen" +
                                                 "/${rentalItemId}" +
-                                                "/${categoryId}" +
-                                                "/${categoryName}"
+                                                "/${categoryItem.categoryId}" +
+                                                "/${categoryItem.categoryName}"
                                         )
                                     },
                                     onLoginClick = {
@@ -241,14 +229,14 @@ class MainActivity : ComponentActivity() {
                                     goBack = {
                                         navController.navigateUp()
                                     },
-                                    goToRentalItemsScreen = { categoryId, categoryName ->
+                                    goToRentalItemsScreen = { categoryItem ->
                                         navController.navigate("rentalItemScreen" +
-                                                "/${categoryId}" +
-                                                "/${categoryName}"
+                                                "/${categoryItem.categoryId}" +
+                                                "/${categoryItem.categoryName}"
                                         ) {
                                             popUpTo("rentalItemScreen" +
-                                                    "/${categoryId}" +
-                                                    "/${categoryName}"
+                                                    "/${categoryItem.categoryId}" +
+                                                    "/${categoryItem.categoryName}"
                                             ) {
                                                 inclusive = true
                                             }
@@ -262,11 +250,11 @@ class MainActivity : ComponentActivity() {
                                     goBack = {
                                         navController.navigateUp()
                                     },
-                                    goToEditRentalItemScreen = { rentalItemId, categoryId, categoryName ->
+                                    goToEditRentalItemScreen = { rentalItemId, categoryItem ->
                                         navController.navigate("editRentalItemScreen" +
                                                 "/${rentalItemId}" +
-                                                "/${categoryId}" +
-                                                "/${categoryName}"
+                                                "/${categoryItem.categoryId}" +
+                                                "/${categoryItem.categoryName}"
                                         )
                                     },
                                     onLoginClick = {
@@ -291,7 +279,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
-                    } // Navhost end
+                    } // NavHost end
                 }
             }
         }

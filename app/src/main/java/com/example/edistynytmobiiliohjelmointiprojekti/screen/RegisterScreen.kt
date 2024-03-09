@@ -1,5 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,8 +30,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
@@ -46,6 +50,18 @@ fun RegisterScreen(
     goBack: () -> Unit
 ) {
     val vm: LoginViewModel = viewModel()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = vm.loginState.value.done, key2 = vm.loginState.value.error) {
+        if (vm.loginState.value.done) {
+            vm.setDone(false)
+            onRegisterClick()
+        }
+        if (vm.loginState.value.error != null) {
+            Toast.makeText(context, vm.loginState.value.error, Toast.LENGTH_LONG).show()
+            vm.clearError()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -75,9 +91,6 @@ fun RegisterScreen(
                 vm.loginState.value.loading -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
-
-                vm.loginState.value.error != null -> Text(text = "${vm.loginState.value.error}")
-
 
                 // Ready
                 else -> Column(
@@ -123,7 +136,6 @@ fun RegisterScreen(
                                     ),
                             keyboardType = KeyboardType.Password
                         ),
-                        // Näppäimistöllä voidaan myös painaa nappia, jos fieldit on täytetty.
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 if (vm.loginState.value.password != "") {
@@ -160,7 +172,7 @@ fun RegisterScreen(
                         Spacer(modifier = Modifier.width(32.dp))
 
                         Button(
-                            onClick = { vm.createNewUser(onRegisterClick) },
+                            onClick = { vm.createNewUser() },
                             modifier = Modifier.size(120.dp, 40.dp),
                             enabled = (
                                     vm.loginState.value.username != ""

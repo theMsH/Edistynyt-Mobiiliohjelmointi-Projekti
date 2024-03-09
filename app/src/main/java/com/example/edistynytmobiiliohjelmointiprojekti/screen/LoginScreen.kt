@@ -1,5 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,8 +24,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -34,15 +37,36 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 
+
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterClick: () -> Unit) {
-    val loginVm : LoginViewModel = viewModel()
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    onRegisterClick: () -> Unit
+) {
+    val vm : LoginViewModel = viewModel()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = vm.loginState.value.done, key2 = vm.loginState.value.error) {
+        if (vm.loginState.value.done) {
+            vm.setDone(false)
+            onLoginSuccess()
+        }
+
+        when (vm.loginState.value.error) {
+            "500" -> Toast.makeText(context, "Connection lost, try again", Toast.LENGTH_LONG).show()
+            "404" -> Toast.makeText(context, "User not found!", Toast.LENGTH_LONG).show()
+        }
+
+        if (vm.loginState.value.error != null) {
+            vm.clearError()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         when {
             // Loading
-            loginVm.loginState.value.loading -> CircularProgressIndicator(
+            vm.loginState.value.loading -> CircularProgressIndicator(
                 modifier = Modifier.align(
                     Alignment.Center
                 )
@@ -64,9 +88,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterC
                     modifier = Modifier.requiredWidth(280.dp),
                     singleLine = true,
                     placeholder = { Text(text = "Username") },
-                    value = loginVm.loginState.value.username,
+                    value = vm.loginState.value.username,
                     onValueChange = {
-                        loginVm.setUsername(it)
+                        vm.setUsername(it)
                     },
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
@@ -79,32 +103,31 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterC
                     modifier = Modifier.requiredWidth(280.dp),
                     singleLine = true,
                     visualTransformation =
-                        if (loginVm.loginState.value.showPassword) VisualTransformation.None
+                        if (vm.loginState.value.showPassword) VisualTransformation.None
                         else PasswordVisualTransformation(),
                     placeholder = { Text(text = "Password") },
-                    value = loginVm.loginState.value.password,
+                    value = vm.loginState.value.password,
                     onValueChange = {
-                        loginVm.setPassword(it)
+                        vm.setPassword(it)
                     },
                     keyboardOptions = KeyboardOptions(
                         imeAction = (
-                                if (loginVm.loginState.value.username == "" ) ImeAction.Previous
-                                else if (loginVm.loginState.value.password == "" ) ImeAction.None
+                                if (vm.loginState.value.username == "" ) ImeAction.Previous
+                                else if (vm.loginState.value.password == "" ) ImeAction.None
                                 else ImeAction.Done
                                 ),
                         keyboardType = KeyboardType.Password
                     ),
-                    // Näppäimistöllä voidaan myös painaa nappia, jos fieldit on täytetty.
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            if (loginVm.loginState.value.password != "") {
+                            if (vm.loginState.value.password != "") {
                                 defaultKeyboardAction(imeAction = ImeAction.Done)
                             }
                         }
                     ),
                     trailingIcon = {
-                        IconButton(onClick = { loginVm.toggleShowPassword() }) {
-                            if (loginVm.loginState.value.showPassword) {
+                        IconButton(onClick = { vm.toggleShowPassword() }) {
+                            if (vm.loginState.value.showPassword) {
                                 Icon(
                                     imageVector = Icons.Filled.Visibility,
                                     contentDescription = "Show password"
@@ -123,10 +146,10 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onLoginFail: () -> Unit, onRegisterC
 
                 Button(
                     onClick = {
-                        loginVm.login(onLoginSuccess, onLoginFail)
+                        vm.login()
                               },
-                    enabled = loginVm.loginState.value.username != ""
-                            && loginVm.loginState.value.password != ""
+                    enabled = vm.loginState.value.username != ""
+                            && vm.loginState.value.password != ""
                 ) {
                     Text(text = "Login")
                 }
