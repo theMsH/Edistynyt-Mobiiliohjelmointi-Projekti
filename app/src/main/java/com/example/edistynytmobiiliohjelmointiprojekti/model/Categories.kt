@@ -12,6 +12,7 @@ data class CategoriesState(
 data class CategoryState(
     val categoryItem: CategoryItem = CategoryItem(),
     val nonValidNamesList: List<String> = emptyList(),
+    val categoryTitle: String = "",
     val loading: Boolean = false,
     val error: String? = null,
     val done: Boolean = false

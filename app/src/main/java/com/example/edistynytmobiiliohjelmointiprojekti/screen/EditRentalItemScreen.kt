@@ -66,7 +66,7 @@ fun EditRentalItemScreen(
                         )
                     }
                 },
-                title = { Text(text = vm.rentalItemTitle.value) },
+                title = { Text(text = vm.rentalItemState.value.rentalItemTitle) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -128,7 +128,7 @@ fun EditRentalItemScreen(
                             modifier = Modifier.size(120.dp,40.dp),
                             enabled = (
                                     vm.rentalItemState.value.rentalItem.rentalItemName != ""
-                                            && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemTitle.value
+                                            && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemState.value.rentalItemTitle
                                     )
                         ) {
                             Text(text = "Update")
@@ -178,7 +178,7 @@ fun EditRentalItemScreen(
                             modifier = Modifier.size(120.dp,40.dp),
                             enabled = (
                                     vm.rentalItemState.value.rentalItem.rentalItemName != ""
-                                    && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemTitle.value
+                                    && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemState.value.rentalItemTitle
                                     )
                         ) {
                             Text(text = "Update")

@@ -19,9 +19,6 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     private val _nonValidNamesList = savedStateHandle.get<String>("nonValidNamesList") ?: ""
     private val _categoryId = savedStateHandle.get<String>("categoryId")?.toIntOrNull() ?: 0
 
-    // Used for static TopAppBar title
-    var categoryTitle = ""
-
 
     init {
         getCategoryById()
@@ -60,7 +57,7 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                             response.category.categoryName
                         )
                     )
-                categoryTitle = _categoryState.value.categoryItem.categoryName
+                _categoryState.value = _categoryState.value.copy(categoryTitle = response.category.categoryName)
             }
             catch (e: Exception) {
                 Log.d("error getCategoryById()", "$e")

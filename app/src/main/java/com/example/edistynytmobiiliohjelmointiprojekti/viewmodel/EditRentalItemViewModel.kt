@@ -17,9 +17,6 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
     private val _rentalItemState = mutableStateOf(RentalItemState())
     val rentalItemState: State<RentalItemState> = _rentalItemState
 
-    private val _rentalItemTitle = mutableStateOf("")
-    val rentalItemTitle: State<String> = _rentalItemTitle
-
     private val _categoryItem = CategoryItem(
         categoryId = savedStateHandle.get<String>("categoryItemId")?.toIntOrNull() ?: 0,
         categoryName = savedStateHandle.get<String>("categoryItemName")?.toString() ?: ""
@@ -51,9 +48,9 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
                 _rentalItemState.value = _rentalItemState.value.copy(loading = true)
 
                 val response = rentalItemsService.getRentalItem(_rentalItemId)
-                _rentalItemState.value = _rentalItemState.value.copy(rentalItem = response)
+                _rentalItemState.value = _rentalItemState.value.copy(rentalItem = response, rentalItemTitle = response.rentalItemName)
 
-                _rentalItemTitle.value = response.rentalItemName
+                //_rentalItemTitle.value = response.rentalItemName
 
             }
             catch (e: Exception) {

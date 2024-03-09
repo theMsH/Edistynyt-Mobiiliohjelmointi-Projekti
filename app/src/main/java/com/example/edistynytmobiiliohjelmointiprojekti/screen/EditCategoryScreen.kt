@@ -65,7 +65,7 @@ fun EditCategoryScreen(
                         )
                     }
                                  },
-                title = { Text(text = vm.categoryTitle) },
+                title = { Text(text = vm.categoryState.value.categoryTitle) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -98,7 +98,8 @@ fun EditCategoryScreen(
                     if (vm.categoryState.value.nonValidNamesList.contains(
                             vm.categoryState.value.categoryItem.categoryName)
                         &&
-                        vm.categoryState.value.categoryItem.categoryName != vm.categoryTitle) {
+                        vm.categoryState.value.categoryItem.categoryName !=
+                            vm.categoryState.value.categoryTitle) {
                         Text(
                             modifier = Modifier.padding(vertical = 10.dp),
                             text = "Category already exists!",
@@ -139,7 +140,8 @@ fun EditCategoryScreen(
                                     !vm.categoryState.value.nonValidNamesList.contains(
                                         vm.categoryState.value.categoryItem.categoryName)
                                     &&
-                                    vm.categoryState.value.categoryItem.categoryName != vm.categoryTitle
+                                    vm.categoryState.value.categoryItem.categoryName !=
+                                            vm.categoryState.value.categoryTitle
                                     )
                         ) {
                             Text(text = "Update")
@@ -160,7 +162,8 @@ fun EditCategoryScreen(
                     if (vm.categoryState.value.nonValidNamesList.contains(
                             vm.categoryState.value.categoryItem.categoryName)
                         &&
-                        vm.categoryState.value.categoryItem.categoryName != vm.categoryTitle) {
+                        vm.categoryState.value.categoryItem.categoryName !=
+                            vm.categoryState.value.categoryTitle) {
                         Text(
                             modifier = Modifier.padding(vertical = 10.dp),
                             text = "Category already exists!",
@@ -201,7 +204,8 @@ fun EditCategoryScreen(
                                     !vm.categoryState.value.nonValidNamesList.contains(
                                         vm.categoryState.value.categoryItem.categoryName)
                                     &&
-                                    vm.categoryState.value.categoryItem.categoryName != vm.categoryTitle
+                                    vm.categoryState.value.categoryItem.categoryName !=
+                                            vm.categoryState.value.categoryTitle
                                     )
                         ) {
                             Text(text = "Update")

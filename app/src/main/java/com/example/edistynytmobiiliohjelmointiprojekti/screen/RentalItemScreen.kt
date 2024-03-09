@@ -72,7 +72,7 @@ fun RentalItemScreen(
                         )
                     }
                 },
-                title = { Text(text = vm.rentalItemTitle.value) },
+                title = { Text(text = vm.rentalItemState.value.rentalItemTitle) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 ),

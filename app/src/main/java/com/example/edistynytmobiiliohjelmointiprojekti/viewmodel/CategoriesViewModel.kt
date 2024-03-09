@@ -94,6 +94,7 @@ class CategoriesViewModel : ViewModel() {
 
                 // If no items found, continue to post.
                 if (rentalItemsState.value.list.isEmpty()) {
+                    Log.d("DeleteCategory()", "category is empty")
                     categoriesService.deleteCategoryById(categoryId)
 
                     // Filter categories into categoryList that has different categoryId than selected category.
@@ -109,13 +110,13 @@ class CategoriesViewModel : ViewModel() {
                     _deleteState.value = _deleteState.value.copy(done = true, success = true)
                 }
                 else {
-                    Log.d("DeleteCategory()", "category has items inside")
+                    Log.d("DeleteCategory()", "category is not empty")
                     _deleteState.value = _deleteState.value.copy(done = true, success = false)
                 }
             }
             catch (e: Exception) {
                 Log.d("error DeleteCategory()","$e")
-                _deleteState.value = _deleteState.value.copy(error = e.toString())
+                _categoriesState.value = _categoriesState.value.copy(error = e.toString())
             }
             finally {
                 _deleteState.value = _deleteState.value.copy(loading = false)
