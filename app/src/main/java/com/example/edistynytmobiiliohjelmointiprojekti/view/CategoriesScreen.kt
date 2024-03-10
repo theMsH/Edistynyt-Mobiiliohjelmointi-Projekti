@@ -1,4 +1,4 @@
-package com.example.edistynytmobiiliohjelmointiprojekti.screen
+package com.example.edistynytmobiiliohjelmointiprojekti.view
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -42,8 +42,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.edistynytmobiiliohjelmointiprojekti.CreateNewDialog
-import com.example.edistynytmobiiliohjelmointiprojekti.CustomAlert
 import com.example.edistynytmobiiliohjelmointiprojekti.R
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
@@ -232,7 +230,7 @@ fun CategoriesScreen(
 
                         // Delete category warning dialog
                     vm.deleteState.value.showDialog -> {
-                        com.example.edistynytmobiiliohjelmointiprojekti.DeleteDialog(
+                        DeleteDialog(
                             name = vm.deleteState.value.selectedCategoryItem.categoryName,
                             onDismiss = { vm.setShowDeleteDialog(false) },
                             onConfirm = {

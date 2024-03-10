@@ -1,4 +1,4 @@
-package com.example.edistynytmobiiliohjelmointiprojekti
+package com.example.edistynytmobiiliohjelmointiprojekti.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.edistynytmobiiliohjelmointiprojekti.R
 
 
 @Composable

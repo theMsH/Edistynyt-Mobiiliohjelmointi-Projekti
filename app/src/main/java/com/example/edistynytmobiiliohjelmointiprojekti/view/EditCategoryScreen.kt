@@ -1,4 +1,4 @@
-package com.example.edistynytmobiiliohjelmointiprojekti.screen
+package com.example.edistynytmobiiliohjelmointiprojekti.view
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -37,23 +37,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.R
-import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
-import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditRentalItemViewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.EditCategoryViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditRentalItemScreen(
-    goBack: () -> Unit,
-    goToRentalItemsScreen: (CategoryItem) -> Unit
+fun EditCategoryScreen(
+    goBack: () -> Unit, 
+    goToCategoriesScreen: () -> Unit
 ) {
-    val vm: EditRentalItemViewModel = viewModel()
+    val vm : EditCategoryViewModel = viewModel()
     val configuration = LocalConfiguration.current
 
-    LaunchedEffect(key1 = vm.rentalItemState.value.done) {
-        if (vm.rentalItemState.value.done) {
+    LaunchedEffect(key1 = vm.categoryState.value.done) {
+        if (vm.categoryState.value.done) {
             vm.setDone(false)
-            goToRentalItemsScreen(vm.categoryItem)
+            goToCategoriesScreen()
         }
     }
 
@@ -67,46 +66,55 @@ fun EditRentalItemScreen(
                             contentDescription = "Go back"
                         )
                     }
-                },
-                title = { Text(text = vm.rentalItemState.value.rentalItemTitle) },
+                                 },
+                title = { Text(text = vm.categoryState.value.categoryTitle) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
         }
-    ) {
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
         ) {
             when {
                 // Loading
-                vm.rentalItemState.value.loading -> CircularProgressIndicator(
+                vm.categoryState.value.loading -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
 
                 // Error
-                vm.rentalItemState.value.error != null ->
-                    Text(text = "${vm.rentalItemState.value.error}")
+                vm.categoryState.value.error != null -> Text(text = "${vm.categoryState.value.error}")
 
 
                 // Orientation: Portrait
                 configuration.orientation == Configuration.ORIENTATION_PORTRAIT -> Column(
-                    Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    RandomImage(600, vm.rentalItemState.value.rentalItem.rentalItemId)
+                    RandomImage(600, vm.categoryState.value.categoryItem.categoryId)
 
-                    Spacer(modifier = Modifier.height(30.dp))
+                    if (vm.categoryState.value.nonValidNamesList.contains(
+                            vm.categoryState.value.categoryItem.categoryName)
+                        &&
+                        vm.categoryState.value.categoryItem.categoryName !=
+                            vm.categoryState.value.categoryTitle) {
+                        Text(
+                            modifier = Modifier.padding(vertical = 10.dp),
+                            text = stringResource(R.string.category_exists_alert),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    } else Text(text = "", modifier = Modifier.padding(vertical = 10.dp))
 
                     OutlinedTextField(
                         singleLine = true,
                         modifier = Modifier.requiredWidth(280.dp),
-                        value = vm.rentalItemState.value.rentalItem.rentalItemName,
-                        onValueChange = {newValue ->
-                            vm.setRentalItemName(newValue)
+                        value = vm.categoryState.value.categoryItem.categoryName,
+                        onValueChange = {
+                            vm.setCategoryName(it)
                         },
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Done,
@@ -126,11 +134,16 @@ fun EditRentalItemScreen(
                         Spacer(modifier = Modifier.width(32.dp))
 
                         Button(
-                            onClick = { vm.updateRentalItemName() },
-                            modifier = Modifier.size(120.dp,40.dp),
+                            onClick = { vm.updateCategoryById() },
+                            modifier = Modifier.size(120.dp, 40.dp),
                             enabled = (
-                                    vm.rentalItemState.value.rentalItem.rentalItemName != ""
-                                            && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemState.value.rentalItemTitle
+                                    vm.categoryState.value.categoryItem.categoryName != ""
+                                    &&
+                                    !vm.categoryState.value.nonValidNamesList.contains(
+                                        vm.categoryState.value.categoryItem.categoryName)
+                                    &&
+                                    vm.categoryState.value.categoryItem.categoryName !=
+                                            vm.categoryState.value.categoryTitle
                                     )
                         ) {
                             Text(text = stringResource(R.string.update))
@@ -142,21 +155,30 @@ fun EditRentalItemScreen(
 
                 // Orientation: Horizontal
                 else -> Column(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(top = 24.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Error used to print here. Now used as a height spacer
-                    Text(text = "",modifier = Modifier.padding(vertical = 10.dp))
+                    if (vm.categoryState.value.nonValidNamesList.contains(
+                            vm.categoryState.value.categoryItem.categoryName)
+                        &&
+                        vm.categoryState.value.categoryItem.categoryName !=
+                            vm.categoryState.value.categoryTitle) {
+                        Text(
+                            modifier = Modifier.padding(vertical = 10.dp),
+                            text = stringResource(R.string.category_exists_alert),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    } else Text(text = "",modifier = Modifier.padding(vertical = 10.dp))
 
                     OutlinedTextField(
                         singleLine = true,
                         modifier = Modifier.requiredWidth(280.dp),
-                        value = vm.rentalItemState.value.rentalItem.rentalItemName,
-                        onValueChange = {newValue ->
-                            vm.setRentalItemName(newValue)
+                        value = vm.categoryState.value.categoryItem.categoryName,
+                        onValueChange = {
+                            vm.setCategoryName(it)
                         },
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Done,
@@ -170,27 +192,31 @@ fun EditRentalItemScreen(
                             onClick = { goBack() },
                             modifier = Modifier.size(120.dp, 40.dp)
                         ) {
-                            Text(text = stringResource(R.string.cancel))
+                            Text(text =  stringResource(R.string.cancel))
                         }
 
                         Spacer(modifier = Modifier.width(32.dp))
 
                         Button(
-                            onClick = { vm.updateRentalItemName() },
+                            onClick = { vm.updateCategoryById() },
                             modifier = Modifier.size(120.dp,40.dp),
                             enabled = (
-                                    vm.rentalItemState.value.rentalItem.rentalItemName != ""
-                                    && vm.rentalItemState.value.rentalItem.rentalItemName != vm.rentalItemState.value.rentalItemTitle
+                                    vm.categoryState.value.categoryItem.categoryName != ""
+                                    &&
+                                    !vm.categoryState.value.nonValidNamesList.contains(
+                                        vm.categoryState.value.categoryItem.categoryName)
+                                    &&
+                                    vm.categoryState.value.categoryItem.categoryName !=
+                                            vm.categoryState.value.categoryTitle
                                     )
                         ) {
                             Text(text = stringResource(R.string.update))
                         }
                     }
+
                 }
             }
-
         }
     }
 
 }
-

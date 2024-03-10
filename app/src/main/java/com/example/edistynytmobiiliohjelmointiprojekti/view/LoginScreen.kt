@@ -1,4 +1,4 @@
-package com.example.edistynytmobiiliohjelmointiprojekti.screen
+package com.example.edistynytmobiiliohjelmointiprojekti.view
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
