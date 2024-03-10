@@ -1,6 +1,7 @@
 package com.example.edistynytmobiiliohjelmointiprojekti
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,8 +24,12 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,6 +39,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
+import com.example.edistynytmobiiliohjelmointiprojekti.database.AccessToken
+import com.example.edistynytmobiiliohjelmointiprojekti.database.DatabaseProvider
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.CategoriesScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditCategoryScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.EditRentalItemScreen
@@ -42,7 +49,6 @@ import com.example.edistynytmobiiliohjelmointiprojekti.screen.RegisterScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.RentalItemScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.screen.RentalItemsScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
-import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 
 
@@ -60,6 +66,37 @@ class MainActivity : ComponentActivity() {
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                     val scope = rememberCoroutineScope()
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    val loggedIn: MutableState<Boolean?> = rememberSaveable { mutableStateOf(null) }
+                    val db = DatabaseProvider.getInstance(applicationContext)
+
+
+                    LaunchedEffect(key1 = loggedIn.value){
+                        Log.d("MainActivity()", " LaunchedEffect Start")
+
+                        if (loggedIn.value == null) {
+                            Log.d("MainActivity()", " LaunchedEffect: null")
+                            val query = db.accessTokenDao().getAccessToken()
+
+                            if (query != null) {
+                                Log.d("MainActivity()", " LaunchedEffect: token found and updated, navigate categoriesScreen")
+                                authInterceptor.updateToken(query.accessToken)
+
+                                navController.navigate("categoriesScreen") {
+                                    popUpTo("loginScreen") { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            }
+                        }
+                        else if (loggedIn.value == false) {
+                            Log.d("MainActivity()", " LaunchedEffect: logout")
+                            authInterceptor.updateToken("")
+                            db.accessTokenDao().clearAccessToken()
+
+                            navController.navigate("loginScreen") {
+                                launchSingleTop = true
+                            }
+                        }
+                    }
 
                     ModalNavigationDrawer(
                         drawerState = drawerState,
@@ -107,7 +144,6 @@ class MainActivity : ComponentActivity() {
                                         selected = navBackStackEntry?.destination?.route == "loginScreen",
                                         onClick = {
                                             navController.navigate("loginScreen"){
-                                                popUpTo("categoriesScreen") { inclusive = false }
                                                 launchSingleTop = true
                                             }
                                             scope.launch { drawerState.close() }
@@ -130,11 +166,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         selected = navBackStackEntry?.destination?.route == "loginScreen",
                                         onClick = {
-                                            navController.navigate("loginScreen"){
-                                                popUpTo("categoriesScreen") { inclusive = false }
-                                                launchSingleTop = true
-                                            }
-                                            LoginViewModel().logout()
+                                            loggedIn.value = false
                                             scope.launch { drawerState.close() }
                                         },
                                         icon = {
@@ -178,6 +210,12 @@ class MainActivity : ComponentActivity() {
                             composable(route="loginScreen") {
                                 LoginScreen(
                                     onLoginSuccess = {
+                                        scope.launch {
+                                            if (it != null) {
+                                                db.accessTokenDao().insert(AccessToken(accessToken = it))
+                                                Log.d("onLoginSuccess", "accessToken insert")
+                                            }
+                                        }
                                         navController.navigate("categoriesScreen") {
                                             popUpTo("loginScreen") { inclusive = true }
                                             launchSingleTop = true

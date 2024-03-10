@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authService
-import com.example.edistynytmobiiliohjelmointiprojekti.model.Account
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginRes
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginState
@@ -19,6 +18,7 @@ class LoginViewModel : ViewModel() {
     val loginState: State<LoginState> = _loginState
 
     private val _user = mutableStateOf(LoginRes())
+    val user = _user
 
 
     fun setUsername(username: String) {
@@ -69,13 +69,6 @@ class LoginViewModel : ViewModel() {
             finally {
                 _loginState.value = _loginState.value.copy(loading = false)
             }
-        }
-    }
-
-    fun logout() {
-        viewModelScope.launch {
-            _user.value = _user.value.copy(accessToken = "", account = Account())
-            authInterceptor.updateToken("")
         }
     }
 

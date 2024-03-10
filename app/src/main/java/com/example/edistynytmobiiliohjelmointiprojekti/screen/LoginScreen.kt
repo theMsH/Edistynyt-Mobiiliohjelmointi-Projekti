@@ -42,16 +42,20 @@ import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (accessToken: String?) -> Unit,
     onRegisterClick: () -> Unit
 ) {
     val vm : LoginViewModel = viewModel()
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = vm.loginState.value.done, key2 = vm.loginState.value.error) {
+
+    LaunchedEffect(
+        key1 = vm.loginState.value.done,
+        key2 = vm.loginState.value.error
+    ) {
         if (vm.loginState.value.done) {
             vm.setDone(false)
-            onLoginSuccess()
+            onLoginSuccess(vm.user.value.accessToken)
         }
 
         when (vm.loginState.value.error) {
@@ -83,7 +87,7 @@ fun LoginScreen(
             )
 
             // If this has token, you are already logged in so go to categories.
-            !authInterceptor.hasEmptyToken() -> onLoginSuccess()
+            !authInterceptor.hasEmptyToken() -> onLoginSuccess(null)
 
             // Ready
         else -> Column(
@@ -178,7 +182,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row {
-                    TextButton(onClick = { onLoginSuccess() }) {
+                    TextButton(onClick = { onLoginSuccess(null) }) {
                         Text(text = stringResource(R.string.continue_as_quest))
                     }
                 }
