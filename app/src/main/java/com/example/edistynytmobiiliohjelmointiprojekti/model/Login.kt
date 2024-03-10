@@ -36,3 +36,13 @@ data class LoginRes(
     val accessToken: String = "",
     val account: Account = Account()
 )
+
+data class AccountRes(
+    val username: String = "",
+    val password: String = "",
+    val authRoleId: Int = 0,
+    val accessJti: String = "",
+    val authUserId: Int = 0,
+    val createdAt: String = "",
+    val deletedAt: String? = null
+)
