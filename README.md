@@ -21,6 +21,7 @@
     - Tavaroiden poistaminen*
     - Tavaroiden vuokraus*
     - Lokalisointi
+    - RoomDB: Tokenin tallennus, poisto, kysely
 
     *Sovelluksen loginvaatimuksia voi testata kirjautumatta sisään.
    
