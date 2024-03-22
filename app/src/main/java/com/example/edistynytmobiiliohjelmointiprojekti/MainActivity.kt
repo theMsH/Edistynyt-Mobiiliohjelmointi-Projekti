@@ -25,22 +25,20 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.database.AccessToken
-import com.example.edistynytmobiiliohjelmointiprojekti.database.DatabaseProvider
+import com.example.edistynytmobiiliohjelmointiprojekti.database.DbProvider.db
+import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
 import com.example.edistynytmobiiliohjelmointiprojekti.view.CategoriesScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.view.EditCategoryScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.view.EditRentalItemScreen
@@ -48,7 +46,7 @@ import com.example.edistynytmobiiliohjelmointiprojekti.view.LoginScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.view.RegisterScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.view.RentalItemScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.view.RentalItemsScreen
-import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
+import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
 
 
@@ -66,34 +64,17 @@ class MainActivity : ComponentActivity() {
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                     val scope = rememberCoroutineScope()
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val loggedIn: MutableState<Boolean?> = rememberSaveable { mutableStateOf(null) }
-                    val db = DatabaseProvider.getInstance(applicationContext)
+                    val vm: MainActivityViewModel = viewModel()
 
+                    LaunchedEffect(key1 = vm.loginState.value.done){
+                        if (vm.loginState.value.done) {
+                            vm.setDone(false)
 
-                    LaunchedEffect(key1 = loggedIn.value){
-                        Log.d("MainActivity()", " LaunchedEffect Start")
-
-                        if (loggedIn.value == null) {
-                            Log.d("MainActivity()", " LaunchedEffect: null")
-                            val query = db.accessTokenDao().getAccessToken()
-
-                            if (query != null) {
-                                Log.d("MainActivity()", " LaunchedEffect: token found and updated, navigate categoriesScreen")
-                                authInterceptor.updateToken(query.accessToken)
-
+                            if (vm.loginState.value.loggedIn) {
                                 navController.navigate("categoriesScreen") {
                                     popUpTo("loginScreen") { inclusive = true }
                                     launchSingleTop = true
                                 }
-                            }
-                        }
-                        else if (loggedIn.value == false) {
-                            Log.d("MainActivity()", " LaunchedEffect: logout")
-                            authInterceptor.updateToken("")
-                            db.accessTokenDao().clearAccessToken()
-
-                            navController.navigate("loginScreen") {
-                                launchSingleTop = true
                             }
                         }
                     }
@@ -133,7 +114,31 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
 
-                                if (authInterceptor.hasEmptyToken()) {
+                                if (vm.loginState.value.loggedIn) {
+                                    // Logout
+                                    NavigationDrawerItem(
+                                        modifier = Modifier
+                                            .padding(NavigationDrawerItemDefaults.ItemPadding),
+                                        label = {
+                                            Text(text = stringResource(R.string.logout))
+                                        },
+                                        selected = navBackStackEntry?.destination?.route == "loginScreen",
+                                        onClick = {
+                                            navController.navigate("loginScreen") {
+                                                launchSingleTop = true
+                                            }
+                                            vm.logout()
+                                            scope.launch { drawerState.close() }
+                                        },
+                                        icon = {
+                                            Icon(
+                                                imageVector = Icons.Filled.LockOpen,
+                                                contentDescription = "Logout"
+                                            )
+                                        }
+                                    )
+                                }
+                                else {
                                     // Login
                                     NavigationDrawerItem(
                                         modifier = Modifier
@@ -152,27 +157,6 @@ class MainActivity : ComponentActivity() {
                                             Icon(
                                                 imageVector = Icons.Filled.Lock,
                                                 contentDescription = "Login"
-                                            )
-                                        }
-                                    )
-                                }
-                                else {
-                                    // Logout
-                                    NavigationDrawerItem(
-                                        modifier = Modifier
-                                            .padding(NavigationDrawerItemDefaults.ItemPadding),
-                                        label = {
-                                            Text(text = stringResource(R.string.logout))
-                                        },
-                                        selected = navBackStackEntry?.destination?.route == "loginScreen",
-                                        onClick = {
-                                            loggedIn.value = false
-                                            scope.launch { drawerState.close() }
-                                        },
-                                        icon = {
-                                            Icon(
-                                                imageVector = Icons.Filled.LockOpen,
-                                                contentDescription = "Logout"
                                             )
                                         }
                                     )
@@ -212,7 +196,7 @@ class MainActivity : ComponentActivity() {
                                     onLoginSuccess = {
                                         scope.launch {
                                             if (it != null) {
-                                                db.accessTokenDao().insert(AccessToken(accessToken = it))
+                                                db.accessTokenDao().insertToken(AccessToken(accessToken = it))
                                                 Log.d("onLoginSuccess", "accessToken insert")
                                             }
                                         }
@@ -220,6 +204,7 @@ class MainActivity : ComponentActivity() {
                                             popUpTo("loginScreen") { inclusive = true }
                                             launchSingleTop = true
                                         }
+                                        vm.login()
                                     },
                                     onRegisterClick = {
                                         navController.navigate("registerScreen")

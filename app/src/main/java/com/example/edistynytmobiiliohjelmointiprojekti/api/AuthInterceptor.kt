@@ -13,7 +13,7 @@ val okHttpClient = OkHttpClient.Builder()
 
 
 class AuthInterceptor(private var token: String) : Interceptor {
-    fun updateToken(newToken: String) {
+    fun setToken(newToken: String) {
         this.token = newToken
     }
 

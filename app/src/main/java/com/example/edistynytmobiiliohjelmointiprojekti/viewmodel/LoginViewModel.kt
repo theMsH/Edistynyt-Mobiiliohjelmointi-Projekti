@@ -55,7 +55,7 @@ class LoginViewModel : ViewModel() {
                         password = _loginState.value.password
                     )
                 )
-                authInterceptor.updateToken(_user.value.accessToken)
+                authInterceptor.setToken(_user.value.accessToken)
                 _loginState.value = _loginState.value.copy(done = true)
             }
             catch (e: Exception) {
