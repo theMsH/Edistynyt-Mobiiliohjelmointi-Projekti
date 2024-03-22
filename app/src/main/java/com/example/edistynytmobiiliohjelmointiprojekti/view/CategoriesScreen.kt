@@ -175,7 +175,7 @@ fun CategoriesScreen(
                                                     vm.showUnauthorizedDialog.value = true
                                                 }
                                                 else vm.setShowDeleteDialog(true)
-                                                vm.setSelectedCategoryItem(it)
+                                                vm.setSelectedCategory(it)
                                             }
                                         ) {
                                             Icon(
@@ -228,13 +228,13 @@ fun CategoriesScreen(
                         )
                     }
 
-                        // Delete category warning dialog
+                    // Delete category warning dialog
                     vm.deleteState.value.showDialog -> {
                         DeleteDialog(
-                            name = vm.deleteState.value.selectedCategoryItem.categoryName,
+                            name = vm.deleteState.value.selectedName,
                             onDismiss = { vm.setShowDeleteDialog(false) },
                             onConfirm = {
-                                vm.deleteCategory(vm.deleteState.value.selectedCategoryItem.categoryId)
+                                vm.deleteCategory(vm.deleteState.value.selectedId)
                                 vm.setShowDeleteDialog(false)
                             }
                         )

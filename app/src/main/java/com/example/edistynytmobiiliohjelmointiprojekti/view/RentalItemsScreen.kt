@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.CircularProgressIndicator
@@ -141,6 +142,21 @@ fun RentalItemsScreen(
                                         IconButton(
                                             onClick = {
                                                 if (authInterceptor.hasEmptyToken()) {
+                                                    vm.showUnauthorizedDialog.value = true
+                                                }
+                                                else vm.setShowDeleteDialog(true)
+                                                vm.setSelectedItem(it)
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                tint = colorResource(id = R.color.delete)
+                                            )
+                                        }
+                                        IconButton(
+                                            onClick = {
+                                                if (authInterceptor.hasEmptyToken()) {
                                                    vm.showUnauthorizedDialog.value = true
                                                 }
                                                 else {
@@ -185,6 +201,17 @@ fun RentalItemsScreen(
                         )
                     }
 
+                    // Delete category warning dialog
+                    vm.deleteState.value.showDialog -> {
+                        DeleteDialog(
+                            name = vm.deleteState.value.selectedName,
+                            onDismiss = { vm.setShowDeleteDialog(false) },
+                            onConfirm = {
+                                vm.deleteItem(vm.deleteState.value.selectedId)
+                                vm.setShowDeleteDialog(false)
+                            }
+                        )
+                    }
 
                     // Unauthorized action dialog
                     vm.showUnauthorizedDialog.value -> {

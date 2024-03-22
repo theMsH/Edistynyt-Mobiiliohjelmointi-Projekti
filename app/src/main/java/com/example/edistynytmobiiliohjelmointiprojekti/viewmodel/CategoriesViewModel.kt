@@ -41,8 +41,11 @@ class CategoriesViewModel : ViewModel() {
         _createState.value = _createState.value.copy(showDialog = show)
     }
 
-    fun setSelectedCategoryItem(categoryItem: CategoryItem) {
-        _deleteState.value = _deleteState.value.copy(selectedCategoryItem = categoryItem)
+    fun setSelectedCategory(categoryItem: CategoryItem) {
+        _deleteState.value = _deleteState.value.copy(
+            selectedId = categoryItem.categoryId,
+            selectedName = categoryItem.categoryName
+        )
     }
 
     fun setDeleteDone(done: Boolean) {

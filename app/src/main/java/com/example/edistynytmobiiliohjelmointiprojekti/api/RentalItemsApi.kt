@@ -7,6 +7,7 @@ import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemsByCatego
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemsRes
 import com.example.edistynytmobiiliohjelmointiprojekti.model.UpdateRentalItemNameReq
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -44,6 +45,10 @@ interface RentalItemsApi {
         @Path("rental_item_id") rentalItemId: Int,
         @Body rentItemReq: RentItemReq
     )
+
+    @Headers("Content-Type: application/json")
+    @DELETE("rentalitem/{rental_item_id}")
+    suspend fun deleteItemById(@Path("rental_item_id") itemId: Int)
 
 }
 

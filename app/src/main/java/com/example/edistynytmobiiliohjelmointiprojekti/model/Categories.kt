@@ -19,7 +19,8 @@ data class CategoryState(
 )
 
 data class DeleteState(
-    val selectedCategoryItem: CategoryItem = CategoryItem(),
+    val selectedId: Int = 0,
+    val selectedName: String = "",
     val loading: Boolean = false,
     val done: Boolean = false,
     val success: Boolean = false,

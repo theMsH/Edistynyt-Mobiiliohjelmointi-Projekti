@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiiliohjelmointiprojekti.api.rentalItemsService
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CreateState
+import com.example.edistynytmobiiliohjelmointiprojekti.model.DeleteState
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemPostReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemsByCategory
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemsState
@@ -18,6 +19,9 @@ import java.util.Locale
 class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     private val _rentalItemsState = mutableStateOf(RentalItemsState())
     val rentalItemsState: State<RentalItemsState> = _rentalItemsState
+
+    private val _deleteState = mutableStateOf(DeleteState())
+    val deleteState: State<DeleteState> = _deleteState
 
     private val _createState = mutableStateOf(CreateState())
     val createState: State<CreateState> = _createState
@@ -34,6 +38,17 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     init {
         _rentalItemsState.value = _rentalItemsState.value.copy(categoryItem = _categoryItem)
         getRentalItems()
+    }
+
+    fun setSelectedItem(rentalItem: RentalItemsByCategory) {
+        _deleteState.value = _deleteState.value.copy(
+            selectedId = rentalItem.rentalItemId,
+            selectedName = rentalItem.rentalItemName
+        )
+    }
+
+    fun setShowDeleteDialog(show: Boolean) {
+        _deleteState.value = _deleteState.value.copy(showDialog = show)
     }
 
     fun setShowCreateDialog(show: Boolean) {
@@ -98,6 +113,37 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             }
             finally {
                 _createState.value = _createState.value.copy(loading = false)
+            }
+        }
+    }
+
+    fun deleteItem(itemId: Int) {
+        Log.d("deleteItem", "ItemId: $itemId")
+
+        viewModelScope.launch {
+            try {
+                _deleteState.value = _deleteState.value.copy(loading = true)
+
+                rentalItemsService.deleteItemById(itemId)
+
+                // Filter items into itemsList that has different itemId than selected item.
+                val items = _rentalItemsState.value.list.filter {
+                    // false = filter out
+                    it.rentalItemId != itemId
+                }
+
+                // Update list
+                _rentalItemsState.value = _rentalItemsState.value.copy(list = items)
+
+                Log.d("DeleteItem()", "item deleted")
+                _deleteState.value = _deleteState.value.copy(done = true, success = true)
+            }
+            catch (e: Exception) {
+                Log.d("error DeleteItem()","$e")
+                _rentalItemsState.value = _rentalItemsState.value.copy(error = e.toString())
+            }
+            finally {
+                _deleteState.value = _deleteState.value.copy(loading = false)
             }
         }
     }
