@@ -66,8 +66,11 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                 _createState.value = _createState.value.copy(loading = true)
 
                 val response = rentalItemsService.postRentalItem(
-                    categoryItem.categoryId,
-                    RentalItemPostReq(itemName)
+                    categoryId = categoryItem.categoryId,
+                    rentalItemPostReq = RentalItemPostReq(
+                        rentalItemName = itemName,
+                        createdByUserId = 0
+                    )
                 )
 
                 // Create new item from res

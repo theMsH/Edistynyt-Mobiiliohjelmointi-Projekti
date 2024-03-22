@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -170,13 +171,24 @@ fun RentalItemScreen(
                             vm.rentalItemState.value.rentalItem.createdByUser.username
                     )
                     Spacer(modifier = Modifier.height(34.dp))
-                    Text(
-                        text =
-                        if (vm.rentalItemState.value.rentalItem.rentalState.rentalState == "free") {
-                            "${stringResource(R.string.rental_status)}: ${stringResource(R.string.available)}"
+
+                    if (vm.rentalItemState.value.rentalItem.rentalState.rentalState == "free") {
+                        Text(text = "${stringResource(R.string.rental_status)}: ${stringResource(R.string.available)}")
+                        Spacer(modifier = Modifier.height(34.dp))
+                        Button(
+                            onClick = {
+                                if (authInterceptor.hasEmptyToken()) {
+                                    vm.showUnauthorizedDialog.value = true
+                                }
+                                else vm.rentItem()
+                            }
+                        ) {
+                            Text(text = stringResource(R.string.rent_button_text))
                         }
-                        else "${stringResource(R.string.rental_status)}: ${stringResource(R.string.rented)}"
-                    )
+                    }
+                    else {
+                        Text(text ="${stringResource(R.string.rental_status)}: ${stringResource(R.string.rented)}")
+                    }
                 }
             }
 

@@ -1,5 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti.api
 
+import com.example.edistynytmobiiliohjelmointiprojekti.model.RentItemReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItem
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemPostReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemsByCategory
@@ -23,6 +24,7 @@ interface RentalItemsApi {
     @GET("rentalitem/{rentalItemId}")
     suspend fun getRentalItem(@Path("rentalItemId") rentalItemId: Int) : RentalItem
 
+    @Headers("Content-Type: application/json")
     @PUT("rentalitem/{rentalItemId}")
     suspend fun updateRentalItemName(
         @Path("rentalItemId") rentalItemId: Int,
@@ -35,6 +37,13 @@ interface RentalItemsApi {
         @Path("categoryId") categoryId: Int,
         @Body rentalItemPostReq: RentalItemPostReq
     ): RentalItemsByCategory
+
+    @Headers("Content-Type: application/json")
+    @POST("rentalitem/{rental_item_id}/rent")
+    suspend fun rentItem(
+        @Path("rental_item_id") rentalItemId: Int,
+        @Body rentItemReq: RentItemReq
+    )
 
 }
 

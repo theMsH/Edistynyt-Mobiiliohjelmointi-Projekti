@@ -40,9 +40,14 @@ data class LoginRes(
 data class AccountRes(
     val username: String = "",
     val password: String = "",
+    @SerializedName("auth_role_auth_role_id")
     val authRoleId: Int = 0,
+    @SerializedName("access_jti")
     val accessJti: String = "",
+    @SerializedName("auth_user_id")
     val authUserId: Int = 0,
+    @SerializedName("created_at")
     val createdAt: String = "",
+    @SerializedName("deleted_at")
     val deletedAt: String? = null
 )

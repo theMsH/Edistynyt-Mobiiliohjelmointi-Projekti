@@ -6,9 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.edistynytmobiiliohjelmointiprojekti.api.authService
 import com.example.edistynytmobiiliohjelmointiprojekti.api.rentalItemsService
 import com.example.edistynytmobiiliohjelmointiprojekti.model.CategoryItem
+import com.example.edistynytmobiiliohjelmointiprojekti.model.RentItemReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalItemState
+import com.example.edistynytmobiiliohjelmointiprojekti.model.RentalState
 import com.example.edistynytmobiiliohjelmointiprojekti.model.UpdateRentalItemNameReq
 import kotlinx.coroutines.launch
 
@@ -82,7 +85,40 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
                 _rentalItemState.value = _rentalItemState.value.copy(loading = false)
             }
         }
+    }
 
+    fun rentItem() {
+        viewModelScope.launch {
+            try {
+                _rentalItemState.value = _rentalItemState.value.copy(loading = true)
+
+                // Get account id
+                val response = authService.getAccount()
+                Log.d("rentItem()", "LoggedIn AccountId: ${response.authUserId}")
+
+                // Rent item with account id
+                rentalItemsService.rentItem(
+                    rentalItemId = _rentalItemId,
+                    rentItemReq = RentItemReq(response.authUserId)
+                )
+
+                // Change rental item's state to reserved, which updates screen with current value
+                _rentalItemState.value = _rentalItemState.value.copy(
+                    rentalItem = _rentalItemState.value.rentalItem.copy(
+                        rentalState = RentalState(
+                            rentalStateId = 1,
+                            rentalState = "reserved")
+                    )
+                )
+            }
+            catch (e: Exception) {
+                Log.d("error rentItem", "$e")
+                _rentalItemState.value = _rentalItemState.value.copy(error = e.toString())
+            }
+            finally {
+                _rentalItemState.value = _rentalItemState.value.copy(loading = false)
+            }
+        }
     }
 
 }

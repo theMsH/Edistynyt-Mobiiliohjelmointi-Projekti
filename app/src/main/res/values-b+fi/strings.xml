@@ -46,6 +46,7 @@
     <string name="at_time">klo</string>
     <string name="rented">Vuokrattu</string>
     <string name="available">Käytetävissä</string>
+    <string name="rent_button_text">Vuokraa</string>
 
 
     <string name="unauthorized_text">Avaa toiminnot kirjautumalla sisään</string>

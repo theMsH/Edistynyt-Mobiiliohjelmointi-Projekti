@@ -45,6 +45,7 @@
     <string name="at_time">at</string>
     <string name="rented">Rented</string>
     <string name="available">Available</string>
+    <string name="rent_button_text">Rent</string>
 
 
     <string name="unauthorized_text">Please login to perform this action</string>

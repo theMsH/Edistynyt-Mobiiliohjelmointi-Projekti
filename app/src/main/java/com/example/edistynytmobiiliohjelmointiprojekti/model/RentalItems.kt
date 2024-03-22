@@ -60,10 +60,17 @@ data class UpdateRentalItemNameReq (
 data class RentalItemPostReq(
     @SerializedName("rental_item_name")
     val rentalItemName: String = "",
+    @SerializedName("created_by_user_id")
+    val createdByUserId: Int = 0
     //@SerializedName("rental_item_description")
     //val rentalItemDesc: String = "",
     //@SerializedName("serial_number")
     //val rentalItemSerial: String = ""
+)
+
+data class RentItemReq(
+    @SerializedName("auth_user_auth_user_id")
+    val authUserId: Int = 0
 )
 
 data class RentalItemsRes(
