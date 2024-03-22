@@ -11,11 +11,11 @@
     - Sisäänkirjautuminen*
     - Uloskirjautuminen*
     - Uuden käyttäjän rekisteröiminen
-    - Kategorioiden listaus
+    - Kategorioiden listaus LazyColumniin
     - Kategorioiden nimen muokkaus*
     - Kategorian lisääminen*
     - Kategorian poisto*
-    - Tavaroiden listaus
+    - Tavaroiden listaus LazyColumniin
     - Tavaroiden nimen muokkaus*
     - Tavaroiden lisäämienn*
     - Tavaroiden poistaminen*
