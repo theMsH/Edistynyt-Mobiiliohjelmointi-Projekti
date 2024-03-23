@@ -55,7 +55,11 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         _createState.value = _createState.value.copy(showDialog = show)
     }
 
-    private fun getRentalItems() {
+    fun clearError() {
+        _rentalItemsState.value = _rentalItemsState.value.copy(error = null)
+    }
+
+    fun getRentalItems() {
         viewModelScope.launch {
             try {
                 _rentalItemsState.value = _rentalItemsState.value.copy(loading = true)

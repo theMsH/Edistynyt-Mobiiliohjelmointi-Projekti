@@ -52,6 +52,10 @@ class CategoriesViewModel : ViewModel() {
         _deleteState.value = _deleteState.value.copy(done = done)
     }
 
+    fun clearError() {
+        _categoriesState.value = _categoriesState.value.copy(error = null)
+    }
+
     // Get list of names used for categories. Used in creating new category.
     fun getNonValidNamesList() : List<String> {
         var notValidNamesList: Array<String> = emptyArray()
@@ -63,7 +67,7 @@ class CategoriesViewModel : ViewModel() {
         return notValidNamesList.toList()
     }
 
-    private fun getCategories() {
+   fun getCategories() {
         viewModelScope.launch {
             try {
                 _categoriesState.value = _categoriesState.value.copy(loading = true)

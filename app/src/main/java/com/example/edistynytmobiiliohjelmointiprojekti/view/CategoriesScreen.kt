@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -116,8 +117,19 @@ fun CategoriesScreen(
                 )
 
                 // In case of error
-                vm.categoriesState.value.error != null ->
+                vm.categoriesState.value.error != null -> {
                     Text(text = "${vm.categoriesState.value.error}")
+                    Button(
+                        modifier = Modifier.align(Alignment.Center),
+                        onClick = {
+                            vm.clearError()
+                            vm.getCategories()
+                        }
+                    ) {
+                        Text(text = stringResource(R.string.retry))
+                    }
+                }
+
 
                 // Draw items
                 else -> LazyColumn(

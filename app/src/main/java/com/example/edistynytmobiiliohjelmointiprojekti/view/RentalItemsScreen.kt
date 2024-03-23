@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -85,8 +86,19 @@ fun RentalItemsScreen(
                 )
 
                 // In case of error
-                vm.rentalItemsState.value.error != null ->
+                vm.rentalItemsState.value.error != null -> {
                     Text(text = "${vm.rentalItemsState.value.error}")
+                    Button(
+                        modifier = Modifier.align(Alignment.Center),
+                        onClick = {
+                            vm.clearError()
+                            vm.getRentalItems()
+                        }
+                    ) {
+                        Text(text = stringResource(R.string.retry))
+                    }
+                }
+
 
                 // Draw items
                 else -> LazyColumn(

@@ -38,7 +38,8 @@
 
 
     <string name="connection_lost">Yhteys on katkennut. Yritä uudestaan</string>
-
+    <string name="retry">Yritä uudelleen</string>
+    <string name="autologin_401">Käyttäjä on kirjattu ulos. Uusi kirjautuminen vaaditaan</string>
 
     <string name="listed_on">Listattu </string>
     <string name="by_user">Lisääjä: </string>

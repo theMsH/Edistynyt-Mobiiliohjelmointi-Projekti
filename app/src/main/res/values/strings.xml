@@ -23,7 +23,7 @@
     <string name="user_not_found">User not found!</string>
 
 
-    <string name="category_delete_success">Categoria deleted</string>
+    <string name="category_delete_success">Category deleted</string>
     <string name="category_delete_fail">Delete failed: Category has items!</string>
     <string name="categories">Categories</string>
     <string name="create_category_title">Create category</string>
@@ -37,6 +37,8 @@
 
 
     <string name="connection_lost">Connection lost, try again</string>
+    <string name="retry">Retry</string>
+    <string name="autologin_401">User is logged out. New login is required</string>
 
 
     <string name="listed_on">Listed on</string>
