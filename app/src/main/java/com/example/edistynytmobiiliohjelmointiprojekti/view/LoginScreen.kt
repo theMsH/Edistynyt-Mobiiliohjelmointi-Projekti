@@ -36,18 +36,17 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiiliohjelmointiprojekti.R
-import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.LoginViewModel
 
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: (accessToken: String?) -> Unit,
-    onRegisterClick: () -> Unit
+    onLoginSuccess: () -> Unit,
+    onRegisterClick: () -> Unit,
+    onQuestClick: () -> Unit
 ) {
     val vm : LoginViewModel = viewModel()
     val context = LocalContext.current
-
 
     LaunchedEffect(
         key1 = vm.loginState.value.done,
@@ -55,23 +54,29 @@ fun LoginScreen(
     ) {
         if (vm.loginState.value.done) {
             vm.setDone(false)
-            onLoginSuccess(vm.user.value.accessToken)
-        }
-
-        when (vm.loginState.value.error) {
-            "500" -> Toast.makeText(
-                context,
-                context.getString(R.string.connection_lost),
-                Toast.LENGTH_LONG
-            ).show()
-            "404" -> Toast.makeText(
-                context,
-                context.getString(R.string.user_not_found),
-                Toast.LENGTH_LONG
-            ).show()
+            onLoginSuccess()
         }
 
         if (vm.loginState.value.error != null) {
+            when (vm.loginState.value.error) {
+                "500" -> Toast.makeText(
+                    context,
+                    context.getString(R.string.connection_lost),
+                    Toast.LENGTH_LONG
+                ).show()
+
+                "404" -> Toast.makeText(
+                    context,
+                    context.getString(R.string.user_not_found),
+                    Toast.LENGTH_LONG
+                ).show()
+
+                else -> Toast.makeText(
+                    context,
+                    vm.loginState.value.error,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
             vm.clearError()
         }
     }
@@ -85,9 +90,6 @@ fun LoginScreen(
                     Alignment.Center
                 )
             )
-
-            // If this has token, you are already logged in so go to categories.
-            !authInterceptor.hasEmptyToken() -> onLoginSuccess(null)
 
             // Ready
         else -> Column(
@@ -182,7 +184,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row {
-                    TextButton(onClick = { onLoginSuccess(null) }) {
+                    TextButton(onClick = { onQuestClick() }) {
                         Text(text = stringResource(R.string.continue_as_quest))
                     }
                 }

@@ -1,7 +1,6 @@
 package com.example.edistynytmobiiliohjelmointiprojekti
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -36,8 +35,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.edistynytmobiiliohjelmointiprojekti.database.AccessToken
-import com.example.edistynytmobiiliohjelmointiprojekti.database.DbProvider.db
 import com.example.edistynytmobiiliohjelmointiprojekti.ui.theme.EdistynytMobiiliohjelmointiProjektiTheme
 import com.example.edistynytmobiiliohjelmointiprojekti.view.CategoriesScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.view.EditCategoryScreen
@@ -46,7 +43,7 @@ import com.example.edistynytmobiiliohjelmointiprojekti.view.LoginScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.view.RegisterScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.view.RentalItemScreen
 import com.example.edistynytmobiiliohjelmointiprojekti.view.RentalItemsScreen
-import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.MainActivityViewModel
+import com.example.edistynytmobiiliohjelmointiprojekti.viewmodel.DrawerLayoutLoginViewModel
 import kotlinx.coroutines.launch
 
 
@@ -64,9 +61,14 @@ class MainActivity : ComponentActivity() {
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                     val scope = rememberCoroutineScope()
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val vm: MainActivityViewModel = viewModel()
 
-                    LaunchedEffect(key1 = vm.loginState.value.done){
+                    // This here and not in LoginViewModel because of logout button in DrawerLayout
+                    val vm: DrawerLayoutLoginViewModel = viewModel()
+
+                    LaunchedEffect(
+                        key1 = vm.loginState.value.done,
+                        key2 = vm.loginState.value.error
+                    ){
                         if (vm.loginState.value.done) {
                             vm.setDone(false)
 
@@ -76,6 +78,23 @@ class MainActivity : ComponentActivity() {
                                     launchSingleTop = true
                                 }
                             }
+                        }
+
+                        if (vm.loginState.value.error != null) {
+                            when (vm.loginState.value.error) {
+                                "401" -> Toast.makeText(
+                                    this@MainActivity,
+                                    getString(R.string.autologin_401),
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                else -> Toast.makeText(
+                                    this@MainActivity,
+                                    vm.loginState.value.error,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            vm.clearError()
                         }
                     }
 
@@ -101,7 +120,7 @@ class MainActivity : ComponentActivity() {
                                     selected = navBackStackEntry?.destination?.route == "categoriesScreen",
                                     onClick = {
                                         navController.navigate("categoriesScreen"){
-                                            popUpTo("loginScreen") { inclusive = true }
+                                            popUpTo("categoriesScreen") { inclusive = true }
                                             launchSingleTop = true
                                         }
                                         scope.launch { drawerState.close() }
@@ -194,17 +213,17 @@ class MainActivity : ComponentActivity() {
                             composable(route="loginScreen") {
                                 LoginScreen(
                                     onLoginSuccess = {
-                                        scope.launch {
-                                            if (it != null) {
-                                                db.accessTokenDao().insertToken(AccessToken(accessToken = it))
-                                                Log.d("onLoginSuccess", "accessToken insert")
-                                            }
-                                        }
                                         navController.navigate("categoriesScreen") {
                                             popUpTo("loginScreen") { inclusive = true }
                                             launchSingleTop = true
                                         }
                                         vm.login()
+                                    },
+                                    onQuestClick = {
+                                        navController.navigate("categoriesScreen") {
+                                            popUpTo("loginScreen") { inclusive = true }
+                                            launchSingleTop = true
+                                        }
                                     },
                                     onRegisterClick = {
                                         navController.navigate("registerScreen")
