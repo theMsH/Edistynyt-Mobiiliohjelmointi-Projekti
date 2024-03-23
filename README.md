@@ -1,15 +1,16 @@
 # Edistyneen mobiiliohjelmoinnin projekti
 
 * Sovellus vaatii kaikkia toimintoja varten rekisteröitymisen backendiin.
-    * Token välitetään headereissa backendille. 
+    * Tokenin sisältämä header välitetään OkHttpClientin interceptorissa backendille.
     * Kaikki API requestit eivät sitä kuitenkaan vaadi, joten autorisointi on toteutettu ohjelmallisesti sovelluksen koodissa.
+        * Eli käytännössä tarkastetaan, onko AuthInterceptorilla token. Tämä toki voi olla mikä vain merkkijono.
 * Autorisaatio on toteutettu tallentamalla token RoomDb sekä AuthInterceptoriin.
-    * Sovelluksessa on automaattinen sisäänkirjautuminen
+    * Sovelluksessa on automaattinen sisäänkirjautuminen (RoomDB:n ainut tarkoitus)
 
 ## Sovelluksen vaatimukset
 - Jetback Compose MVVM arkkitehtonisen mallin mukaisesti
 - Sisäänkirjautuminen*
-- Uloskirjautuminen*
+- Uloskirjautuminen* (Tämä on toteutettu DrawerLayoutin kautta)
 - Uuden käyttäjän rekisteröiminen
 - Kategorioiden listaus LazyColumniin
 - Kategorioiden nimen muokkaus*
