@@ -3,10 +3,10 @@ package com.example.edistynytmobiiliohjelmointiprojekti.database
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
+import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
-import androidx.room.Upsert
 
 
 @Entity(tableName = "access_tokens")
@@ -18,10 +18,11 @@ data class AccessToken(
 
 @Dao
 abstract class AccessTokenDao {
-    @Upsert
+    @Insert
     abstract suspend fun insertToken(token: AccessToken)
 
-    @Query("SELECT * FROM access_tokens LIMIT 1")
+    // Change order from query result, just in case so it selects the most recent token.
+    @Query("SELECT * FROM access_tokens ORDER BY id DESC LIMIT 1")
     abstract suspend fun getAccessToken(): AccessToken?
 
     @Query("DELETE FROM access_tokens")

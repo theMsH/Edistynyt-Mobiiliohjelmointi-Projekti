@@ -7,18 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authInterceptor
 import com.example.edistynytmobiiliohjelmointiprojekti.api.authService
+import com.example.edistynytmobiiliohjelmointiprojekti.database.AccessToken
+import com.example.edistynytmobiiliohjelmointiprojekti.database.AccountDatabase
+import com.example.edistynytmobiiliohjelmointiprojekti.database.DbProvider
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginReq
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginRes
 import com.example.edistynytmobiiliohjelmointiprojekti.model.LoginState
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewModel() {
     private val _loginState = mutableStateOf(LoginState())
     val loginState: State<LoginState> = _loginState
 
     private val _user = mutableStateOf(LoginRes())
-    val user = _user
 
 
     fun setUsername(username: String) {
@@ -55,7 +57,14 @@ class LoginViewModel : ViewModel() {
                         password = _loginState.value.password
                     )
                 )
+                // This is used to deliver token with headers
                 authInterceptor.setToken(_user.value.accessToken)
+
+                // This is used for auto login feature
+                db.accessTokenDao().insertToken(
+                    AccessToken(accessToken = _user.value.accessToken)
+                )
+
                 _loginState.value = _loginState.value.copy(done = true)
             }
             catch (e: Exception) {
