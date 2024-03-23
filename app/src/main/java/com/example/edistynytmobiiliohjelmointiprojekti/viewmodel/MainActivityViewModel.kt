@@ -43,10 +43,12 @@ class MainActivityViewModel(): ViewModel() {
     }
 
     fun logout() {
+        _loginState.value = _loginState.value.copy(loggedIn = false)
+
+        authInterceptor.setToken("")
+
         viewModelScope.launch {
             DbProvider.db.accessTokenDao().clearAccessToken()
-            authInterceptor.setToken("")
-            _loginState.value = _loginState.value.copy(loggedIn = false)
         }
     }
 

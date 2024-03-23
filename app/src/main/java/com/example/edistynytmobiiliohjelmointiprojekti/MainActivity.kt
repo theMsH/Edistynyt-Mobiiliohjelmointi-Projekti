@@ -124,7 +124,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         selected = navBackStackEntry?.destination?.route == "loginScreen",
                                         onClick = {
-                                            navController.navigate("loginScreen") {
+                                            navController.navigate("loginScreen"){
                                                 launchSingleTop = true
                                             }
                                             vm.logout()
