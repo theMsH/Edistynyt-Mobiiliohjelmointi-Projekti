@@ -5,22 +5,32 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 
 
-val authInterceptor = AuthInterceptor("")
+val authInterceptor = AuthInterceptor()
 
+// Create OkHttpClient with AuthInterceptor instance. This is used in Retrofit builder
 val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(authInterceptor)
     .build()
 
 
-class AuthInterceptor(private var token: String) : Interceptor {
+class AuthInterceptor(private var token: String = "") : Interceptor {
+
+    // Set token on login.
     fun setToken(newToken: String) {
         this.token = newToken
     }
 
+    // Clear token on logout. Could be done with setToken too
+    fun clearToken() {
+        this.token = ""
+    }
+
+    // This is used for preventing unauthorized access in this software, even if backend allows it
     fun hasEmptyToken() : Boolean {
         return this.token == ""
     }
 
+    // Headers for requests are added here
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
             .addHeader("Authorization", "Bearer $token")
