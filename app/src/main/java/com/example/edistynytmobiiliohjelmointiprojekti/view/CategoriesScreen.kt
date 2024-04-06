@@ -89,7 +89,7 @@ fun CategoriesScreen(
             Toast.makeText(context, text, length).show()
         }
     }
-    
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -289,7 +289,6 @@ fun CategoriesScreen(
                         )
                     }
                 }
-
 
             }
         }
