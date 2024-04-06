@@ -61,7 +61,7 @@ fun LoginScreen(
             when (vm.loginState.value.error) {
                 "500" -> Toast.makeText(
                     context,
-                    context.getString(R.string.connection_lost),
+                    context.getString(R.string.code_500),
                     Toast.LENGTH_LONG
                 ).show()
 

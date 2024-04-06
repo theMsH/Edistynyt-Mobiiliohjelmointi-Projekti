@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
                     val scope = rememberCoroutineScope()
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-                    // This here and not in LoginViewModel because of logout button in DrawerLayout
+                    // Used for drawerlayouts loginstate handling
                     val vm: DrawerLayoutLoginViewModel = viewModel()
 
                     LaunchedEffect(

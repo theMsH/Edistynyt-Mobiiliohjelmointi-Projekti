@@ -20,7 +20,7 @@
     <string name="password_placeholder">Password</string>
     <string name="continue_as_quest">Continue as quest</string>
     <string name="no_account">No account?</string>
-    <string name="user_not_found">User not found!</string>
+    <string name="user_not_found">Username or password is incorrect!</string>
 
 
     <string name="category_delete_success">Category deleted</string>
@@ -36,7 +36,7 @@
     <string name="create_item_placeholder">New item"</string>
 
 
-    <string name="connection_lost">Connection lost, try again</string>
+    <string name="code_500">500 Internal server error</string>
     <string name="retry">Retry</string>
     <string name="autologin_401">User is logged out. New login is required</string>
 

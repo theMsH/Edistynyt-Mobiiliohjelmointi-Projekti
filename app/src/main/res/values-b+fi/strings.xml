@@ -21,7 +21,7 @@
     <string name="password_placeholder">Salasana</string>
     <string name="continue_as_quest">Jatka vierailijana</string>
     <string name="no_account">Ei käyttäjää?</string>
-    <string name="user_not_found">Käyttäjää ei löytynyt!</string>
+    <string name="user_not_found">Käyttäjänimi tai salasana on väärin!</string>
 
 
     <string name="category_delete_success">Kategoria poistettu</string>
@@ -37,7 +37,7 @@
     <string name="create_item_placeholder">Uusi esine"</string>
 
 
-    <string name="connection_lost">Yhteys on katkennut. Yritä uudestaan</string>
+    <string name="code_500">500 Internal server error</string>
     <string name="retry">Yritä uudelleen</string>
     <string name="autologin_401">Käyttäjä on kirjattu ulos. Uusi kirjautuminen vaaditaan</string>
 
