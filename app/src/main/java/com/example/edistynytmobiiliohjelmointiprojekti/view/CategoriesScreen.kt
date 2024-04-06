@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -88,8 +89,7 @@ fun CategoriesScreen(
             Toast.makeText(context, text, length).show()
         }
     }
-
-
+    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -103,7 +103,20 @@ fun CategoriesScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    if (authInterceptor.hasEmptyToken()) {
+                        vm.showUnauthorizedDialog.value = true
+                    } else vm.setShowCreateDialog(true)
+                }
+            ) {
+                Icon(Icons.Filled.Add, "Floating action button.")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
+        
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -277,15 +290,7 @@ fun CategoriesScreen(
                     }
                 }
 
-                FloatingActionButton(
-                    onClick = {
-                        if (authInterceptor.hasEmptyToken()) {
-                            vm.showUnauthorizedDialog.value = true
-                        } else vm.setShowCreateDialog(true)
-                    }
-                ) {
-                    Icon(Icons.Filled.Add, "Floating action button.")
-                }
+
             }
         }
     }
